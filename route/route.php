@@ -1,6 +1,4 @@
 <?php
 
-Route::get('/',function(){
-    return "disallow access";
-});
+Route::get('/','index/login/index');
 

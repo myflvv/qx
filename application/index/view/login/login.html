@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap-clearmin.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/roboto.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css">
+    <link rel="stylesheet" href="dist/css/bootstrapValidator.css"/>
+
+    <script type="text/javascript" src="vendor/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="dist/js/bootstrapValidator.js"></script>
+    <script type="text/javascript" src="dist/js/language/zh_CN.js"></script>
+    <title>后台管理</title>
+    <style></style>
+</head>
+<body class="cm-login">
+
+<div class="text-center" style="padding:90px 0 30px 0;background:#fff;border-bottom:1px solid #ddd">
+    后台管理
+</div>
+
+<div class="col-sm-6 col-md-4 col-lg-3" style="margin:40px auto; float:none;">
+    <form method="post" action="index.html" id="loginForm">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-fw fa-user"></i></div>
+                    <input type="text" name="username" class="form-control" placeholder="Username">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-addon"><i class="fa fa-fw fa-lock"></i></div>
+                    <input type="password" name="password" class="form-control" placeholder="Password">
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <div class="checkbox"><label></label></div>
+        </div><div class="col-xs-6">
+        <button type="submit" class="btn btn-block btn-primary">登录</button>
+    </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#loginForm').bootstrapValidator({
+            message: 'This value is not valid',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                username: {
+                    message: '',
+                    validators: {
+                        notEmpty: {
+                        },
+                        stringLength: {
+                            min: 3,
+                            max: 30,
+                            message:''
+                        }
+                    }
+                },
+                password: {
+                    validators: {
+                        notEmpty: {
+                            message: ''
+                        },
+                        stringLength: {
+                            min: 5,
+                            max: 30,
+                            message:''
+                        },
+                    }
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>
