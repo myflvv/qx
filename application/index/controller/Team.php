@@ -1,0 +1,10 @@
+<?php
+namespace app\index\controller;
+use think\Controller;
+
+class Team extends Controller{
+
+    public function getIndex(){
+        return $this->fetch('index');
+    }
+}

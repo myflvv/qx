@@ -2,7 +2,6 @@
 namespace think\custom\common;
 use Exception;
 use think\exception\Handle;
-use think\custom\common\RedisLog;
 /**
  * 异常错误处理类,以json形式统一抛出所有错误
  * 使用方法 throw new \Exception('msg',300);
@@ -17,7 +16,6 @@ class BaseException extends Handle{
                 "code" => $e->getCode(),
                 "msg"   => $e->getMessage(),
             ];
-            RedisLog::error('异常:'.$e->getMessage());
             return json($result);
         }
         // 其他错误交给系统处理
