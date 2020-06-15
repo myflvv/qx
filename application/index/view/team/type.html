@@ -1,0 +1,39 @@
+<div class="container-index">
+    <div class="page-tool pull-right">
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-primary btn-sm">添加</button>
+            <button type="button" class="btn btn-primary btn-sm">修改</button>
+            <button type="button" class="btn btn-primary btn-sm">删除</button>
+        </div>
+    </div>
+
+    <div class="page-tool-select pull-left">
+        <button type="button" class="btn btn-link btn-sm">
+            <label><input type="checkbox" value="" id="allcheck"> 全选/取消</label>
+        </button>
+    </div>
+    <table class="table table-bordered table-hover table-responsive table-striped">
+        <tbody>
+        {volist name='data' id='vo' key='k'}
+        <tr>
+            <th scope="row" width="50" style="text-align: center">{$key+1}</th>
+            <td>{$vo.name}
+
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    $(function() {
+        $("#allcheck").on('click',function() {
+            $("input[name='listcheck']").prop("checked", this.checked);
+        });
+
+        $("input[name='listcheck']").on('click',function() {
+            var $subs = $("input[name='listcheck']");
+            $("#allcheck").prop("checked" , $subs.length == $subs.filter(":checked").length ? true :false);
+        });
+    });
+</script>

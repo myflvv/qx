@@ -1,4 +1,96 @@
-<div class="panel-heading">团队管理</div>
-<div class="panel-body">
-    sssswwww
+
+<ol class="breadcrumb">
+    <li class="active">团队管理</li>
+</ol>
+<div class="container-index">
+    <div id="tree"></div>
 </div>
+
+<script type="text/javascript" src="/dist/js/bootstrap-treeview.min.js"></script>
+<link rel="stylesheet" href="/dist/css/bootstrap-treeview.min.css"/>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        var defaultData = [
+            {
+                text: 'Parent 1',
+                href: '#parent1',
+                tags: ['4'],
+                nodes: [
+                    {
+                        text: 'Child 1',
+                        href: '#child1',
+                        tags: ['2'],
+                        nodes: [
+                            {
+                                text: 'Grandchild 1',
+                                href: '#grandchild1',
+                                tags: ['0']
+                            },
+                            {
+                                text: 'Grandchild 2',
+                                href: '#grandchild2',
+                                tags: ['0']
+                            }
+                        ]
+                    },
+                    {
+                        text: 'Child 2',
+                        href: '#child2',
+                        tags: ['0']
+                    }
+                ]
+            },
+            {
+                text: 'Parent 2',
+                href: '#parent2',
+                tags: ['0']
+            },
+            {
+                text: 'Parent 3',
+                href: '#parent3',
+                tags: ['0']
+            },
+            {
+                text: 'Parent 4',
+                href: '#parent4',
+                tags: ['0']
+            },
+            {
+                text: 'Parent 5',
+                href: '#parent5'  ,
+                tags: ['0']
+            }
+        ];
+
+        $('#tree').treeview({
+            levels:0,
+            data: getdata(),
+            onNodeExpanded:function (event,data) {
+                alert(data.nodeId);
+            }
+        });
+        function getdata() {
+            var data;
+            $.ajax({
+                //请求方式
+                type : "get",
+                //请求地址
+                url : "/admin/team/ajaxdata",
+                //数据，json字符串
+                dataType : 'json',
+                async:false,
+                success : function(result) {
+                    data=result;
+                },
+                error : function(e){
+                    console.log(e.status);
+                    console.log(e.responseText);
+                }
+            });
+            return data;
+        }
+
+    });
+
+</script>

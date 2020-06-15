@@ -9,9 +9,16 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/small-n-flat.css">
     <link rel="stylesheet" type="text/css" href="/assets/css/font-awesome.min.css">
     <link rel="stylesheet" href="/dist/css/bootstrapValidator.css"/>
-
+    <link rel="stylesheet" type="text/css" href="/static/qx.css">
+    <script type="text/javascript" src="/vendor/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/dist/js/bootstrapValidator.js"></script>
+    <script type="text/javascript" src="/dist/js/language/zh_CN.js"></script>
+    <script src="/assets/js/jquery.mousewheel.min.js"></script>
+    <script src="/assets/js/jquery.cookie.min.js"></script>
+    <script src="/assets/js/fastclick.min.js"></script>
+    <script src="/assets/js/clearmin.min.js"></script>
     <title>后台管理</title>
-    <style></style>
 </head>
 <body class="cm-no-transition cm-1-navbar">
     <div id="cm-menu">
@@ -25,7 +32,13 @@
                     <ul class="cm-menu-items">
                         <li class="active"><a href="/admin/main/index" class="sf-house">首页</a></li>
                         <li><a href="/admin/people" class="sf-brick">人员管理</a></li>
-                        <li><a href="/admin/team/index" class="sf-dashboard">团队管理</a></li>
+                        <li class="cm-submenu">
+                            <a class="sf-cat">团队管理 <span class="caret"></span></a>
+                            <ul>
+                                <li><a href="/admin/team/type">团队类型</a></li>
+                                <li><a href="/admin/team/index">团队列表</a></li>
+                            </ul>
+                        </li>
                         <li class="cm-submenu">
                             <a class="sf-cat">活动管理 <span class="caret"></span></a>
                             <ul>
@@ -69,21 +82,11 @@
             </div>
         </nav>
     </header>
-    <div id="global">
+    <div id="global" class="cm-container-white">
         <div class="container-fluid">
-            <div class="panel panel-default">
-                {__CONTENT__}
-            </div>
+            {__CONTENT__}
         </div>
         <footer class="cm-footer"><span class="pull-left">Connected as John Smith</span><span class="pull-right">© PAOMEDIA SARL</span></footer>
     </div>
-    <script type="text/javascript" src="/vendor/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="/vendor/bootstrap/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/dist/js/bootstrapValidator.js"></script>
-    <script type="text/javascript" src="/dist/js/language/zh_CN.js"></script>
-    <script src="/assets/js/jquery.mousewheel.min.js"></script>
-    <script src="/assets/js/jquery.cookie.min.js"></script>
-    <script src="/assets/js/fastclick.min.js"></script>
-    <script src="/assets/js/clearmin.min.js"></script>
 </body>
 </html>
