@@ -17,3 +17,8 @@
     padding: 10px 0;
     margin-left: 10px;
 }
+.modal-backdrop{z-index:-99;}
+.table-center thead tr th {
+    text-align: center;
+    vertical-align: center;
+}

@@ -1,39 +1,229 @@
+<link rel="stylesheet" href="/static/jquery.treegrid.min.css">
+<script src="/static/bootstrap-table-treegrid.js"></script>
+<script src="/static/jquery.treegrid.min.js"></script>
 <div class="container-index">
     <div class="page-tool pull-right">
         <div class="btn-group" role="group">
-            <button type="button" class="btn btn-primary btn-sm">添加</button>
-            <button type="button" class="btn btn-primary btn-sm">修改</button>
-            <button type="button" class="btn btn-primary btn-sm">删除</button>
+            <button type="button" class="btn btn-primary btn-sm" id="add-button">添加</button>
+
         </div>
     </div>
 
-    <div class="page-tool-select pull-left">
-        <button type="button" class="btn btn-link btn-sm">
-            <label><input type="checkbox" value="" id="allcheck"> 全选/取消</label>
-        </button>
-    </div>
-    <table class="table table-bordered table-hover table-responsive table-striped">
-        <tbody>
-        {volist name='data' id='vo' key='k'}
-        <tr>
-            <th scope="row" width="50" style="text-align: center">{$key+1}</th>
-            <td>{$vo.name}
+        <table id="type_list" class="table table-bordered table-hover  table-center">
 
-            </td>
-        </tr>
-        {/volist}
-        </tbody>
-    </table>
+        </table>
+
+
+
 </div>
-<script type="text/javascript">
-    $(function() {
-        $("#allcheck").on('click',function() {
-            $("input[name='listcheck']").prop("checked", this.checked);
+<div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">添加</h4>
+            </div>
+            <form id="addForm" method="post" action="/admin/team/save">
+            <div class="modal-body">
+                    <div class="form-group" id="parent_div">
+                        <label for="parent_name" class="control-label">父级:</label>
+                        <input type="text" class="form-control" name="parent_name" id="parent_name" disabled value="顶级">
+                        <input type="hidden" name="pid" id="pid" value="0">
+                        <input type="hidden" name="level" id="level" value="1">
+                        <input type="hidden" name="action_id" id="action_id" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="name" class="control-label">名称:</label>
+                        <input type="text" class="form-control" name="name" id="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="sort" class="control-label">排序:</label>
+                        <input type="text" class="form-control" name="sort" id="sort" value="0">
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="submit" class="btn btn-primary">保存</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#add-button').on('click', function () {
+                $('#parent_div').show();
+                $('#parent_name').attr('value',"顶级");
+                $('#pid').attr('value',0);
+                $('#level').attr('value',1);
+                $('#action_id').attr('value',0);
+                $('#name').val('');
+                $('#sort').val(0);
+                $('#add').modal('show');
+            });
+
+            btable();
+            formvalidator();
+        });
+        function btable() {
+            $('#type_list').bootstrapTable({
+                url:'/admin/team/typelist',
+                method:'get',
+                cache : false,
+                dataType : "json",
+                // pagination: true,
+                // pageNumber: 1,
+                // pageSize: 10,
+                treeShowField: 'name',
+                parentIdField: 'pid',
+                onResetView: function(data) {
+                    //console.log('load');
+                    $('#type_list').treegrid({
+                        initialState: 'collapsed', // 所有节点都折叠
+                        // initialState: 'expanded',// 所有节点都展开，默认展开 collapsed
+                        treeColumn: 0,
+                        expanderExpandedClass: 'glyphicon glyphicon-minus',  //图标样式
+                        expanderCollapsedClass: 'glyphicon glyphicon-plus',
+                        onChange: function() {
+                            $('#type_list').bootstrapTable('resetWidth');
+                        }
+                    });
+
+                },
+                columns:[{
+                    field:'name',
+                    title:'名称'
+                },{
+                    field:'id',
+                    title:'操作',
+                    width:120,
+                    align:'center',
+                    valign:'center',
+                    formatter:actionFormatter
+                }
+                ]
+            });
+        }
+        function formvalidator() {
+            $('#addForm').bootstrapValidator({
+                message: 'This value is not valid',
+                feedbackIcons: {
+                    valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                },
+                fields: {
+                    name: {
+                        message: '',
+                        validators: {
+                            notEmpty: {
+                            },
+                            stringLength: {
+                                min: 1,
+                                max: 30,
+                                message:''
+                            }
+                        }
+                    },
+                    sort: {
+                        validators: {
+                            notEmpty: {
+                                message: ''
+                            },
+                            digits:{
+
+                            },
+                            stringLength: {
+                                min: 1,
+                                max: 5,
+                                message:''
+                            },
+                        }
+                    },
+                }
+            }).on('success.form.bv', function(e) {
+                // Prevent form submission
+                e.preventDefault();
+
+                // Get the form instance
+                var $form = $(e.target);
+
+                // Get the BootstrapValidator instance
+                var bv = $form.data('bootstrapValidator');
+                //Ajax 提交
+                // Use Ajax to submit form data
+                $.post($form.attr('action'), $form.serialize(), function(result) {
+                    if (result.code==200) {
+                        $('#add').modal('hide');
+                        $('#type_list').bootstrapTable('refresh');
+                    }else{
+                        alert('保存错误');
+                        bv.resetForm();
+                        return;
+                    }
+
+                }, 'json');
+            });
+        }
+
+        $('#add').on('hidden.bs.modal', function () {
+            $("#addForm").data('bootstrapValidator').destroy();
+            $('#addForm').data('bootstrapValidator', null);
+            $('#addForm')[0].reset();
+            formvalidator();
         });
 
-        $("input[name='listcheck']").on('click',function() {
-            var $subs = $("input[name='listcheck']");
-            $("#allcheck").prop("checked" , $subs.length == $subs.filter(":checked").length ? true :false);
-        });
-    });
+        //操作栏的格式化
+        function actionFormatter(value, row, index) {
+            var id = value;
+            var result = "";
+            if (row.level==1 || row.level==2){
+                result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"addView('" + id + "','"+row.name+"',"+row.level+","+index+")\"   title='添加'><span class='glyphicon glyphicon-plus'></span></a>";
+            }
+            result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"editView('" + id + "','"+row.name+"',"+row.level+","+row.sort+","+index+")\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
+            result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"delView('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+            return result;
+        }
+        function addView(id,name,level,index){
+            $('#parent_div').show();
+            $('#parent_name').attr('value',name);
+            $('#pid').attr('value',id);
+            $('#level').attr('value',level+1);
+            $('#action_id').attr('value',0);
+            $('#add').modal('show');
+        }
+
+        function editView(id,name,level,sort,index) {
+            $('#parent_div').hide();
+            $('#name').val(name);
+            $('#sort').val(sort);
+            $('#action_id').attr('value',id);
+            $('#add').modal('show');
+        }
+
+        function delView(id) {
+            if(confirm('确认删除？')){
+                $.ajax({
+                    //请求方式
+                    type : "get",
+                    //请求地址
+                    url : "/admin/team/del?id="+id,
+                    //数据，json字符串
+                    dataType : 'json',
+                    async:false,
+                    success : function(result) {
+                        if (result.code==200){
+                            $('#type_list').bootstrapTable('refresh');
+                        }else{
+                            alert(result.msg);
+                            return false;
+                        }
+                    },
+                    error : function(e){
+                        console.log(e.status);
+                        console.log(e.responseText);
+                    }
+                });
+            }
+        }
 </script>

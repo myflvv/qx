@@ -1,0 +1,142 @@
+<div class="container-index">
+    <div class="page-tool pull-right">
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add">添加</button>
+
+        </div>
+    </div>
+
+    <table id="type_list" class="table table-bordered table-hover table-striped table-center">
+
+    </table>
+
+
+
+</div>
+<div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">添加</h4>
+            </div>
+            <form id="addForm" method="post" action="/admin/team/save">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="name" class="control-label">名称:</label>
+                        <input type="text" class="form-control" name="name" id="name">
+                    </div>
+                    <div class="form-group">
+                        <label for="sort" class="control-label">排序:</label>
+                        <input type="text" class="form-control" name="sort" id="sort" value="0">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        var $type_list=$('#type_list').bootstrapTable({
+            url:'/admin/team/typelist',
+            method:'get',
+            cache : false,
+            dataType : "json",
+            pagination: true,
+            pageNumber: 1,
+            pageSize: 10,
+            columns:[{
+                field:'no',
+                title:'序号',
+                width:50,
+                align: 'center',
+                valign: 'middle',
+            },{
+                field:'name',
+                title:'名称'
+            },{
+                field:'id',
+                title:'操作',
+                width:120,
+                align:'center',
+                valign:'center',
+                formatter:actionFormatter
+            }
+            ]
+        });
+        $('#addForm').bootstrapValidator({
+            message: 'This value is not valid',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                name: {
+                    message: '',
+                    validators: {
+                        notEmpty: {
+                        },
+                        stringLength: {
+                            min: 1,
+                            max: 30,
+                            message:''
+                        }
+                    }
+                },
+                sort: {
+                    validators: {
+                        notEmpty: {
+                            message: ''
+                        },
+                        digits:{
+
+                        },
+                        stringLength: {
+                            min: 1,
+                            max: 5,
+                            message:''
+                        },
+                    }
+                },
+            }
+        }).on('success.form.bv', function(e) {
+            // Prevent form submission
+            e.preventDefault();
+
+            // Get the form instance
+            var $form = $(e.target);
+
+            // Get the BootstrapValidator instance
+            var bv = $form.data('bootstrapValidator');
+            //Ajax 提交
+            // Use Ajax to submit form data
+            $.post($form.attr('action'), $form.serialize(), function(result) {
+                if (result.code==200) {
+                    $('#add').modal('hide');
+                    $type_list.bootstrapTable('refresh');
+                }else{
+                    alert('保存错误');
+                    bv.resetForm();
+                    return;
+                }
+
+            }, 'json');
+        });
+
+        //操作栏的格式化
+        function actionFormatter(value, row, index) {
+            var id = value;
+            var result = "";
+            result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"EditViewById('" + id + "', view='view')\" title='查看'><span class='glyphicon glyphicon-search'></span></a>";
+            result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"EditViewById('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
+            result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"DeleteByIds('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+
+            return result;
+        }
+    });
+</script>
