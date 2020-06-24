@@ -6,9 +6,9 @@ class Log extends Model{
 
     static function add($content){
         self::insert([
-            'user_id'=>session('user_id'),
+//            'user_id'=>session('user_id'),
             'create_time'=>time(),
-            'content'=>$content
+            'content'=>session('username')."[".$content."]"
         ]);
     }
 }

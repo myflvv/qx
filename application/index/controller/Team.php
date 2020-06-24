@@ -1,5 +1,6 @@
 <?php
 namespace app\index\controller;
+use app\index\model\Log;
 use think\Controller;
 use app\index\model\Team as mTeam;
 class Team extends Controller{
@@ -29,20 +30,23 @@ class Team extends Controller{
                 'level'=>$level
             ]);
             $m->save();
+            Log::add('团队管理 添加-'.$name);
         }else{
             $data=[
                 'name'=>$name,
                 'sort'=>$sort
             ];
             \app\index\model\Team::where(['id'=>$action_id])->update($data);
+            Log::add('团队管理 修改-'.$name);
         }
         return json(['code'=>200]);
     }
 
     public function getDel(){
         $id=input('get.id');
-        if (empty($id)){
-            return json(['code'=>420,'msg'=>'ID错误']);
+        $name=input('get.name');
+        if (empty($id) || empty($name)){
+            return json(['code'=>420,'msg'=>'参数错误']);
         }
         $m = new mTeam();
         $count=$m->where(['pid'=>$id])->count();
@@ -51,6 +55,7 @@ class Team extends Controller{
         }
         $res = \app\index\model\Team::destroy($id);
         if ($res){
+            Log::add('团队管理 删除-'.$name);
             return json(['code'=>200,'msg'=>'删除成功']);
         }else{
             return json(['code'=>420,'msg'=>'删除错误']);

@@ -181,7 +181,7 @@
                 result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"addView('" + id + "','"+row.name+"',"+row.level+","+index+")\"   title='添加'><span class='glyphicon glyphicon-plus'></span></a>";
             }
             result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"editView('" + id + "','"+row.name+"',"+row.level+","+row.sort+","+index+")\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
-            result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"delView('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+            result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"delView('" + id + "','"+row.name+"')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
             return result;
         }
         function addView(id,name,level,index){
@@ -201,13 +201,13 @@
             $('#add').modal('show');
         }
 
-        function delView(id) {
+        function delView(id,name) {
             if(confirm('确认删除？')){
                 $.ajax({
                     //请求方式
                     type : "get",
                     //请求地址
-                    url : "/admin/team/del?id="+id,
+                    url : "/admin/team/del?id="+id+'&name='+name,
                     //数据，json字符串
                     dataType : 'json',
                     async:false,

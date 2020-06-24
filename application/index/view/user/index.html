@@ -1,0 +1,65 @@
+<link rel="stylesheet" href="/static/jquery.treegrid.min.css">
+<script src="/static/bootstrap-table-treegrid.js"></script>
+<script src="/static/jquery.treegrid.min.js"></script>
+<div class="container-index">
+    <div class="page-tool pull-right">
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-primary btn-sm" id="add-button">添加</button>
+
+        </div>
+    </div>
+
+    <table id="table_list" class="table table-bordered table-hover  table-center">
+
+    </table>
+</div>
+<script>
+    $(function () {
+        table_list();
+    });
+    function table_list() {
+        $('#table_list').bootstrapTable({
+            url:'/admin/user/listdata',
+            method:'get',
+            cache : false,
+            dataType : "json",
+            striped: true,
+            pagination: true,
+            pageNumber: 1,
+            pageSize: 10,
+            sidePagination: "server",
+            columns:[{
+                field:'no',
+                title:'序号',
+                width:50,
+                align:'center',
+                valign:'center',
+            },{
+                field:'real_name',
+                title:'真实姓名'
+            },{
+                field:'create_time',
+                title:'注册时间',
+                width:200,
+                align:'center',
+                valign:'center',
+            },{
+                field:'id',
+                title:'操作',
+                width:120,
+                align:'center',
+                valign:'center',
+                formatter:actionFormatter
+            }
+            ]
+        });
+    }
+    function actionFormatter(value, row, index) {
+        var id = value;
+        var result = "";
+        result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"editView('" + id + "','"+row.name+"',"+row.level+","+row.sort+","+index+")\" title='查看'><span class='glyphicon glyphicon-eye-open'></span></a>";
+        result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"editView('" + id + "','"+row.name+"',"+row.level+","+row.sort+","+index+")\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
+        result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"delView('" + id + "','"+row.name+"')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+        return result;
+    }
+</script>
