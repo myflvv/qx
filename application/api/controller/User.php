@@ -1,6 +1,7 @@
 <?php
 namespace app\api\controller;
 
+use app\api\model\Team;
 use think\Controller;
 use lib\WXBizDataCrypt;
 class User extends Controller{
@@ -30,6 +31,7 @@ class User extends Controller{
         }
     }
 
+    //检查身份证号码是否重复注册
     private function chkIdNumber($id_number){
         if (empty($id_number)){
             return false;
@@ -58,24 +60,76 @@ class User extends Controller{
 //        }
     }
 
-    //获取手机号
+    //获取手机号,并且判断是否注册过
     public function postPhonenumber(){
         $sessionKey=input('post.session_key');
         $encryptedData=input('post.encryptedData');
         $iv=input('post.iv');
         $appid=config('app.AppID');
+        $openid=input('post.openid');
         $pc = new WXBizDataCrypt($appid, $sessionKey);
         $errCode = $pc->decryptData($encryptedData, $iv, $data );
         header("Content-Type: application/json; charset=utf-8");
         if ($errCode == 0) {
             $dataArr=json_decode($data,true);
+            if ($this->chkIsRegister($openid)){
+                $dataArr['is_register']=1;
+            }else{
+                $dataArr['is_register']=0;
+            }
             return json(['code'=>200,'content'=>$dataArr]);
         } else {
             return json(['code'=>$errCode]);
         }
     }
 
-    public function getTeam(){
+    //检查是否注册过
+    private function chkIsRegister($openid){
+        $res=\app\api\model\User::where(['openid'=>$openid])->count();
+        if ($res>0){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
+    //工作单位
+    public function getTeamType(){
+        $id=input('get.id',0);
+        if ($id==0){
+            $res=Team::where("pid=0 && is_team=0")->order('sort desc,id asc')->field('id,name')->select();
+        }else{
+            $res=Team::where("pid=".$id." && is_team=0")->order('sort desc,id asc')->field('id,name')->select();
+        }
+
+        $data=[];
+        foreach ($res as $key=>$val){
+            $val['count']=Team::where(['pid'=>$val['id']])->count();
+            $data[0]=[
+                'id'=>0,
+                'name'=>'请选择'
+            ];
+            $data[$key+1]=$val;
+        }
+//        dump($data);die;
+        return json(['code'=>200,'content'=>$data]);
+    }
+
+    //社区团队
+    public function getCommType(){
+        $res=Team::where(['pid'=>39])->order('sort desc,id asc')->field('id,name')->select();
+        $data=[];
+        foreach ($res as $key=>$val){
+            $data[0]=[
+                'id'=>0,
+                'name'=>'请选择(可选)'
+            ];
+            $data[$key+1]=$val;
+        }
+        return json(['code'=>200,'content'=>$data]);
+    }
+
+    public function getTeam(){
+        echo 1;
     }
 }
