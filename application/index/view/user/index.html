@@ -2,20 +2,114 @@
 <script src="/static/bootstrap-table-treegrid.js"></script>
 <script src="/static/jquery.treegrid.min.js"></script>
 <div class="container-index">
-    <div class="page-tool pull-right">
-        <div class="btn-group" role="group">
-            <button type="button" class="btn btn-primary btn-sm" id="add-button">添加</button>
-
-        </div>
-    </div>
-
     <table id="table_list" class="table table-bordered table-hover  table-center">
 
     </table>
 </div>
+<div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">修改</h4>
+            </div>
+            <form id="addForm" method="post" action="/admin/user/save" class="form-horizontal">
+                <div class="modal-body">
+                    <div class="form-group" >
+                        <label for="real_name" class="col-sm-2 control-label">真实姓名:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="real_name" id="real_name" >
+                        </div>
+
+                        <input type="hidden" name="action_id" id="action_id" >
+                    </div>
+                    <div class="form-group">
+                        <label for="id_number" class="col-sm-2 control-label">性别:</label>
+                        <div class="col-sm-10 radio">
+                            <label>
+                                <input type="radio" name="sex" id="sex1" value="0" checked>
+                                男
+                            </label>
+                            <label>
+                                <input type="radio" name="sex" id="sex2" value="1" >
+                                女
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_number" class="col-sm-2 control-label">身份证号:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="id_number" id="id_number">
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <label for="tel" class="col-sm-2 control-label">手机号码:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="tel" id="tel" >
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <label for="comm_id" class="col-sm-2 control-label">社区团队:</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="comm_id" id="comm_id">
+                                {foreach :pol_cou_select() as $v}
+                                <option value="{$v}">{$v}</option>
+                                {/foreach}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="pol_cou" class="col-sm-2 control-label">政治面貌:</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="pol_cou" id="pol_cou">
+                                {foreach :pol_cou_select() as $v}
+                                <option value="{$v}">{$v}</option>
+                                {/foreach}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="hight_edu" class="col-sm-2 control-label">最高学历:</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="hight_edu" id="hight_edu">
+                                {foreach :hight_edu_select() as $v}
+                                <option value="{$v}">{$v}</option>
+                                {/foreach}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="area" class="col-sm-2 control-label">居住区域:</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="area" id="area">
+                                {foreach :area_select() as $v}
+                                <option value="{$v}">{$v}</option>
+                                {/foreach}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="address" class="col-sm-2 control-label">详细地址:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="address" id="address" >
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <script>
     $(function () {
         table_list();
+        formvalidator();
     });
     function table_list() {
         $('#table_list').bootstrapTable({
@@ -28,6 +122,7 @@
             pageNumber: 1,
             pageSize: 10,
             sidePagination: "server",
+            search:true,
             columns:[{
                 field:'no',
                 title:'序号',
@@ -37,6 +132,12 @@
             },{
                 field:'real_name',
                 title:'真实姓名'
+            },{
+                field:'id_number',
+                title:'身份证号'
+            },{
+                field:'tel',
+                title:'手机号码'
             },{
                 field:'create_time',
                 title:'注册时间',
@@ -57,9 +158,150 @@
     function actionFormatter(value, row, index) {
         var id = value;
         var result = "";
-        result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"editView('" + id + "','"+row.name+"',"+row.level+","+row.sort+","+index+")\" title='查看'><span class='glyphicon glyphicon-eye-open'></span></a>";
-        result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"editView('" + id + "','"+row.name+"',"+row.level+","+row.sort+","+index+")\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
-        result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"delView('" + id + "','"+row.name+"')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+        result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"editView('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>&nbsp;&nbsp;";
+        result += "<a href='javascript:;' class='btn btn-xs btn-danger' onclick=\"delView('" + id + "','"+row.real_name+"')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
         return result;
+    }
+
+    $('#add').on('hidden.bs.modal', function () {
+        $("#addForm").data('bootstrapValidator').destroy();
+        $('#addForm').data('bootstrapValidator', null);
+        $('#addForm')[0].reset();
+        formvalidator();
+    });
+    // $('#add').on('show.bs.modal', function () {
+    //     alert(1);
+    // });
+    function editView(id){
+        $.ajax({
+            //请求方式
+            type : "get",
+            //请求地址
+            url : "/admin/user/edit?id="+id,
+            //数据，json字符串
+            dataType : 'json',
+            async:false,
+            success : function(r) {
+                if (r.code==200){
+                    $('#action_id').val(id);
+                    $("input[name=real_name]").val(r.data.real_name);
+                    $("input[name=sex]").get(r.data.sex).checked=true;
+                    $("#pol_cou").find("option:contains('"+r.data.pol_cou+"')").attr("selected", true);
+                    $("#hight_edu").find("option:contains('"+r.data.hight_edu+"')").attr("selected", true);
+                    $("#area").find("option:contains('"+r.data.area+"')").attr("selected", true);
+                    $("input[name=id_number]").val(r.data.id_number);
+                    $("input[name=tel]").val(r.data.tel);
+                    $("input[name=address]").val(r.data.address);
+                    $('#add').modal('show');
+                }else{
+                    alert(r.msg);
+                }
+            },
+            error : function(e){
+                console.log(e.status);
+                console.log(e.responseText);
+            }
+        });
+
+    }
+    function delView(id,name) {
+        if(confirm('确认删除？')){
+            $.ajax({
+                //请求方式
+                type : "post",
+                //请求地址
+                url : "/admin/user/del",
+                data:{id:id,real_name:name},
+                //数据，json字符串
+                dataType : 'json',
+                async:false,
+                success : function(result) {
+                    if (result.code==200){
+                        $('#table_list').bootstrapTable('refresh');
+                    }else{
+                        alert(result.msg);
+                        return false;
+                    }
+                },
+                error : function(e){
+                    console.log(e.status);
+                    console.log(e.responseText);
+                }
+            });
+        }
+    }
+    function formvalidator() {
+        $('#addForm').bootstrapValidator({
+            message: 'This value is not valid',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                real_name: {
+                    message: '',
+                    validators: {
+                        notEmpty: {
+                        },
+                        stringLength: {
+                            min: 1,
+                            max: 20,
+                            message:''
+                        }
+                    }
+                },
+                id_number: {
+                    validators: {
+                        notEmpty: {
+                            message: ''
+                        },
+                        stringLength: {
+                            min: 1,
+                            max: 20,
+                            message:''
+                        },
+                    }
+                },
+                tel: {
+                    validators: {
+                        notEmpty: {
+                            message: ''
+                        },
+                        stringLength: {
+                            min: 1,
+                            max: 20,
+                            message:''
+                        },
+                    }
+                },
+                address: {
+                    validators: {
+                        notEmpty: {
+                            message: ''
+                        },
+                        stringLength: {
+                            min: 1,
+                            max: 100,
+                            message:''
+                        },
+                    }
+                },
+            }
+        }).on('success.form.bv', function(e) {
+            e.preventDefault();
+            var $form = $(e.target);
+            var bv = $form.data('bootstrapValidator');
+            $.post($form.attr('action'), $form.serialize(), function(result) {
+                if (result.code==200) {
+                    $('#add').modal('hide');
+                    $('#table_list').bootstrapTable('refresh');
+                }else{
+                    alert('保存错误');
+                    bv.resetForm();
+                    return;
+                }
+            }, 'json');
+        });
     }
 </script>

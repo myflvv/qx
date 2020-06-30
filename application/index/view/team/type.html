@@ -142,16 +142,9 @@
                     },
                 }
             }).on('success.form.bv', function(e) {
-                // Prevent form submission
                 e.preventDefault();
-
-                // Get the form instance
                 var $form = $(e.target);
-
-                // Get the BootstrapValidator instance
                 var bv = $form.data('bootstrapValidator');
-                //Ajax 提交
-                // Use Ajax to submit form data
                 $.post($form.attr('action'), $form.serialize(), function(result) {
                     if (result.code==200) {
                         $('#add').modal('hide');
@@ -161,7 +154,6 @@
                         bv.resetForm();
                         return;
                     }
-
                 }, 'json');
             });
         }
