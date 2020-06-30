@@ -7,16 +7,20 @@ use lib\WXBizDataCrypt;
 class User extends Controller{
 
     public function postRegister(){
-        $param=input('post.');
+        $params=input('post.');
+        $param=$params['data'];
+        $openid=$params['openid'];
         if (!$this->chkIdNumber($param['id_number'])){
             return json(['code'=>420,'msg'=>'身份证号码已存在']);
         }
         $data=[
+            'openid'=>$openid,
             'real_name'=>$param['real_name'],
             'id_number'=>$param['id_number'],
             'sex'=>$param['sex'],
             'tel'=>$param['tel'],
             'team_id'=>$param['team_id'],
+            'comm_id'=>$param['comm_id'],
             'pol_cou'=>$param['pol_cou'],
             'hight_edu'=>$param['hight_edu'],
             'area'=>$param['area'],
