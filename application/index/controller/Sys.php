@@ -1,6 +1,7 @@
 <?php
 namespace app\index\controller;
 
+use app\index\model\Admin;
 use app\index\model\Log;
 use think\Controller;
 class Sys extends Controller{
@@ -19,6 +20,22 @@ class Sys extends Controller{
         $limit=input('get.limit',10);
         $total = Log::count();
         $res = Log::field('id,content,create_time')->limit($offset,$limit)->order('create_time desc')->select();
+        $data=[];
+        $no=1+intval($offset);
+        foreach ($res as $val){
+            $val['create_time']=date('Y-m-d H:i:s',$val['create_time']);
+            $val['no']=$no;
+            $data[]=$val;
+            $no++;
+        }
+        return json(['total'=>$total,'rows'=>$data]);
+    }
+
+    public function getAdminData(){
+        $offset=input('get.offset',0);
+        $limit=input('get.limit',10);
+        $total=Admin::count();
+        $res=Admin::limit($offset,$limit)->order('create_time desc')->select();
         $data=[];
         $no=1+intval($offset);
         foreach ($res as $val){

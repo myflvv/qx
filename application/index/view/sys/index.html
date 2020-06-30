@@ -1,3 +1,6 @@
+<link rel="stylesheet" href="/static/jquery.treegrid.min.css">
+<script src="/static/bootstrap-table-treegrid.js"></script>
+<script src="/static/jquery.treegrid.min.js"></script>
 <div class="container-index">
     <div class="page-tool pull-right">
         <div class="btn-group" role="group">
@@ -6,10 +9,107 @@
         </div>
     </div>
 
-    <table id="type_list" class="table table-bordered table-hover  table-center">
+    <table id="table_list" class="table table-bordered table-hover  table-center">
 
     </table>
-
-
-
 </div>
+<div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">添加</h4>
+            </div>
+            <form id="addForm" method="post" action="/admin/sys/adminsave" class="form-horizontal">
+                <div class="modal-body">
+                    <div class="form-group" >
+                        <label for="username" class="col-sm-2 control-label">用户名:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="username" id="username" >
+                        </div>
+                        <input type="hidden" name="action_id" id="action_id" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="col-sm-2 control-label">密码:</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" name="password" id="password">
+                        </div>
+                    </div>
+                    <div class="form-group" >
+                        <label for="username" class="col-sm-2 control-label">级别:</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="level" id="level">
+                                <option value="1">一级管理员</option>
+                                <option value="2">二级管理员</option>
+                                <option value="3">三级管理员</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        table_list();
+    });
+    function table_list() {
+        $('#table_list').bootstrapTable({
+            url:'/admin/sys/admindata',
+            method:'get',
+            cache : false,
+            dataType : "json",
+            striped: true,
+            pagination: true,
+            pageNumber: 1,
+            pageSize: 10,
+            sidePagination: "server",
+            columns:[{
+                field:'no',
+                title:'序号',
+                width:50,
+                align:'center',
+                valign:'center',
+            },{
+                field:'username',
+                title:'用户名'
+            },{
+                field:'create_time',
+                title:'创建时间',
+                width:200,
+                align:'center',
+                valign:'center',
+            },{
+                field:'id',
+                title:'操作',
+                width:120,
+                align:'center',
+                valign:'center',
+                formatter:actionFormatter
+            }
+            ]
+        });
+    }
+    $('#add-button').on('click', function () {
+        $('#add').modal('show');
+    });
+    $('#add').on('hidden.bs.modal', function () {
+        $("#addForm").data('bootstrapValidator').destroy();
+        $('#addForm').data('bootstrapValidator', null);
+        $('#addForm')[0].reset();
+        formvalidator();
+    });
+    function actionFormatter(value, row, index) {
+        var id = value;
+        var result = "";
+        result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"editView('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>&nbsp;&nbsp;";
+        result += "<a href='javascript:;' class='btn btn-xs btn-danger' onclick=\"delView('" + id + "','"+row.real_name+"')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+        return result;
+    }
+
+</script>
