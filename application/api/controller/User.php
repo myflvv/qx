@@ -133,6 +133,37 @@ class User extends Controller{
         return json(['code'=>200,'content'=>$data]);
     }
 
+    //我的 接口数据
+    public function postMyData(){
+        $openid=input('post.openid','');
+        if (empty($openid)){
+            return json(['code'=>420,'msg'=>'授权不存在']);
+        }
+        $res=\app\api\model\User::where(['openid'=>$openid])->field('real_name')->find();
+        //TODO 计算服务时间及排名
+        $res['service_time']=100;
+        $res['ranking']=40;
+        if ($res){
+            return json(['code'=>200,'content'=>$res]);
+        }else{
+            return json(['code'=>420,'msg'=>'初始化数据失败']);
+        }
+    }
+
+    //我的信息
+    public function getInfo(){
+        $openid=input('post.openid','');
+        if (empty($openid)){
+            return json(['code'=>420,'msg'=>'授权不存在']);
+        }
+        $res=\app\api\model\User::where(['openid'=>$openid])->find();
+        if ($res){
+            return json(['code'=>200,'content'=>$res]);
+        }else{
+            return json(['code'=>420,'msg'=>'获取用户数据失败']);
+        }
+    }
+
     public function getTeam(){
         echo 1;
     }
