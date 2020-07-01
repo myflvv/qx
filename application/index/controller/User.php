@@ -53,13 +53,28 @@ class User extends Controller{
             'id_number'=>$param['id_number'],
             'sex'=>$param['sex'],
             'tel'=>$param['tel'],
-//            'team_id'=>$param['team_id'],
-//            'comm_id'=>$param['comm_id'],
+            'comm_id'=>$param['comm_id'],
             'pol_cou'=>$param['pol_cou'],
             'hight_edu'=>$param['hight_edu'],
             'area'=>$param['area'],
             'address'=>$param['address'],
         ];
+        $team_id=0;
+        if ($param['team_modify']==1){
+            if (array_key_exists('team_type_3',$param) && $param['team_type_3']!=0){
+                $team_id=$param['team_type_3'];
+            }elseif(array_key_exists('team_type_2',$param) && $param['team_type_2']!=0){
+                $res=\app\index\model\Team::where(['pid'=>$param['team_type_2']])->count();
+                if ($res>0){
+                    return json(['code'=>420,'msg'=>'请完善工作单位选择']);
+                }
+                $team_id=$param['team_type_2'];
+            }
+            if ($team_id==0){
+                return json(['code'=>420,'msg'=>'请完善工作单位选择']);
+            }
+            $data['team_id']=$team_id;
+        }
         Log::add('人员管理 修改-'.$param['real_name']);
         \app\index\model\User::where(['id'=>$param['action_id']])->update($data);
         return json(['code'=>200]);
@@ -80,8 +95,8 @@ class User extends Controller{
     }
     //工作单位下拉菜单
     public function getTeam(){
-        $id=input('get.id',0);
-        if($id==0){
+        $id=input('get.id',9999);
+        if($id==9999){
             $res=\app\index\model\Team::where("pid=0 && is_team=0")->order('sort desc,id asc')->field('id,name')->select();
         }else{
             $res=\app\index\model\Team::where("pid=".$id." && is_team=0")->order('sort desc,id asc')->field('id,name')->select();
@@ -108,13 +123,25 @@ class User extends Controller{
         $res_p=\app\index\model\Team::where(['id'=>$res['pid']])->field('id,name,pid,level')->find();
         if ($res['level']==2){
             return $res_p['name']." > ".$res['name'];
-//            return ['team_id_1'=>$res_p['name'],'team_id_2'=>$res['name'],'team_id_3'=>''];
         }
         if ($res['level']==3){
             $res_pp=\app\index\model\Team::where(['id'=>$res_p['pid']])->field('id,name,pid')->find();
             return $res_pp['name']." > ".$res_p['name']." > ".$res['name'];
-//            return ['team_id_1'=>$res_pp['name'],'team_id_2'=>$res_p['name'],'team_id_3'=>$res['name']];
         }
+    }
+
+    //社区团队
+    public function getComm(){
+        $res=\app\index\model\Team::where(['pid'=>39])->order('sort desc,id asc')->field('id,name')->select();
+        $data=[];
+        foreach ($res as $key=>$val){
+            $data[0]=[
+                'id'=>0,
+                'name'=>'请选择(可选)',
+            ];
+            $data[$key+1]=$val;
+        }
+        return json(['code'=>200,'data'=>$data]);
     }
 
     public function getTest(){

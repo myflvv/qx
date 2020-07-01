@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c67d9dc7-f41b-4728-acd3-d84dea148c09" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/application/index/common.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/index/common.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/index/controller/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/application/index/controller/User.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/application/index/view/user/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/application/index/view/user/index.html" afterDir="false" />
     </list>
@@ -32,8 +32,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/application/api/controller/User.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="382">
-              <caret line="111" column="12" selection-start-line="111" selection-start-column="12" selection-end-line="115" selection-end-column="31" />
+            <state relative-caret-position="2268">
+              <caret line="128" column="28" selection-start-line="128" selection-start-column="28" selection-end-line="128" selection-end-column="32" />
               <folding>
                 <element signature="e#37#60#0#PHP" expanded="true" />
               </folding>
@@ -44,8 +44,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/application/index/controller/User.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="184">
-              <caret line="82" column="30" lean-forward="true" selection-start-line="82" selection-start-column="30" selection-end-line="82" selection-end-column="30" />
+            <state relative-caret-position="382">
+              <caret line="70" column="47" lean-forward="true" selection-start-line="70" selection-start-column="47" selection-end-line="70" selection-end-column="47" />
               <folding>
                 <element signature="e#39#63#0#PHP" expanded="true" />
               </folding>
@@ -56,8 +56,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/application/index/view/user/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="198">
-              <caret line="59" column="34" selection-start-line="59" selection-start-column="34" selection-end-line="59" selection-end-column="34" />
+            <state relative-caret-position="350">
+              <caret line="140" column="47" selection-start-line="140" selection-start-column="47" selection-end-line="140" selection-end-column="47" />
               <folding>
                 <element signature="n#style#0;n#div#0;n#div#1;n#div#4;n#div#0;n#form#0;n#div#0;n#div#0;n#div#1;n#!!top" expanded="true" />
                 <element signature="e#139#145#0" expanded="true" />
@@ -70,7 +70,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/application/index/controller/Sys.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="346">
+            <state relative-caret-position="612">
               <caret line="36" column="30" selection-start-line="36" selection-start-column="30" selection-end-line="36" selection-end-column="30" />
               <folding>
                 <element signature="e#39#65#0#PHP" expanded="true" />
@@ -107,6 +107,7 @@
       <find>myModalLabel</find>
       <find>config</find>
       <find>team_type_div_2</find>
+      <find>action_id</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -157,8 +158,8 @@
         <option value="$PROJECT_DIR$/application/api/controller/User.php" />
         <option value="$PROJECT_DIR$/config/database.php" />
         <option value="$PROJECT_DIR$/application/index/common.php" />
-        <option value="$PROJECT_DIR$/application/index/controller/User.php" />
         <option value="$PROJECT_DIR$/application/index/view/user/index.html" />
+        <option value="$PROJECT_DIR$/application/index/controller/User.php" />
       </list>
     </option>
   </component>
@@ -176,8 +177,8 @@
     </include_path>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="187" />
-    <option name="y" value="58" />
+    <option name="x" value="302" />
+    <option name="y" value="68" />
     <option name="width" value="1321" />
     <option name="height" value="851" />
   </component>
@@ -189,6 +190,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -271,13 +273,12 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../newsLaravel" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="editor.preferences.smartKeys" />
@@ -316,11 +317,12 @@
       <updated>1591889144240</updated>
       <workItem from="1591889146447" duration="67708000" />
       <workItem from="1593334296256" duration="20207000" />
+      <workItem from="1593594365578" duration="3490000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="101856000" />
+    <option name="totallyTimeSpent" value="108292000" />
   </component>
   <component name="TodoView" selected-index="1">
     <todo-panel id="selected-file">
@@ -332,10 +334,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="187" y="58" width="1321" height="851" extended-state="0" />
+    <frame x="302" y="68" width="1321" height="851" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17568627" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17882353" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -621,13 +623,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/route/route.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="1" selection-start-column="1" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/application/index/controller/Team.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="580">
@@ -696,9 +691,26 @@
     <entry file="file://$PROJECT_DIR$/application/command.php">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
+    <entry file="file://$PROJECT_DIR$/route/route.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="1" selection-start-column="1" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/api/controller/User.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2268">
+          <caret line="128" column="28" selection-start-line="128" selection-start-column="28" selection-end-line="128" selection-end-column="32" />
+          <folding>
+            <element signature="e#37#60#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/application/index/controller/Sys.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="346">
+        <state relative-caret-position="612">
           <caret line="36" column="30" selection-start-line="36" selection-start-column="30" selection-end-line="36" selection-end-column="30" />
           <folding>
             <element signature="e#39#65#0#PHP" expanded="true" />
@@ -713,20 +725,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/api/controller/User.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="382">
-          <caret line="111" column="12" selection-start-line="111" selection-start-column="12" selection-end-line="115" selection-end-column="31" />
-          <folding>
-            <element signature="e#37#60#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/application/index/view/user/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="59" column="34" selection-start-line="59" selection-start-column="34" selection-end-line="59" selection-end-column="34" />
+        <state relative-caret-position="350">
+          <caret line="140" column="47" selection-start-line="140" selection-start-column="47" selection-end-line="140" selection-end-column="47" />
           <folding>
             <element signature="n#style#0;n#div#0;n#div#1;n#div#4;n#div#0;n#form#0;n#div#0;n#div#0;n#div#1;n#!!top" expanded="true" />
             <element signature="e#139#145#0" expanded="true" />
@@ -737,8 +739,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/application/index/controller/User.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="184">
-          <caret line="82" column="30" lean-forward="true" selection-start-line="82" selection-start-column="30" selection-end-line="82" selection-end-column="30" />
+        <state relative-caret-position="382">
+          <caret line="70" column="47" lean-forward="true" selection-start-line="70" selection-start-column="47" selection-end-line="70" selection-end-column="47" />
           <folding>
             <element signature="e#39#63#0#PHP" expanded="true" />
           </folding>

@@ -22,6 +22,7 @@
                         </div>
 
                         <input type="hidden" name="action_id" id="action_id" >
+                        <input type="hidden" name="team_modify" id="team_modify" value="0">
                     </div>
                     <div class="form-group">
                         <label for="id_number" class="col-sm-2 control-label">性别:</label>
@@ -78,9 +79,7 @@
                         <label for="comm_id" class="col-sm-2 control-label">社区团队:</label>
                         <div class="col-sm-10">
                             <select class="form-control" name="comm_id" id="comm_id">
-                                {foreach :pol_cou_select() as $v}
-                                <option value="{$v}">{$v}</option>
-                                {/foreach}
+
                             </select>
                         </div>
                     </div>
@@ -138,10 +137,15 @@
     function e_team() {
         $('#team_select_txt').addClass('hide');
         $('#team_select').removeClass('hide');
+        $('#team_modify').val(1);
+        $('#team_type_div_2').addClass('hide');
     }
     function r_team() {
         $('#team_select_txt').removeClass('hide');
         $('#team_select').addClass('hide');
+        $('#team_modify').val(0);
+        $("#team_type_2 option[index='0']").attr('selected',true);
+        $("#team_type_3 option[index='0']").attr('selected',true);
     }
     function table_list() {
         $('#table_list').bootstrapTable({
@@ -194,7 +198,13 @@
         result += "<a href='javascript:;' class='btn btn-xs btn-danger' onclick=\"delView('" + id + "','"+row.real_name+"')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
         return result;
     }
-
+    $('#add').on('show.bs.modal', function () {
+        $('#team_select_txt').removeClass('hide');
+        $('#team_select').addClass('hide');
+        $('#team_modify').val(0);
+        $("#team_type_2 option[index='0']").attr('selected',true);
+        $("#team_type_3 option[index='0']").attr('selected',true);
+    });
     $('#add').on('hidden.bs.modal', function () {
         $("#addForm").data('bootstrapValidator').destroy();
         $('#addForm').data('bootstrapValidator', null);
@@ -225,6 +235,7 @@
                     $("input[name=tel]").val(r.data.tel);
                     $("input[name=address]").val(r.data.address);
                     $("#team_select_txt .col-sm-9").html(r.parent);
+                    comm_select(r.data.comm_id);
                     $('#add').modal('show');
                 }else{
                     alert(r.msg);
@@ -263,7 +274,34 @@
             });
         }
     }
-    function team_select(select_id,team_id=0) {
+    function comm_select(comm_id) {
+        $.ajax({
+            type : "get",
+            url : "/admin/user/comm",
+            dataType : 'json',
+            async:false,
+            success : function(result) {
+                if (result.code==200){
+                    $("#comm_id").html('');
+                    for(var i=0;i<result.data.length;i++){
+                        var selected='';
+                        if (comm_id==result.data[i].id) {
+                            selected="selected";
+                        }
+                        var context="<option value='"+result.data[i].id+"' "+selected+">"+result.data[i].name+"</option>";
+                        $("#comm_id").append(context);
+                    }
+                }else{
+                    alert(result.msg);
+                    return false;
+                }
+            }
+        });
+    }
+    function team_select(select_id,team_id=9999) {
+        if (team_id==0){
+            return false;
+        }
         $.ajax({
             type : "get",
             url : "/admin/user/team",
@@ -288,15 +326,24 @@
         });
     }
     $("#team_type_1").change(function () {
+        $("#team_type_2 option[index='0']").attr('selected',true);
+        $("#team_type_3 option[index='0']").attr('selected',true);
         team_select('team_type_2',$(this).val());
-        $('#team_type_div_2').removeClass('hide');
         $('#team_type_div_3').addClass('hide');
+        if($(this).val()==0){
+            $('#team_type_div_2').addClass('hide');
+        }else{
+            $('#team_type_div_2').removeClass('hide');
+        }
     });
     $("#team_type_2").change(function () {
+        $("#team_type_3 option[index='0']").attr('selected',true);
         team_select('team_type_3',$(this).val());
         var c=$(this).find("option:selected").attr('count');
         if (c>0){
             $('#team_type_div_3').removeClass('hide');
+        }else{
+            $('#team_type_div_3').addClass('hide');
         }
     });
     function formvalidator() {
@@ -366,7 +413,7 @@
                     $('#add').modal('hide');
                     $('#table_list').bootstrapTable('refresh');
                 }else{
-                    alert('保存错误');
+                    alert(result.msg);
                     bv.resetForm();
                     return;
                 }
