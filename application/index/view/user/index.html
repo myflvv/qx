@@ -7,7 +7,7 @@
     </table>
 </div>
 <div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -52,12 +52,27 @@
 
                     </div>
                     <div class="form-group">
-                        <label for="team_typ_1" class="col-sm-2 control-label">工作单位:</label>
-                        <div class="col-sm-10">
-                            <select class="form-control" name="team_typ_1" id="team_typ_1">
-
-                            </select>
+                        <label for="team_type_1" class="col-sm-2 control-label">工作单位:</label>
+                        <div class="hide" id="team_select">
+                            <div class="col-sm-2">
+                                <select class="form-control" name="team_type_1" id="team_type_1">
+                                </select>
+                            </div>
+                            <div class="col-sm-3 hide" id="team_type_div_2">
+                                <select class="form-control" name="team_type_2" id="team_type_2">
+                                </select>
+                            </div>
+                            <div class="col-sm-4 hide" id="team_type_div_3">
+                                <select class="form-control" name="team_type_3" id="team_type_3">
+                                </select>
+                            </div>
+                            <div class="col-sm-1 pull-right"><a class="btn btn-sm btn-info" onclick="r_team();">取消</a></div>
                         </div>
+                        <div id="team_select_txt">
+                            <div class="col-sm-9" style="line-height: 30px;"></div>
+                            <div class="col-sm-1 pull-right" ><a class="btn btn-sm btn-info" onclick="e_team();">修改</a></div>
+                        </div>
+
                     </div>
                     <div class="form-group">
                         <label for="comm_id" class="col-sm-2 control-label">社区团队:</label>
@@ -118,8 +133,16 @@
     $(function () {
         table_list();
         formvalidator();
-        team_select();
+        team_select('team_type_1');
     });
+    function e_team() {
+        $('#team_select_txt').addClass('hide');
+        $('#team_select').removeClass('hide');
+    }
+    function r_team() {
+        $('#team_select_txt').removeClass('hide');
+        $('#team_select').addClass('hide');
+    }
     function table_list() {
         $('#table_list').bootstrapTable({
             url:'/admin/user/listdata',
@@ -201,6 +224,7 @@
                     $("input[name=id_number]").val(r.data.id_number);
                     $("input[name=tel]").val(r.data.tel);
                     $("input[name=address]").val(r.data.address);
+                    $("#team_select_txt .col-sm-9").html(r.parent);
                     $('#add').modal('show');
                 }else{
                     alert(r.msg);
@@ -239,17 +263,22 @@
             });
         }
     }
-    function team_select() {
+    function team_select(select_id,team_id=0) {
         $.ajax({
             type : "get",
-            url : "/api/user/teamtype",
+            url : "/admin/user/team",
+            data:{id:team_id},
             dataType : 'json',
             async:false,
             success : function(result) {
                 if (result.code==200){
+                     $("#"+select_id).html('');
                     for(var i=0;i<result.content.length;i++){
-                        var context="<option value='"+result.content[i].id+"'>"+result.content[i].name+"</option>";
-                        $("#team_typ_1").append(context);
+                        var context="<option value='"+result.content[i].id+"' count='"+result.content[i].count+"'>"+result.content[i].name+"</option>";
+                        $("#"+select_id).append(context);
+                    }
+                    if ($("#"+select_id).html()==''){
+                        $('#team_type_div_3').addClass('hide');
                     }
                 }else{
                     alert(result.msg);
@@ -258,6 +287,18 @@
             }
         });
     }
+    $("#team_type_1").change(function () {
+        team_select('team_type_2',$(this).val());
+        $('#team_type_div_2').removeClass('hide');
+        $('#team_type_div_3').addClass('hide');
+    });
+    $("#team_type_2").change(function () {
+        team_select('team_type_3',$(this).val());
+        var c=$(this).find("option:selected").attr('count');
+        if (c>0){
+            $('#team_type_div_3').removeClass('hide');
+        }
+    });
     function formvalidator() {
         $('#addForm').bootstrapValidator({
             message: 'This value is not valid',
