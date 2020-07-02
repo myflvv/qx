@@ -45,6 +45,26 @@
                             </select>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label for="" class="col-sm-2 control-label">单位:</label>
+                        <div class="col-sm-10" id="city_china_val" style="padding-left: 0;">
+                            <div class="col-sm-3">
+                                <select name="team_1" class="province other form-control" data-first-title="请选择"  data-required="true">
+
+                                </select>
+                            </div>
+                            <div class="col-sm-5">
+                                <select class="city form-control" data-first-title="请选择"  data-required="true">
+
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <select class="area form-control" data-first-title="请选择" data-required="true">
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
@@ -54,9 +74,16 @@
         </div>
     </div>
 </div>
+<script src="/static/jquery.cxselect.js"></script>
 <script>
     $(function () {
+        $('#city_china_val').cxSelect({
+            url: "/admin/user/test",
+            selects: ['province', 'city', 'area'],
+            emptyStyle: 'none'
+        });
         table_list();
+        formvalidator();
     });
     function table_list() {
         $('#table_list').bootstrapTable({
@@ -110,6 +137,60 @@
         result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"editView('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>&nbsp;&nbsp;";
         result += "<a href='javascript:;' class='btn btn-xs btn-danger' onclick=\"delView('" + id + "','"+row.real_name+"')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
         return result;
+    }
+
+    function formvalidator() {
+        $('#addForm').bootstrapValidator({
+            message: 'This value is not valid',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                name: {
+                    message: '',
+                    validators: {
+                        notEmpty: {
+                        },
+                        stringLength: {
+                            min: 1,
+                            max: 30,
+                            message:''
+                        }
+                    }
+                },
+                sort: {
+                    validators: {
+                        notEmpty: {
+                            message: ''
+                        },
+                        digits:{
+
+                        },
+                        stringLength: {
+                            min: 1,
+                            max: 5,
+                            message:''
+                        },
+                    }
+                },
+            }
+        }).on('success.form.bv', function(e) {
+            e.preventDefault();
+            var $form = $(e.target);
+            var bv = $form.data('bootstrapValidator');
+            $.post($form.attr('action'), $form.serialize(), function(result) {
+                if (result.code==200) {
+                    $('#add').modal('hide');
+                    $('#type_list').bootstrapTable('refresh');
+                }else{
+                    alert('保存错误');
+                    bv.resetForm();
+                    return;
+                }
+            }, 'json');
+        });
     }
 
 </script>
