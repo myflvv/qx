@@ -149,7 +149,7 @@ return [
     // 显示错误信息
     'show_error_msg'         => false,
     // 异常处理handle类 留空使用 \think\exception\Handle
-    'exception_handle'       => '',
+    'exception_handle'       => '\\think\\custom\\common\\BaseException',
 
     'AppID'=>'wx9f7275cdb6f49c5c',
     'AppSecret'=>'c0d65478f74d4617ddbff5adc9792e16'

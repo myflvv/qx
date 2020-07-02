@@ -140,17 +140,17 @@ class User extends Controller{
             return json(['code'=>420,'msg'=>'授权不存在']);
         }
         $res=\app\api\model\User::where(['openid'=>$openid])->field('real_name')->find();
-        //TODO 计算服务时间及排名
-        $res['service_time']=100;
-        $res['ranking']=40;
         if ($res){
+            //TODO 计算服务时间及排名
+            $res['service_time']=100;
+            $res['ranking']=40;
             return json(['code'=>200,'content'=>$res]);
         }else{
             return json(['code'=>420,'msg'=>'初始化数据失败']);
         }
     }
 
-    //我的信息
+    //我的信息 获取
     public function getInfo(){
         $openid=input('get.openid','');
         if (empty($openid)){
@@ -170,6 +170,53 @@ class User extends Controller{
             return json(['code'=>200,'content'=>$res]);
         }else{
             return json(['code'=>420,'msg'=>'获取用户数据失败']);
+        }
+    }
+
+    //我的信息 通用更新方法
+    public function postModify(){
+        $openid=input('post.openid','');
+        if (empty($openid)){
+            return json(['code'=>420,'msg'=>'授权不存在']);
+        }
+        $params=input('post.data');
+        $updateData=[];
+        //工作单位
+        if ($params['submit_type']=='team'){
+            if ($params['team_id']!=0){
+                $updateData=['team_id'=>$params['team_id']];
+            }else{
+                return json(['code'=>420,'msg'=>'单位ID错误']);
+            }
+        }
+        //性别
+        if ($params['submit_type']=='sex'){
+            $updateData=['sex'=>$params['sex']];
+        }
+
+        //政治面貌
+        if ($params['submit_type']=='pol_cou'){
+            $updateData=['pol_cou'=>$params['pol_cou']];
+        }
+
+        //最高学历
+        if ($params['submit_type']=='hight_edu'){
+            $updateData=['hight_edu'=>$params['hight_edu']];
+        }
+        //居住区域
+        if ($params['submit_type']=='area'){
+            $updateData=['area'=>$params['area']];
+        }
+        //详细地址
+        if ($params['submit_type']=='address'){
+            $updateData=['address'=>$params['address']];
+        }
+
+        if (!empty($updateData)){
+            \app\api\model\User::where(['openid'=>$openid])->update($updateData);
+            return json(['code'=>200,'msg'=>'success']);
+        }else{
+            return json(['code'=>420,'msg'=>'请求数据错误']);
         }
     }
 
