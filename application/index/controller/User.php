@@ -18,8 +18,14 @@ class User extends Controller{
             $total = \app\index\model\User::count();
             $res = \app\index\model\User::limit($offset,$limit)->order('create_time desc')->select();
         }else{ //TODO 条件搜索
-            $total = \app\index\model\User::where()->count();
-            $res = \app\index\model\User::limit($offset,$limit)->order('create_time desc')->select();
+            $real_name_where=[
+                ['real_name','like','%'.$search.'%']
+            ];
+            $id_number_where=[
+                ['id_number','like','%'.$search.'%']
+            ];
+            $total = \app\index\model\User::whereOr([$real_name_where,$id_number_where])->count();
+            $res = \app\index\model\User::whereOr([$real_name_where,$id_number_where])->limit($offset,$limit)->order('create_time desc')->select();
         }
 
         $data=[];
