@@ -152,12 +152,21 @@ class User extends Controller{
 
     //我的信息
     public function getInfo(){
-        $openid=input('post.openid','');
+        $openid=input('get.openid','');
         if (empty($openid)){
             return json(['code'=>420,'msg'=>'授权不存在']);
         }
         $res=\app\api\model\User::where(['openid'=>$openid])->find();
         if ($res){
+            if ($res['comm_id']==0){
+                $res['comm']='';
+            }else{
+                $commRes=Team::where(['id'=>$res['comm_id']])->field('name')->find();
+                $res['comm']=$commRes['name'];
+            }
+            $teamRes=Team::where(['id'=>$res['team_id']])->field('name')->find();
+            $res['team']=$teamRes['name'];
+
             return json(['code'=>200,'content'=>$res]);
         }else{
             return json(['code'=>420,'msg'=>'获取用户数据失败']);
