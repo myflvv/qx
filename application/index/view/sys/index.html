@@ -27,7 +27,7 @@
                         <div class="col-sm-10">
                             <input type="text" class="form-control" name="username" id="username" >
                         </div>
-                        <input type="hidden" name="action_id" id="action_id" value="0">
+
                     </div>
                     <div class="form-group">
                         <label for="password" class="col-sm-2 control-label">密码:</label>
@@ -35,31 +35,37 @@
                             <input type="password" class="form-control" name="password" id="password">
                         </div>
                     </div>
-                    <div class="form-group" >
+                    <div class="form-group">
+                        <label for="repassword" class="col-sm-2 control-label">确认密码:</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" name="repassword" id="repassword">
+                        </div>
+                    </div>
+                    <div class="form-group" id="level_div">
                         <label for="username" class="col-sm-2 control-label">级别:</label>
                         <div class="col-sm-10">
                             <select class="form-control" name="level" id="level">
                                 <option value="1">一级管理员</option>
                                 <option value="2">二级管理员</option>
-                                <option value="3">三级管理员</option>
+                                <option value="3">三级管理员(单位管理员)</option>
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="" class="col-sm-2 control-label">单位:</label>
-                        <div class="col-sm-10" id="city_china_val" style="padding-left: 0;">
+                    <div class="form-group" style="display: none" id="team_div">
+                        <label for="" class="col-sm-2 control-label">所属单位:</label>
+                        <div class="col-sm-10 city_china_val"  style="padding-left: 0;">
                             <div class="col-sm-3">
-                                <select name="team_1" class="province other form-control" data-first-title="请选择"  data-required="true">
+                                <select name="team_1"  class="province other form-control" data-first-title="请选择"  data-required="true" data-json-value="id">
 
                                 </select>
                             </div>
                             <div class="col-sm-5">
-                                <select class="city form-control" data-first-title="请选择"  data-required="true">
+                                <select name="team_2" class="city form-control" data-first-title="请选择"  data-required="true"  data-json-value="id">
 
                                 </select>
                             </div>
                             <div class="col-sm-4">
-                                <select class="area form-control" data-first-title="请选择" data-required="true">
+                                <select name="team_3" class="area form-control" data-first-title="请选择" data-required="true"  data-json-value="id">
 
                                 </select>
                             </div>
@@ -74,16 +80,124 @@
         </div>
     </div>
 </div>
+<!--edit-->
+<div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" >修改</h4>
+            </div>
+            <form id="editForm" method="post" action="/admin/sys/admineditsave" class="form-horizontal">
+                <div class="modal-body">
+                    <div class="form-group" >
+                        <label for="e_username" class="col-sm-2 control-label">用户名:</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="e_username" id="e_username" disabled>
+                        </div>
+                    </div>
+                    <input type="hidden" name="action_id" id="action_id" value="0">
+                    <div class="form-group">
+                        <label for="e_password" class="col-sm-2 control-label"></label>
+                        <div class="col-sm-10">
+                            <div class="alert alert-warning" role="alert" style="margin-bottom: 0;padding: 5px;">
+                                <span class="glyphicon glyphicon-info-sign"></span> 不修改密码请留空
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="e_password" class="col-sm-2 control-label">新密码:</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" name="e_password" id="e_password">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="e_repassword" class="col-sm-2 control-label">确认新密码:</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" name="e_repassword" id="e_repassword">
+                        </div>
+                    </div>
+                    <div class="form-group" id="e_level_div">
+                        <label for="username" class="col-sm-2 control-label">级别:</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" name="e_level" id="e_level">
+                                <option value="1">一级管理员</option>
+                                <option value="2">二级管理员</option>
+                                <option value="3">三级管理员(单位管理员)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group" style="display: none" id="e_team_div">
+                        <label for="" class="col-sm-2 control-label">所属单位:</label>
+                        <div class="col-sm-10 city_china_val"  style="padding-left: 0;">
+                            <div class="col-sm-3">
+                                <select name="e_team_1" data-value="" id="e_team_1" class="province other form-control" data-first-title="请选择"  data-required="true" data-json-value="id">
+
+                                </select>
+                            </div>
+                            <div class="col-sm-5">
+                                <select name="e_team_2" id="e_team_2" class="city form-control" data-first-title="请选择"  data-required="true"  data-json-value="id">
+
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <select name="e_team_3" id="e_team_3" class="area form-control" data-first-title="请选择" data-required="true"  data-json-value="id">
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal-dialog modal-sm fade" id="tipM" style="margin-top: -150px;z-index: 999;">
+    <div class="modal-content">
+        <div class="modal-body" style="padding: 0;">
+            <div class="alert alert-success" style="margin-bottom: 0;text-align: center;">
+                <span class="glyphicon glyphicon-ok"></span> <span>操作成功</span>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="/static/jquery.cxselect.js"></script>
 <script>
+    var cxSelectApi;
     $(function () {
-        $('#city_china_val').cxSelect({
-            url: "/admin/user/test",
+
+        $('.city_china_val').cxSelect({
+            url: "/admin/user/teamselect",
             selects: ['province', 'city', 'area'],
             emptyStyle: 'none'
+        },function(api) {
+            cxSelectApi = api;
         });
         table_list();
         formvalidator();
+        editformvalidator();
+        $("#level").change(function(){
+            var value=$(this).val();
+            if (value==3){
+                $('#team_div').show();
+            } else{
+                $('#team_div').hide();
+            }
+        });
+        $("#e_level").change(function(){
+            var value=$(this).val();
+            if (value==3){
+                $('#e_team_div').show();
+            } else{
+                $('#e_team_div').hide();
+            }
+        });
     });
     function table_list() {
         $('#table_list').bootstrapTable({
@@ -105,6 +219,12 @@
             },{
                 field:'username',
                 title:'用户名'
+            },{
+                field:'level_name',
+                title:'级别'
+            },{
+                field:'team',
+                title:'所属单位'
             },{
                 field:'create_time',
                 title:'创建时间',
@@ -129,13 +249,21 @@
         $("#addForm").data('bootstrapValidator').destroy();
         $('#addForm').data('bootstrapValidator', null);
         $('#addForm')[0].reset();
+        $('#team_div').hide();
         formvalidator();
+    });
+    $('#edit').on('hidden.bs.modal', function () {
+        $("#editForm").data('bootstrapValidator').destroy();
+        $('#editForm').data('bootstrapValidator', null);
+        $('#editForm')[0].reset();
+        $('#e_team_div').hide();
+        editformvalidator();
     });
     function actionFormatter(value, row, index) {
         var id = value;
         var result = "";
-        result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"editView('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>&nbsp;&nbsp;";
-        result += "<a href='javascript:;' class='btn btn-xs btn-danger' onclick=\"delView('" + id + "','"+row.real_name+"')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+        result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"editView('" + id + "')\" data-id='"+id+"' title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>&nbsp;&nbsp;";
+        result += "<a href='javascript:;' class='btn btn-xs btn-danger' onclick=\"delView('" + id + "','"+row.username+"')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
         return result;
     }
 
@@ -148,44 +276,62 @@
                 validating: 'glyphicon glyphicon-refresh'
             },
             fields: {
-                name: {
+                username: {
                     message: '',
                     validators: {
                         notEmpty: {
                         },
                         stringLength: {
-                            min: 1,
+                            min: 2,
                             max: 30,
                             message:''
                         }
                     }
                 },
-                sort: {
+                password: {
+                    message: '',
                     validators: {
                         notEmpty: {
-                            message: ''
-                        },
-                        digits:{
-
                         },
                         stringLength: {
-                            min: 1,
-                            max: 5,
+                            min: 6,
+                            max: 30,
                             message:''
-                        },
+                        }
                     }
                 },
+                repassword: {
+                    message: '',
+                    validators: {
+                        notEmpty: {
+                        },
+                        identical: {
+                            field: 'password',
+                            message: '密码与确认密码不一致'
+                        },
+                            stringLength: {
+                            min: 6,
+                            max: 30,
+                            message:''
+                        }
+                    }
+                }
             }
         }).on('success.form.bv', function(e) {
             e.preventDefault();
             var $form = $(e.target);
             var bv = $form.data('bootstrapValidator');
             $.post($form.attr('action'), $form.serialize(), function(result) {
+                console.log(result);
                 if (result.code==200) {
                     $('#add').modal('hide');
-                    $('#type_list').bootstrapTable('refresh');
+                    $('#tipM').modal('show');
+                    setTimeout(function(){
+                        $('#tipM').modal('hide');
+                    }, 2000);
+                    $('#table_list').bootstrapTable('refresh');
                 }else{
-                    alert('保存错误');
+                    alert(result.msg);
                     bv.resetForm();
                     return;
                 }
@@ -193,4 +339,147 @@
         });
     }
 
+    function editformvalidator() {
+        $('#editForm').bootstrapValidator({
+            message: 'This value is not valid',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                e_password: {
+                    validators:{
+                        callback:{
+                            message:'请输入 6 至 30 个字符',
+                            callback:function(value,validator){
+                                if (value!=''){
+                                    if (value.length<6 || value.length>30){
+                                        return false;
+                                    }else{
+                                        return true;
+                                    }
+                                }else{
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+
+                },
+                e_repassword: {
+                    validators:{
+                        callback:{
+                            message:'密码与确认密码不一致',
+                            callback:function(value,validator){
+                                var pval=$('#e_password').val();
+                                if (pval!=''){
+                                    if (value.length<6 || value.length>30){
+                                        return false;
+                                    }else if(pval!=value){
+                                        return false;
+                                    }else{
+                                        return true;
+                                    }
+                                }else if(pval=='' && value!=''){
+                                    return false;
+                                }else{
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }).on('success.form.bv', function(e) {
+            e.preventDefault();
+            var $form = $(e.target);
+            var bv = $form.data('bootstrapValidator');
+            $.post($form.attr('action'), $form.serialize(), function(result) {
+                console.log(result);
+                if (result.code==200) {
+                    $('#edit').modal('hide');
+                    $('#tipM').modal('show');
+                    setTimeout(function(){
+                        $('#tipM').modal('hide');
+                    }, 2000);
+                    $('#table_list').bootstrapTable('refresh');
+                }else{
+                    alert(result.msg);
+                    bv.resetForm();
+                    return;
+                }
+            }, 'json');
+        });
+    }
+
+    function delView(id,name) {
+        if(confirm('确认删除？(不可恢复)')){
+            $.ajax({
+                type : "post",
+                url : "/admin/sys/admindel",
+                data:{id:id,username:name},
+                dataType : 'json',
+                async:false,
+                success : function(result) {
+                    if (result.code==200){
+                        $('#tipM').modal('show');
+                        setTimeout(function(){
+                            $('#tipM').modal('hide');
+                        }, 2000);
+                        $('#table_list').bootstrapTable('refresh');
+                    }else{
+                        alert(result.msg);
+                        return false;
+                    }
+                },
+                error : function(e){
+                    console.log(e.status);
+                    console.log(e.responseText);
+                }
+            });
+        }
+    }
+    function editView(id){
+        $.ajax({
+            type : "get",
+            url : "/admin/sys/admininfo?id="+id,
+            dataType : 'json',
+            async:false,
+            success : function(r) {
+                // console.log(r);
+                if (r.code==200){
+                    $('#action_id').val(id);
+                    $('#e_username').val(r.data.username);
+                    $("#e_level").val(r.data.level);
+                    $('#e_level_div').show();
+                    if (r.data.level==0){
+                        $('#e_level_div').hide();
+                        $('#e_team_div').hide();
+                    }else if(r.data.level==3){
+                        if (r.data.team_id!=0){
+                            $('#e_team_1').attr('data-value',r.data.team.team_1_id);
+                            $('#e_team_2').attr('data-value',r.data.team.team_2_id);
+                            if (r.data.team.team_3_id!=0){
+                                $('#e_team_3').attr('data-value',r.data.team.team_3_id);
+                            }
+                            cxSelectApi.attach();
+                        }
+                        $('#e_team_div').show();
+                    }else{
+                        $('#e_team_div').hide();
+                    }
+                    $('#edit').modal('show');
+
+                }else{
+                    alert(r.msg);
+                }
+            },
+            error : function(e){
+                console.log(e.status);
+                console.log(e.responseText);
+            }
+        });
+
+    }
 </script>

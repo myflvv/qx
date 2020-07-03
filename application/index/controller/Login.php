@@ -5,7 +5,6 @@ use app\index\model\Log;
 use think\Controller;
 
 class Login extends Controller{
-    private $salt="wew21dcw542vb";
 
     public function index(){
         return $this->fetch('login');
@@ -17,7 +16,7 @@ class Login extends Controller{
         if (empty($username) || empty($password)){
             return json(['valid'=>false]);
         }
-        $password=md5($password.$this->salt);
+        $password=md5_en($password);
         $res =Admin::where(['username'=>$username,'password'=>$password])->count();
         if ($res){
             session('username',$username);

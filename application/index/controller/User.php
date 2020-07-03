@@ -150,7 +150,7 @@ class User extends Controller{
         return json(['code'=>200,'data'=>$data]);
     }
 
-    public function getTest(){
+    public function getTeamSelect(){
         $res=\app\index\model\Team::order('sort desc')->select();
         $r=recursion($res,0);
         return json($r);

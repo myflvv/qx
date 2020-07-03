@@ -3,6 +3,21 @@
 use think\Response;
 // 应用公共文件
 
+function md5_en($password){
+    $salt="wew21dcw542vb";
+    return md5($password.$salt);
+}
+
+function admin_level($level=0){
+    $arr=[
+      0=>'超级管理员',
+      1=>'一级管理员',
+      2=>'二级管理员',
+      3=>'三级管理员(单位管理员)'
+    ];
+    return $arr[$level];
+}
+
 //政治面貌
 function pol_cou_select(){
     return [
