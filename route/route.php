@@ -6,6 +6,8 @@ Route::get('out','index/login/out');
 
 Route::group('api',function (){
     Route::controller('user','api/user');
+    Route::controller('admin','api/admin');
+    Route::controller('active','api/active');
 });
 
 Route::group('admin',function (){

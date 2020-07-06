@@ -211,6 +211,10 @@ class User extends Controller{
         if ($params['submit_type']=='address'){
             $updateData=['address'=>$params['address']];
         }
+        //社区团队
+        if ($params['submit_type']=='comm'){
+            $updateData=['comm_id'=>$params['comm_id']];
+        }
 
         if (!empty($updateData)){
             \app\api\model\User::where(['openid'=>$openid])->update($updateData);
