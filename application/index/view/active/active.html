@@ -1,0 +1,215 @@
+<link rel="stylesheet" href="/static/jquery.treegrid.min.css">
+<script src="/static/bootstrap-table-treegrid.js"></script>
+<script src="/static/jquery.treegrid.min.js"></script>
+<div class="container-index">
+    <div class="page-tool pull-right">
+<!--        <div class="btn-group" role="group">-->
+<!--            <button type="button" class="btn btn-primary btn-sm" id="add-button">添加</button>-->
+<!--        </div>-->
+    </div>
+
+    <table id="table_list" class="table table-bordered table-hover  table-center">
+
+    </table>
+</div>
+<div class="modal fade" id="view" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-large" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" >查看</h4>
+            </div>
+                <div class="modal-body">
+                    <table class="table table-striped">
+                        <tr>
+                            <td class="t_title">活动名称:</td>
+                            <td id="v_title"></td>
+                        </tr>
+                        <tr>
+                            <td class="t_title">服务类别:</td>
+                            <td id="v_service_type"></td>
+                        </tr>
+                        <tr>
+                            <td class="t_title">服务时长:</td>
+                            <td id="v_service_time"></td>
+                        </tr>
+                        <tr>
+                            <td class="t_title">活动时间:</td>
+                            <td id="v_active_time"></td>
+                        </tr>
+                        <tr>
+                            <td class="t_title">招募时间:</td>
+                            <td id="v_recruit_time"></td>
+                        </tr>
+                        <tr>
+                            <td class="t_title">联系人:</td>
+                            <td id="v_user"></td>
+                        </tr>
+                        <tr>
+                            <td class="t_title">联系电话:</td>
+                            <td id="v_tel"></td>
+                        </tr>
+                        <tr>
+                            <td class="t_title">活动地点:</td>
+                            <td id="v_address"></td>
+                        </tr>
+                        <tr>
+                            <td class="t_title">活动描述:</td>
+                            <td id="v_info"></td>
+                        </tr>
+                        <tr>
+                            <td class="t_title">发布管理员:</td>
+                            <td id="v_username"></td>
+                        </tr>
+                        <tr>
+                            <td class="t_title">发布单位:</td>
+                            <td id="v_team_name"></td>
+                        </tr>
+                        <tr>
+                            <td class="t_title">发布时间:</td>
+                            <td id="v_create_time"></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">修改</h4>
+            </div>
+            <form id="addForm" method="post" action="/admin/active/typesave">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="name" class="control-label">内容:</label>
+                        <input type="text" class="form-control" name="name" id="name">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" name="action_id" id="action_id" value="0">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal-dialog modal-sm fade" id="tipM" style="margin-top: 0px;z-index: 999;">
+    <div class="modal-content">
+        <div class="modal-body" style="padding: 0;">
+            <div class="alert alert-success" style="margin-bottom: 0;text-align: center;">
+                <span class="glyphicon glyphicon-ok"></span> <span>操作成功</span>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .t_title{
+        width: 100px;
+        text-align: right;
+    }
+</style>
+<script>
+    $(function () {
+        table_list();
+    });
+
+    function table_list() {
+        $('#table_list').bootstrapTable({
+            url:'/admin/active/activelist',
+            method:'get',
+            cache : false,
+            dataType : "json",
+            striped: true,
+            pagination: true,
+            pageNumber: 1,
+            pageSize: 10,
+            sidePagination: "server",
+            search:false,
+            columns:[{
+                field:'no',
+                title:'序号',
+                width:50,
+                align:'center',
+                valign:'center',
+            },{
+                field:'title',
+                title:'标题'
+            },{
+                field:'service_time',
+                title:'服务时长'
+            },{
+                field:'user',
+                title:'联系人'
+            },{
+                field:'tel',
+                title:'联系电话'
+            },{
+                field:'create_time',
+                title:'发布时间'
+            },{
+                field:'id',
+                title:'操作',
+                width:120,
+                align:'center',
+                valign:'center',
+                formatter:actionFormatter
+            }
+            ]
+        });
+    }
+    function actionFormatter(value, row, index) {
+        var id = value;
+        var result = "";
+        result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"seeView('" + id + "')\" title='查看'><span class='glyphicon glyphicon-eye-open'></span></a>&nbsp;&nbsp;";
+        result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"editView('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>&nbsp;&nbsp;";
+        result += "<a href='javascript:;' class='btn btn-xs btn-danger' onclick=\"delView('" + id + "','"+row.title+"')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+        return result;
+    }
+    function seeView(id) {
+        $.ajax({
+            type : "get",
+            url : "/admin/active/info?id="+id,
+            dataType : 'json',
+            async:false,
+            success : function(r) {
+                if (r.code==200){
+                    var d=r.data
+                    $(".table-striped tr td").each(function(){
+                        console($(this).html());
+                    });
+                    // $('#v_title').html(d.title);
+                    // $('#v_service_type').html(d.service_type;
+                    // $('#v_service_time').html(d.service_time);
+                    // $('#v_active_time').html(d.active_time);
+                    // $('#v_title').html(d.title);
+                    // $('#v_title').html(d.title);
+                    // $('#v_title').html(d.title);
+                    // $('#v_title').html(d.title);
+                    // $('#v_title').html(d.title);
+
+                    $('#view').modal('show');
+                }else{
+                    alert(r.msg);
+                }
+            },
+            error : function(e){
+                console.log(e.status);
+                console.log(e.responseText);
+            }
+        });
+
+    }
+    function editView(id,name) {
+        $('#name').val(name);
+        $('#action_id').attr('value',id);
+        $('#add').modal('show');
+    }
+</script>
