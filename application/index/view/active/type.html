@@ -1,0 +1,159 @@
+<link rel="stylesheet" href="/static/jquery.treegrid.min.css">
+<script src="/static/bootstrap-table-treegrid.js"></script>
+<script src="/static/jquery.treegrid.min.js"></script>
+<div class="container-index" style="padding-top: 20px;">
+    <table id="table_list" class="table table-bordered table-hover  table-center">
+
+    </table>
+</div>
+<div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">修改</h4>
+            </div>
+            <form id="addForm" method="post" action="/admin/active/typesave">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="name" class="control-label">内容:</label>
+                        <input type="text" class="form-control" name="name" id="name">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" name="action_id" id="action_id" value="0">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal-dialog modal-sm fade" id="tipM" style="margin-top: 0px;z-index: 999;">
+    <div class="modal-content">
+        <div class="modal-body" style="padding: 0;">
+            <div class="alert alert-success" style="margin-bottom: 0;text-align: center;">
+                <span class="glyphicon glyphicon-ok"></span> <span>操作成功</span>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        table_list();
+        formvalidator();
+    });
+    $('#add').on('hidden.bs.modal', function () {
+        $("#addForm").data('bootstrapValidator').destroy();
+        $('#addForm').data('bootstrapValidator', null);
+        $('#addForm')[0].reset();
+        formvalidator();
+    });
+    function editView(id,name) {
+        $('#name').val(name);
+        $('#action_id').attr('value',id);
+        $('#add').modal('show');
+    }
+    function table_list() {
+        $('#table_list').bootstrapTable({
+            url:'/admin/active/list?t={$type}',
+            method:'get',
+            cache : false,
+            dataType : "json",
+            striped: true,
+            search:false,
+            columns:[{
+                field:'no',
+                title:'序号',
+                width:50,
+                align:'center',
+                valign:'center',
+            },{
+                field:'name',
+                title:'内容'
+            },{
+                field:'id',
+                title:'操作',
+                width:120,
+                align:'center',
+                valign:'center',
+                formatter:actionFormatter
+            }
+            ]
+        });
+    }
+    function actionFormatter(value, row, index) {
+        var id = value;
+        var result = "";
+        result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"editView('" + id + "','"+row.name+"')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>&nbsp;&nbsp;";
+        result += "<a href='javascript:;' class='btn btn-xs btn-danger' onclick=\"delView('" + id + "','"+row.name+"')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+        return result;
+    }
+
+    function delView(id,name) {
+        if(confirm('确认删除？')){
+            $.ajax({
+                type : "get",
+                url : "/admin/active/typedel?id="+id+'&name='+name,
+                dataType : 'json',
+                async:false,
+                success : function(result) {
+                    if (result.code==200){
+                        $('#table_list').bootstrapTable('refresh');
+                    }else{
+                        alert(result.msg);
+                        return false;
+                    }
+                },
+                error : function(e){
+                    console.log(e.status);
+                    console.log(e.responseText);
+                }
+            });
+        }
+    }
+
+    function formvalidator() {
+        $('#addForm').bootstrapValidator({
+            message: 'This value is not valid',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                name: {
+                    message: '',
+                    validators: {
+                        notEmpty: {
+                        },
+                        stringLength: {
+                            min: 1,
+                            max: 30,
+                            message:''
+                        }
+                    }
+                }
+            }
+        }).on('success.form.bv', function(e) {
+            e.preventDefault();
+            var $form = $(e.target);
+            var bv = $form.data('bootstrapValidator');
+            $.post($form.attr('action'), $form.serialize(), function(result) {
+                console.log(result);
+                if (result.code==200) {
+                    $('#add').modal('hide');
+                    $('#tipM').modal('show');
+                    setTimeout(function(){
+                        $('#tipM').modal('hide');
+                    }, 2000);
+                    $('#table_list').bootstrapTable('refresh');
+                }else{
+                    alert('保存错误');
+                    bv.resetForm();
+                    return;
+                }
+            }, 'json');
+        });
+    }
+</script>
