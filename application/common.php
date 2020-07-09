@@ -18,6 +18,40 @@ function admin_level($level=0){
     return $arr[$level];
 }
 
+//根据时间戳格式化时间
+function active_format_date($time){
+    if (empty($time)){
+        return '时间错误';
+    }else{
+        $year=date('Y',$time);
+        $now_year=date('Y');//获取当前年份
+        if ($now_year==$year){
+            return date('m月d日 H:i',$time);
+        }else{
+            return date('Y年m月d日 H:i',$time);
+        }
+    }
+}
+//计算招募状态
+function recruit_status($recruit_start_time,$recruit_end_time,$active_start_time,$active_end_time){
+    $now=time();
+    if ($now<$recruit_start_time){
+        return ['type'=>1,'con'=>'招募未开始'];
+    }
+    if ($now>$recruit_start_time && $now<$recruit_end_time){
+        return ['type'=>2,'con'=>'招募中'];
+    }
+    if($now>$recruit_end_time && $now<$active_start_time){
+        return ['type'=>3,'con'=>'活动未开始'];
+    }
+    if ($now>$active_start_time && $now<$active_end_time){
+        return ['type'=>4,'con'=>'进行中'];
+    }
+    if ($now>$active_end_time){
+        return ['type'=>5,'con'=>'已结束'];
+    }
+}
+
 //政治面貌
 function pol_cou_select(){
     return [

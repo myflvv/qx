@@ -6,6 +6,7 @@ use app\api\model\ActiveModel;
 use app\api\model\Team;
 use app\index\model\Log;
 use think\Controller;
+use think\Db;
 
 class Active extends Controller{
 
@@ -89,6 +90,52 @@ class Active extends Controller{
         \app\api\model\User::destroy($id);
         Log::add('我的成员 ['.$admin_username."] 删除 [".$title."]");
         return json(['code'=>200]);
+    }
+
+    //首页活动
+    public function getHomeActiveList($page=1,$total=10){
+        $res=Db::query("select act.*,team.name from qx_active act left join qx_team team on act.add_user_id=team.id order by act.create_time desc");
+        return json(['code'=>200,'content'=>$res]);
+    }
+
+    //活动详情
+    public function getDetail(){
+        $id=input('get.id',0);
+        if ($id==0){
+            return json(['code'=>420,'msg'=>'ID不存在']);
+        }
+        $res=Db::query("select act.*,admin.team_id from qx_active act left join qx_admin admin on act.add_user_id=admin.id where act.id=".$id);
+        if ($res){
+            $res=$res[0];
+            $res['team_name']=$this->getTeamName($res['team_id']);
+            if (empty($res['info'])){
+                $res['info']='无';
+            }
+            $res['active_time_format']=active_format_date($res['active_start_time'])." ~ ".active_format_date($res['active_end_time']);
+            $recruit_end_time=$res['recruit_end_time'];
+            if (empty($recruit_end_time)){ //如果招募结束时间为空，则结束时间为活动的开始时间
+                $recruit_end_time=$res['active_start_time'];
+            }
+            //获取招募及活动状态
+            $res['recruit_status']=recruit_status($res['recruit_start_time'],$recruit_end_time,$res['active_start_time'],$res['active_end_time']);
+            $res['recruit_time_format']=active_format_date($res['recruit_start_time'])." ~ ".active_format_date($recruit_end_time);
+            return json(['code'=>200,'content'=>$res]);
+        }else{
+            return json(['code'=>420,'msg'=>'内容不存在']);
+        }
+    }
+    //获取单位名称
+    private function getTeamName($id){
+        if (empty($id)){
+            return '--';
+        }else{
+            $res=Team::where(['id'=>$id])->field('name')->find();
+            if ($res){
+                return $res['name'];
+            }else{
+                return 'none';
+            }
+        }
     }
 
 }

@@ -8,6 +8,7 @@ Route::group('api',function (){
     Route::controller('user','api/user');
     Route::controller('admin','api/admin');
     Route::controller('active','api/active');
+    Route::controller('team','api/team');
 });
 
 Route::group('admin',function (){
