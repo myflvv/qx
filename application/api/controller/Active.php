@@ -3,6 +3,7 @@ namespace app\api\controller;
 
 
 use app\api\model\ActiveModel;
+use app\api\model\ActiveType;
 use app\api\model\Team;
 use app\index\model\Log;
 use think\Controller;
@@ -93,8 +94,30 @@ class Active extends Controller{
     }
 
     //首页活动
-    public function getHomeActiveList($page=1,$total=10){
-        $res=Db::query("select act.*,team.name from qx_active act left join qx_team team on act.add_user_id=team.id order by act.create_time desc");
+    public function getHomeActiveList(){
+        $key=input('get.key','');
+        $page=input('get.pageNum',1);
+        $offset=10;
+        $limit=($page-1)*$offset;
+        if (!empty($key)){
+            $where = "where act.title like '%".$key."%' or team.name like '%".$key."%'";
+        }else{
+            $where='';
+        }
+        $sql="select act.*,team.name from qx_active act left join qx_team team on act.add_user_id=team.id ".$where."  order by act.create_time desc limit $limit,$offset";
+        $res=Db::query($sql);
+        if ($res){
+            foreach ($res as $key=>$val){
+                $recruit_end_time=$val['recruit_end_time'];
+                if (empty($recruit_end_time)){ //如果招募结束时间为空，则结束时间为活动的开始时间
+                    $recruit_end_time=$val['active_start_time'];
+                }
+                //获取招募及活动状态
+                $res[$key]['recruit_status']=recruit_status($val['recruit_start_time'],$recruit_end_time,$val['active_start_time'],$val['active_end_time']);
+            }
+        }else{ //没有数据返回空
+            $res="";
+        }
         return json(['code'=>200,'content'=>$res]);
     }
 
@@ -104,13 +127,15 @@ class Active extends Controller{
         if ($id==0){
             return json(['code'=>420,'msg'=>'ID不存在']);
         }
-        $res=Db::query("select act.*,admin.team_id from qx_active act left join qx_admin admin on act.add_user_id=admin.id where act.id=".$id);
+        $res=Db::query("select act.*,team.name from qx_active act left join qx_team team on act.add_user_id=team.id where act.id=".$id);
         if ($res){
             $res=$res[0];
-            $res['team_name']=$this->getTeamName($res['team_id']);
+//            $res['team_name']=$this->getTeamName($res['team_id']);
+            $res['team_name']=$res['name'];
             if (empty($res['info'])){
                 $res['info']='无';
             }
+            $res['active_type']=$this->getActiveType($res['service_type_id']);
             $res['active_time_format']=active_format_date($res['active_start_time'])." ~ ".active_format_date($res['active_end_time']);
             $recruit_end_time=$res['recruit_end_time'];
             if (empty($recruit_end_time)){ //如果招募结束时间为空，则结束时间为活动的开始时间
@@ -124,18 +149,28 @@ class Active extends Controller{
             return json(['code'=>420,'msg'=>'内容不存在']);
         }
     }
-    //获取单位名称
-    private function getTeamName($id){
-        if (empty($id)){
-            return '--';
+    //获取活动类型
+    private function getActiveType($id){
+        $res=ActiveType::where(['id'=>$id])->find();
+        if ($res){
+            $name=$res['name'];
         }else{
-            $res=Team::where(['id'=>$id])->field('name')->find();
-            if ($res){
-                return $res['name'];
-            }else{
-                return 'none';
-            }
+            $name="--";
         }
+        return $name;
     }
+    //获取单位名称
+//    private function getTeamName($id){
+//        if (empty($id)){
+//            return '--';
+//        }else{
+//            $res=Team::where(['id'=>$id])->field('name')->find();
+//            if ($res){
+//                return $res['name'];
+//            }else{
+//                return 'none';
+//            }
+//        }
+//    }
 
 }
