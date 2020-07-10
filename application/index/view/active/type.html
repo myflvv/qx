@@ -2,6 +2,11 @@
 <script src="/static/bootstrap-table-treegrid.js"></script>
 <script src="/static/jquery.treegrid.min.js"></script>
 <div class="container-index" style="padding-top: 20px;">
+    <div class="page-tool pull-right">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-primary btn-sm" id="add-button">添加</button>
+                </div>
+    </div>
     <table id="table_list" class="table table-bordered table-hover  table-center">
 
     </table>
@@ -22,6 +27,7 @@
                 </div>
                 <div class="modal-footer">
                     <input type="hidden" name="action_id" id="action_id" value="0">
+                    <input type="hidden" name="active_type" value="{$type}">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
                     <button type="submit" class="btn btn-primary">保存</button>
                 </div>
@@ -49,7 +55,14 @@
         $('#addForm')[0].reset();
         formvalidator();
     });
+    $('#add-button').on('click',function () {
+        $('#myModalLabel').html('添加');
+        $('#name').val('');
+        $('#action_id').attr('value',0);
+        $('#add').modal('show');
+    });
     function editView(id,name) {
+        $('#myModalLabel').html('修改');
         $('#name').val(name);
         $('#action_id').attr('value',id);
         $('#add').modal('show');
@@ -91,7 +104,7 @@
     }
 
     function delView(id,name) {
-        if(confirm('确认删除？')){
+        if(confirm('删除不可恢复,确认删除？')){
             $.ajax({
                 type : "get",
                 url : "/admin/active/typedel?id="+id+'&name='+name,

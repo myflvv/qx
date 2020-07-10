@@ -1,0 +1,61 @@
+<link rel="stylesheet" href="/static/jquery.treegrid.min.css">
+<script src="/static/bootstrap-table-treegrid.js"></script>
+<script src="/static/jquery.treegrid.min.js"></script>
+<nav class="cm-navbar cm-navbar-default cm-navbar-slideup">
+    <div class="cm-flex">
+        <div class="cm-breadcrumb-container">
+            <ol class="breadcrumb">
+                <li><a href="/admin/active/active">志愿活动</a></li>
+                <li class="active">查看报名人员</li>
+            </ol>
+        </div>
+    </div>
+</nav>
+<div class="container-index">
+    <div class="page-header">
+        <h3><small>活动名称:</small>{$active_title}</h3>
+    </div>
+    <table id="table_list" class="table table-bordered table-hover  table-center">
+
+    </table>
+</div>
+<script>
+    $(function () {
+        table_list();
+    });
+
+    function table_list() {
+        $('#table_list').bootstrapTable({
+            url:'/admin/active/activeuserlist?active_id={$active_id}',
+            method:'get',
+            cache : false,
+            dataType : "json",
+            striped: true,
+            pagination: true,
+            pageNumber: 1,
+            pageSize: 10,
+            sidePagination: "server",
+            search:false,
+            columns:[{
+                field:'no',
+                title:'序号',
+                width:50,
+                align:'center',
+                valign:'center',
+            },{
+                field:'real_name',
+                title:'姓名'
+            },{
+                field:'create_time_format',
+                title:'报名时间'
+            },{
+                field:'start_dk_time_format',
+                title:'第一次打卡'
+            },{
+                field:'end_dk_time_format',
+                title:'第二次打卡'
+            }
+            ]
+        });
+    }
+    </script>

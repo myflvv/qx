@@ -1,6 +1,15 @@
 <link rel="stylesheet" href="/static/jquery.treegrid.min.css">
 <script src="/static/bootstrap-table-treegrid.js"></script>
 <script src="/static/jquery.treegrid.min.js"></script>
+<nav class="cm-navbar cm-navbar-default cm-navbar-slideup">
+    <div class="cm-flex">
+        <div class="cm-breadcrumb-container">
+            <ol class="breadcrumb">
+                <li class="active">志愿活动</li>
+            </ol>
+        </div>
+    </div>
+</nav>
 <div class="container-index">
     <div class="page-tool pull-right">
 <!--        <div class="btn-group" role="group">-->
@@ -157,7 +166,7 @@
             },{
                 field:'id',
                 title:'操作',
-                width:120,
+                width:150,
                 align:'center',
                 valign:'center',
                 formatter:actionFormatter
@@ -168,33 +177,30 @@
     function actionFormatter(value, row, index) {
         var id = value;
         var result = "";
+        result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"location.href='/admin/active/report?active_id=" + id + "'\" title='查看活动报告'><span class='glyphicon glyphicon-file'></span></a>&nbsp;&nbsp;";
+        result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"location.href='/admin/active/user?active_id=" + id + "'\" title='查看报名人员'><span class='glyphicon glyphicon-user'></span></a>&nbsp;&nbsp;";
         result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"seeView('" + id + "')\" title='查看'><span class='glyphicon glyphicon-eye-open'></span></a>&nbsp;&nbsp;";
-        result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"editView('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>&nbsp;&nbsp;";
+        // result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"editView('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>&nbsp;&nbsp;";
         result += "<a href='javascript:;' class='btn btn-xs btn-danger' onclick=\"delView('" + id + "','"+row.title+"')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
         return result;
     }
     function seeView(id) {
         $.ajax({
             type : "get",
-            url : "/admin/active/info?id="+id,
+            url : "/admin/active/activeinfo?id="+id,
             dataType : 'json',
             async:false,
             success : function(r) {
                 if (r.code==200){
                     var d=r.data
                     $(".table-striped tr td").each(function(){
-                        console($(this).html());
+                        var sid=$(this).attr('id');
+                        var data_id=sid;
+                        if (typeof (data_id) != 'undefined'){
+                            s=data_id.replace('v_','');
+                            $('#'+sid).html(d[s]);
+                        }
                     });
-                    // $('#v_title').html(d.title);
-                    // $('#v_service_type').html(d.service_type;
-                    // $('#v_service_time').html(d.service_time);
-                    // $('#v_active_time').html(d.active_time);
-                    // $('#v_title').html(d.title);
-                    // $('#v_title').html(d.title);
-                    // $('#v_title').html(d.title);
-                    // $('#v_title').html(d.title);
-                    // $('#v_title').html(d.title);
-
                     $('#view').modal('show');
                 }else{
                     alert(r.msg);
@@ -211,5 +217,27 @@
         $('#name').val(name);
         $('#action_id').attr('value',id);
         $('#add').modal('show');
+    }
+    function delView(id,name) {
+        if(confirm('删除不可恢复,确认删除？')){
+            $.ajax({
+                type : "get",
+                url : "/admin/active/activedel?id="+id+'&name='+name,
+                dataType : 'json',
+                async:false,
+                success : function(result) {
+                    if (result.code==200){
+                        $('#table_list').bootstrapTable('refresh');
+                    }else{
+                        alert(result.msg);
+                        return false;
+                    }
+                },
+                error : function(e){
+                    console.log(e.status);
+                    console.log(e.responseText);
+                }
+            });
+        }
     }
 </script>

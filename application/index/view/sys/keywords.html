@@ -1,0 +1,65 @@
+<div class="container-index" style="margin-top: 20px">
+    <form id="addForm" method="post" action="/admin/sys/keywordssave">
+        <div class="form-group">
+            <label >过滤关键字</label>
+            <textarea class="form-control" rows="5" name="keywords" placeholder="请输入要过滤的关键字，多个用英文状态下的逗号">{$keywords}</textarea>
+        </div>
+        <div class="form-group" style="text-align: center">
+            <button type="submit" class="btn btn-primary">  保  存 </button>
+        </div>
+    </form>
+
+</div>
+<div class="modal-dialog modal-sm fade" id="tipM" style="margin-top: 0px;z-index: 999;">
+    <div class="modal-content">
+        <div class="modal-body" style="padding: 0;">
+            <div class="alert alert-success" style="margin-bottom: 0;text-align: center;">
+                <span class="glyphicon glyphicon-ok"></span> <span>操作成功</span>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        formvalidator();
+    });
+    function formvalidator() {
+        $('#addForm').bootstrapValidator({
+            message: 'This value is not valid',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                keyword: {
+                    message: '',
+                    validators: {
+                        stringLength: {
+                            min: 1,
+                            max: 500,
+                            message:''
+                        }
+                    }
+                },
+            }
+        }).on('success.form.bv', function(e) {
+            e.preventDefault();
+            var $form = $(e.target);
+            var bv = $form.data('bootstrapValidator');
+            $.post($form.attr('action'), $form.serialize(), function(result) {
+                if (result.code==200) {
+                    $('#add').modal('hide');
+                    $('#tipM').modal('show');
+                    setTimeout(function(){
+                        $('#tipM').modal('hide');
+                    }, 2000);
+                }else{
+                    alert(result.msg);
+                    bv.resetForm();
+                    return;
+                }
+            }, 'json');
+        });
+    }
+</script>

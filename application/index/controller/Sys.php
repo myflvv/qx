@@ -4,6 +4,8 @@ namespace app\index\controller;
 use app\index\model\Admin;
 use app\index\model\Log;
 use think\Controller;
+use think\Db;
+
 class Sys extends Controller{
 
     public function getIndex(){
@@ -164,5 +166,17 @@ class Sys extends Controller{
                 return $res_pp['name']." > ".$res_p['name']." > ".$res['name'];
             }
         }
+    }
+
+    public function getKeyWords(){
+        $res=Db::query("select keywords from qx_filter where id=1");
+        $this->assign('keywords',$res[0]['keywords']);
+        return $this->fetch('keywords');
+    }
+
+    public function postKeyWordsSave(){
+        $keywords=input('post.keywords');
+        Db::query("update qx_filter set keywords='".$keywords."', update_time='".time()."' where id=1");
+        return json(['code'=>200,'msg'=>"success"]);
     }
 }

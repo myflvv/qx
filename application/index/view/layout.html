@@ -23,16 +23,16 @@
     <script src="/static/bootstrap-table-zh-CN.min.js"></script>
     <title>后台管理</title>
     <script>
-        $(document).ready(function() {
-            var path = window.location.pathname;
-            $(".cm-menu-items li").each(function(){
-                var cu_path=$(this).find('a').attr('href');
-                if (path==cu_path){
-                    $(this).parents('.cm-submenu').addClass('open').siblings().removeClass('open');
-                    $(this).addClass('active').siblings().removeClass('active');
-                }
-            });
-        })
+        // $(document).ready(function() {
+        //     var path = window.location.pathname;
+        //     $(".cm-menu-items li").each(function(){
+        //         var cu_path=$(this).find('a').attr('href');
+        //         if (path==cu_path){
+        //             $(this).parents('.cm-submenu').addClass('open').siblings().removeClass('open');
+        //             $(this).addClass('active').siblings().removeClass('active');
+        //         }
+        //     });
+        // })
 
     </script>
 </head>
@@ -48,24 +48,24 @@
             <div id="cm-menu-items-wrapper">
                 <div id="cm-menu-scroller">
                     <ul class="cm-menu-items">
-                        <li><a href="/admin/main/index" class="sf-house">首页</a></li>
-                        <li><a href="/admin/user/index" class="sf-brick">人员管理</a></li>
-                        <li><a href="/admin/team/type" class="sf-brick">团队管理</a></li>
-                        <li class="cm-submenu">
-                            <a class="sf-cat">活动管理 <span class="caret"></span></a>
+                        <li <?php prePathSelect(['admin/main/index'])?>><a href="/admin/main/index" class="sf-house">首页</a></li>
+                        <li <?php prePathSelect(['admin/user/index'])?>><a href="/admin/user/index" class="sf-user-female">人员管理</a></li>
+                        <li <?php prePathSelect(['admin/team/type'])?>><a href="/admin/team/type" class="sf-profile-group">团队管理</a></li>
+                        <li class="cm-submenu <?php if(pathSelect('active')) echo 'pre-open' ?>" >
+                            <a class="sf-star">活动管理 <span class="caret"></span></a>
                             <ul>
-                                <li><a href="/admin/active/type">活动类型</a></li>
-                                <li><a href="/admin/active/time">活动时长</a></li>
-                                <li><a href="/admin/active/active">志愿活动</a></li>
-                                <li><a href="/admin/report/index">活动报告</a></li>
+                                <li <?php prePathSelect(['admin/active/type'])?>><a href="/admin/active/type">活动类型</a></li>
+                                <li <?php prePathSelect(['admin/active/time'])?>><a href="/admin/active/time">活动时长</a></li>
+                                <li <?php prePathSelect(['admin/active/active','admin/active/user'])?>><a href="/admin/active/active">志愿活动</a></li>
+                                <li <?php prePathSelect(['admin/active/report'])?>><a href="/admin/active/report">活动报告</a></li>
                             </ul>
                         </li>
-                        <li class="cm-submenu">
-                            <a class="sf-window-layout">系统管理<span class="caret"></span></a>
+                        <li class="cm-submenu <?php if(pathSelect('sys')) echo 'pre-open' ?>">
+                            <a class="sf-wrench-screwdriver">系统管理<span class="caret"></span></a>
                             <ul>
-                                <li><a href="/admin/sys/keyword">敏感字过滤</a></li>
-                                <li><a href="/admin/sys/logs">系统日志</a></li>
-                                <li><a href="/admin/sys/index">管理员</a></li>
+                                <li <?php prePathSelect(['admin/sys/keywords'])?>><a href="/admin/sys/keywords">敏感字过滤</a></li>
+                                <li <?php prePathSelect(['admin/sys/logs'])?>><a href="/admin/sys/logs">系统日志</a></li>
+                                <li <?php prePathSelect(['admin/sys/index'])?>><a href="/admin/sys/index">管理员</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -86,21 +86,19 @@
                     </li>
                     <li class="divider"></li>
                     <li>
-                        <a href="#"><i class="fa fa-fw fa-user"></i>个人信息</a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-fw fa-cog"></i>设置</a>
-                    </li>
-                    <li>
                         <a href="/out"><i class="fa fa-fw fa-sign-out"></i>退出</a>
                     </li>
                 </ul>
             </div>
         </nav>
     </header>
-    <div id="global" class="cm-container-white">
+    <div id="global" >
         <div class="container-fluid">
+            <div class="panel panel-default" style="margin-top: 20px;">
+                <div class="panel-body" style="min-height: 200px;">
             {__CONTENT__}
+                </div>
+            </div>
         </div>
         <footer class="cm-footer"><span class="pull-left">Connected as John Smith</span><span class="pull-right">© PAOMEDIA SARL</span></footer>
     </div>

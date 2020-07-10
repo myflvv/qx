@@ -10,24 +10,23 @@ Target Server Type    : MYSQL
 Target Server Version : 50728
 File Encoding         : 65001
 
-Date: 2020-07-09 17:42:04
+Date: 2020-07-10 17:47:36
 */
 
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for qx_active_type
+-- Table structure for qx_filter
 -- ----------------------------
-DROP TABLE IF EXISTS `qx_active_type`;
-CREATE TABLE `qx_active_type` (
+DROP TABLE IF EXISTS `qx_filter`;
+CREATE TABLE `qx_filter` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
-  `type` int(1) DEFAULT NULL COMMENT '1活动类型2活动时长',
+  `keywords` varchar(255) DEFAULT NULL,
+  `update_time` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of qx_active_type
+-- Records of qx_filter
 -- ----------------------------
-INSERT INTO `qx_active_type` VALUES ('1', 'dsfwe111121', '1');
-INSERT INTO `qx_active_type` VALUES ('2', '2.5', '2');
+INSERT INTO `qx_filter` VALUES ('1', '121,we', '1594353047');

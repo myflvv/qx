@@ -1,4 +1,5 @@
 <?php
+//dump(request()->path());die;
 function recursion($result,$parentid=0){
     $list=array();
     foreach ($result as $k => $v){
@@ -13,4 +14,45 @@ function recursion($result,$parentid=0){
         }
     }
     return $list;
+}
+
+function pathSelect($menu){
+    $path=request()->path();
+    $arr='';
+    if ($menu=='active'){
+        $arr=activeMenu();
+    }
+    if ($menu=='sys'){
+        $arr=sysMenu();
+    }
+    if (in_array($path,$arr)){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+function prePathSelect($cuPathArr){
+    $path=request()->path();
+    if (in_array($path,$cuPathArr)){
+        echo "class='active'";
+    }
+}
+
+function activeMenu(){
+    return [
+        'admin/active/type',
+        'admin/active/time',
+        'admin/active/active',
+        'admin/active/report',
+        'admin/active/user'
+    ];
+}
+
+function sysMenu(){
+    return [
+        'admin/sys/keywords',
+        'admin/sys/logs',
+        'admin/sys/index'
+    ];
 }
