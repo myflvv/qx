@@ -151,6 +151,6 @@ return [
     // 异常处理handle类 留空使用 \think\exception\Handle
     'exception_handle'       => '\\think\\custom\\common\\BaseException',
 
-    'AppID'=>'wx0021ab1db483dee9',
-    'AppSecret'=>'140f5116c0779a17f2e420f9237beace'
+    'AppID'=>'wx3bf5dbbb791df81c',
+    'AppSecret'=>'9af858458af736f662db222fe950dd3e'
 ];

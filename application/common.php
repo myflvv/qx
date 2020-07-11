@@ -18,6 +18,24 @@ function admin_level($level=0){
     return $arr[$level];
 }
 
+//查看打卡签到签退时间是否在范围内
+function chk_dk_time($dk_time){
+    $time=time();
+    $start_time=strtotime("-10minute",$time);
+    $end_time=strtotime("+10minute",$time);
+    if ($dk_time>=$start_time && $dk_time<=$end_time){//如果在开始前10分钟-开始后10分钟之内
+        return true;
+    }else{
+        return false;
+    }
+}
+
+//获取打卡签到、签退时间
+function dk_time_format($time){
+    //规则:时间之前10分钟到之后10分钟
+    return date('H:i',strtotime("-10minute",$time))." ~ ".date('H:i',strtotime("+10minute",$time));
+}
+
 //根据时间戳格式化时间
 function active_format_date($time){
     if (empty($time)){

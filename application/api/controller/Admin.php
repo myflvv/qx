@@ -1,6 +1,8 @@
 <?php
 namespace app\api\controller;
 
+use app\api\model\ActiveModel;
+use app\api\model\ActiveType;
 use app\api\model\AdminModel;
 use think\Controller;
 use think\Db;
@@ -24,23 +26,55 @@ class Admin extends Controller{
 
     //服务类别
     public function getServiceType(){
-        $data=[
-            ['id'=>1,'text'=>'text1'],
-            ['id'=>2,'text'=>'text2'],
-            ['id'=>3,'text'=>'text3'],
-            ['id'=>4,'text'=>'text4'],
-        ];
+        $res=ActiveType::where(['type'=>1])->select();
+        $data=[];
+        foreach ($res as $key=>$val){
+            $data[$key]['id']=$val['id'];
+            $data[$key]['text']=$val['name'];
+        }
         return json(['code'=>200,'content'=>$data]);
     }
 
     //服务时长
     public function getServiceTime(){
-        $data=[
-            ['text'=>'1小时'],
-            ['text'=>'1.5小时'],
-            ['text'=>'2小时'],
-            ['text'=>'2.5小时'],
-        ];
+        $res=ActiveType::where(['type'=>2])->select();
+        $data=[];
+        foreach ($res as $key=>$val){
+            $data[$key]['text']=$val['name']."小时";
+        }
         return json(['code'=>200,'content'=>$data]);
+    }
+
+    //管理员活动列表
+    public function getActiveList(){
+        $key=input('get.key','');
+        $admin_id=input('get.admin_id',0);
+        if ($admin_id==0){
+            return json(['code'=>420,'msg'=>'参数错误']);
+        }
+        $page=input('get.pageNum',1);
+        $offset=20;
+        $limit=($page-1)*$offset;
+        $where=" add_user_id=".$admin_id;
+        if (!empty($key)){
+            $where .= " and title like '%".$key."%'";
+        }
+        $res=ActiveModel::where($where)->limit($limit,$offset)->select();
+        if ($res){
+            $no=$limit;
+            foreach ($res as $key=>$val){
+                $recruit_end_time=$val['recruit_end_time'];
+                if (empty($recruit_end_time)){ //如果招募结束时间为空，则结束时间为活动的开始时间
+                    $recruit_end_time=$val['active_start_time'];
+                }
+                //获取招募及活动状态
+                $res[$key]['recruit_status']=recruit_status($val['recruit_start_time'],$recruit_end_time,$val['active_start_time'],$val['active_end_time']);
+                $res[$key]['no']=$no;
+                $no++;
+            }
+        }else{ //没有数据返回空
+            $res="";
+        }
+        return json(['code'=>200,'content'=>$res]);
     }
 }
