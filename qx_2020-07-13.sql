@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.7.4-m14-log)
 # Database: qx
-# Generation Time: 2020-07-12 07:51:38 +0000
+# Generation Time: 2020-07-12 16:16:46 +0000
 # ************************************************************
 
 
@@ -138,7 +138,7 @@ CREATE TABLE `qx_enter` (
   `end_dk_time` int(11) DEFAULT '0',
   `end_dk_place` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 LOCK TABLES `qx_enter` WRITE;
 /*!40000 ALTER TABLE `qx_enter` DISABLE KEYS */;
@@ -146,7 +146,8 @@ LOCK TABLES `qx_enter` WRITE;
 INSERT INTO `qx_enter` (`id`, `user_id`, `active_id`, `create_time`, `start_dk_time`, `start_dk_place`, `end_dk_time`, `end_dk_place`)
 VALUES
 	(1,7,6,0,0,NULL,0,NULL),
-	(2,7,7,0,0,NULL,0,NULL);
+	(2,7,7,0,0,NULL,0,NULL),
+	(3,7,11,1594568598,0,NULL,0,NULL);
 
 /*!40000 ALTER TABLE `qx_enter` ENABLE KEYS */;
 UNLOCK TABLES;
