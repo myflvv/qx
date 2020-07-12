@@ -5,7 +5,7 @@ use app\api\model\ActiveModel;
 use app\api\model\EnterModel;
 use app\api\model\Team;
 use think\Controller;
-use lib\WXBizDataCrypt;
+use think\custom\lib\WXBizDataCrypt;
 use think\Db;
 
 class User extends Controller{
