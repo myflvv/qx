@@ -105,9 +105,9 @@ class User extends Controller{
     public function getTeamType(){
         $id=input('get.id',0);
         if ($id==0){
-            $res=Team::where("pid=0 && is_team=0")->order('sort desc,id asc')->field('id,name')->select();
+            $res=Team::where("pid=0 && is_team!=1")->order('sort desc,id asc')->field('id,name')->select();
         }else{
-            $res=Team::where("pid=".$id." && is_team=0")->order('sort desc,id asc')->field('id,name')->select();
+            $res=Team::where("pid=".$id." && is_team!=1")->order('sort desc,id asc')->field('id,name')->select();
         }
 
         $data=[];
