@@ -114,6 +114,10 @@ class Active extends Controller{
                 }
                 //获取招募及活动状态
                 $res[$key]['recruit_status']=recruit_status($val['recruit_start_time'],$recruit_end_time,$val['active_start_time'],$val['active_end_time']);
+
+                if (empty($val['info'])){
+                    $res[$key]['info']='无';
+                }
             }
         }else{ //没有数据返回空
             $res="";
