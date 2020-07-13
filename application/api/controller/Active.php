@@ -5,6 +5,7 @@ namespace app\api\controller;
 use app\api\model\ActiveModel;
 use app\api\model\ActiveType;
 use app\api\model\EnterModel;
+use app\api\model\FilterModel;
 use app\api\model\Team;
 use app\index\model\Log;
 use think\Controller;
@@ -15,6 +16,16 @@ class Active extends Controller{
     public function postSave(){
         $params=input('post.data');
         $add_user_id=input('post.add_user_id');
+        //发布内容过滤
+        $filter_title=FilterModel::chkFilter($params['title']);
+        if (!$filter_title['status']){
+            return json(['code'=>420,'msg'=>"标题含有非法关键字[".$filter_title['key']."]"]);
+        }
+
+        $filter_info=FilterModel::chkFilter($params['info']);
+        if (!$filter_info['status']){
+            return json(['code'=>420,'msg'=>"描述含有非法关键字[".$filter_info['key']."]"]);
+        }
         //毫秒转日期 活动开始时间
         $s=$this->getMsecToMescdate($params['start_time_unix']);
         $start_time=strtotime($s);//日期转时间戳
