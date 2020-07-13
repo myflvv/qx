@@ -44,7 +44,7 @@ function activeMenu(){
         'admin/active/type',
         'admin/active/time',
         'admin/active/active',
-        'admin/active/report',
+        'admin/report/index',
         'admin/active/user'
     ];
 }

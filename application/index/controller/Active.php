@@ -3,6 +3,7 @@ namespace app\index\controller;
 
 use app\index\model\ActiveModel;
 use app\index\model\ActiveType;
+use app\index\model\Admin;
 use app\index\model\EnterModel;
 use app\index\model\Log;
 use think\Controller;
@@ -192,6 +193,7 @@ class Active extends Controller{
 
     }
 
+    //获取活动标题
     private function getActiveTitle($id){
         $res=ActiveModel::where(['id'=>$id])->field('title')->find();
         if ($res){
@@ -199,5 +201,41 @@ class Active extends Controller{
         }else{
             return "--";
         }
+    }
+
+    public function getReport(){
+        $active_id=input('get.active_id',0);
+        if (empty($active_id)){
+            return '参数错误';
+        }
+        $res=Db::query("select *,act.title,report.info as report_info,report.create_time as report_create_time from qx_active act left join  qx_report report on act.id=report.active_id where act.id=".$active_id." limit 1");
+
+        if ($res){
+            $data=[];
+            if (empty($res[0]['create_time'])){ //如果没有报告
+                $data=[
+                    'title'=>$res[0]['title'].'-报告',
+                    'create_time'=>'',
+                    'admin_name'=>'',
+                    'pic'=>'',
+                    'info'=>'',
+                    'is_add'=>0//是否有内容
+                ];
+            }else{
+                $data=[
+                    'title'=>$res[0]['title'].'-报告',
+                    'create_time'=>date('Y-m-d H:i:s',$res[0]['report_create_time']),
+                    'admin_name'=>Admin::getAdminNameById($res[0]['admin_id']),
+                    'pic'=>$res[0]['pic'],
+                    'info'=>$res[0]['report_info'],
+                    'is_add'=>1//是否有内容
+                ];
+            }
+            $this->assign('data',$data);
+            return $this->fetch('report');
+        }else{
+            return '无此活动';
+        }
+
     }
 }
