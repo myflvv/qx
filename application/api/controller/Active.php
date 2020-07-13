@@ -4,6 +4,7 @@ namespace app\api\controller;
 
 use app\api\model\ActiveModel;
 use app\api\model\ActiveType;
+use app\api\model\EnterModel;
 use app\api\model\Team;
 use app\index\model\Log;
 use think\Controller;
@@ -114,6 +115,10 @@ class Active extends Controller{
                 }
                 //获取招募及活动状态
                 $res[$key]['recruit_status']=recruit_status($val['recruit_start_time'],$recruit_end_time,$val['active_start_time'],$val['active_end_time']);
+
+                if (empty($val['info'])){
+                    $res[$key]['info']='无';
+                }
             }
         }else{ //没有数据返回空
             $res="";
@@ -124,6 +129,7 @@ class Active extends Controller{
     //活动详情
     public function getDetail(){
         $id=input('get.id',0);
+        $openid=input('get.openid','');
         if ($id==0){
             return json(['code'=>420,'msg'=>'ID不存在']);
         }
@@ -144,11 +150,40 @@ class Active extends Controller{
             //获取招募及活动状态
             $res['recruit_status']=recruit_status($res['recruit_start_time'],$recruit_end_time,$res['active_start_time'],$res['active_end_time']);
             $res['recruit_time_format']=active_format_date($res['recruit_start_time'])." ~ ".active_format_date($recruit_end_time);
+
+            //判断报名按钮显示
+            if (empty($openid)){//如果没有登录
+                $res['bm_button_status']=0;
+            }else{
+                $bmM=Db::query("select count(*) as total   from qx_enter enter left  join qx_user user on user.id=enter.user_id where user.openid='".$openid."' and enter.active_id=".$id);
+                $res['bm_button_status']=$bmM[0]['total'];
+
+            }
             return json(['code'=>200,'content'=>$res]);
         }else{
             return json(['code'=>420,'msg'=>'内容不存在']);
         }
     }
+
+    //立即报名
+    public function postReport(){
+        $active_id=input('post.id',0);
+        $openid=input('post.openid','');
+        if (empty($active_id) || empty($openid)){
+            return json(['code'=>420,'msg'=>'参数错误']);
+        }
+        $user_id=\app\api\model\User::getUserId($openid);
+        if (empty($user_id)){
+            return json(['code'=>420,'msg'=>'用户不存在']);
+        }
+        $res=EnterModel::create(['user_id'=>$user_id,'active_id'=>$active_id,'create_time'=>time()]);
+        if ($res){
+            return json(['code'=>200,'msg'=>"success"]);
+        }else{
+            return json(['code'=>420,'msg'=>'报名错误']);
+        }
+    }
+
     //获取活动类型
     private function getActiveType($id){
         $res=ActiveType::where(['id'=>$id])->find();

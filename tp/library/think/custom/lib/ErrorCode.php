@@ -1,5 +1,5 @@
 <?php
-namespace lib;
+namespace think\custom\lib;
 /**
  * error code 说明.
  * <ul>
