@@ -272,30 +272,51 @@ class User extends Controller{
     }
 
     //签到
-    public function getMyActiveDk(){
-        $id=input('get.id',0);
-        $active_id=input('get.activeid',0);
-        $type=input('get.type','');
-        $openid=input('get.openid','');
-        if (empty($id) || empty($type) || empty($openid) || empty($active_id)){
+    public function postMyActiveDk(){
+        $id=input('post.id',0);
+        $active_id=input('post.activeid',0);
+        $type=input('post.type','');
+        $openid=input('post.openid','');
+        $address=input('post.address','');
+        $latitude=input('post.latitude','');
+        $longitude=input('post.longitude','');
+
+        if (empty($id) || empty($type) || empty($openid) || empty($active_id) || empty($address) || empty($latitude) || empty($longitude)){
             return json(['code'=>420,'msg'=>'参数错误,请重新登录尝试']);
         }
         $res=ActiveModel::where(['id'=>$active_id])->field('active_start_time,active_end_time')->find();
         if ($res){
             $dk_time="";
+            $data=[];
+            $tip="";
+            $place=json_encode([
+                'latitude'=>$latitude,
+                'longitude'=>$longitude,
+                'address'=>$address
+            ]);
             if ($type=='start'){ //如果是签到
+                $tip="签到";
                 $dk_time=$res['active_start_time'];
+                $data=[
+                  'start_dk_time'=>time(),
+                  'start_dk_place'=>$place
+                ];
             }
             if ($type=='end'){//如果是签退
+                $tip="签退";
                 $dk_time=$res['active_end_time'];
+                $data=[
+                    'end_dk_time'=>time(),
+                    'end_dk_place'=>$place
+                ];
             }
             if (empty($dk_time)){
                 return json(['code'=>420,'msg'=>'打卡参数错误,请重新登录尝试']);
             }
             if (chk_dk_time($dk_time)){ //如果打卡时间在时间范围内
-                //TODO 更新enter表打卡时间，以及打卡定位信息
-
-                return json(['code'=>200,'msg'=>'success']);
+                //更新enter表打卡时间，以及打卡定位信息
+                EnterModel::where(['id'=>$id])->update($data);
+                return json(['code'=>200,'msg'=>$tip.'成功']);
             }else{
                 return json(['code'=>420,'msg'=>'不在时间范围内']);
             }
