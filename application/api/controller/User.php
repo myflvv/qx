@@ -316,9 +316,9 @@ class User extends Controller{
             if (chk_dk_time($dk_time)){ //如果打卡时间在时间范围内
                 //更新enter表打卡时间，以及打卡定位信息
                 EnterModel::where(['id'=>$id])->update($data);
-                return json(['code'=>200,'msg'=>$tip.'成功']);
+                return json(['code'=>200,'content'=>$tip."成功",'date'=>date('H:i',time())]);
             }else{
-                return json(['code'=>420,'msg'=>'不在时间范围内']);
+                return json(['code'=>420,'msg'=>'不在打卡时间范围内']);
             }
         }else{
             return json(['code'=>420,'msg'=>'活动不存在']);
