@@ -1,7 +1,8 @@
-<link rel="stylesheet" href="/vendor/fileinput/css/fileinput.min.css">
+
 <script src="/vendor/fileinput/js/fileinput.min.js"></script>
-<script src="/vendor/fileinput/js/plugins/sortable.min.js"></script>
-<script src="/vendor/fileinput/themes/fa/theme.js"></script>
+<link rel="stylesheet" href="/vendor/fileinput/css/fileinput.min.css">
+<!--<script src="/vendor/fileinput/js/plugins/sortable.min.js"></script>-->
+<!--<script src="/vendor/fileinput/themes/fa/theme.js"></script>-->
 <script src="/vendor/fileinput/js/locales/zh.js"></script>
 <nav class="cm-navbar cm-navbar-default cm-navbar-slideup">
     <div class="cm-flex">
@@ -14,8 +15,8 @@
     </div>
 </nav>
 <div class="container-index">
-    <div style="margin-top: 20px;width: 60%">
-        <form action="/admin/active/reportsave" method="post" class="form-horizontal"  enctype="multipart/form-data">
+    <div style="margin-top: 20px;">
+        <form id="addForm" action="/admin/active/reportsave" method="post" class="form-horizontal"  enctype="multipart/form-data">
             {if condition="$data['is_add']==0"}
             <div class="form-group" >
                 <label class="col-sm-2 control-label"></label>
@@ -32,7 +33,7 @@
                        {$data['title']}
                     </div>
 
-                    <input type="hidden" name="action_id" id="action_id" >
+                    <input type="hidden" name="report_id" id="report_id" value="{$data['id']}">
                 </div>
             {if condition="$data['is_add']==1"}
                 <div class="form-group" >
@@ -48,24 +49,17 @@
                     </div>
                 </div>
             {/if}
-            <div class="form-group">
-                <div class="file-loading">
-                    <input id="file-1" type="file" multiple class="file"  data-show-remove="true" data-overwrite-initial="false" data-min-file-count="2" data-theme="fas">
-                </div>
-            </div>
+
                 <div class="form-group" >
                     <label class="col-sm-2 ">活动图片:</label>
                     <div class="col-sm-10">
-                        {$data['pic']}
-
-                        <input type="file" name="pic[]">
-                        <input type="file" name="pic[]">
+                        <input id="myfile" type="file" name="myfile" multiple >
                     </div>
                 </div>
                 <div class="form-group" >
                     <label class="col-sm-2 ">活动小结:</label>
                     <div class="col-sm-10">
-                        <textarea class="form-control" rows="6">{$data['info']}</textarea>
+                        <textarea class="form-control" rows="6" name="info" id="info">{$data['info']}</textarea>
                     </div>
                 </div>
             <div class="form-group" >
@@ -79,12 +73,103 @@
 </div>
 <script>
     $(document).ready(function () {
-        $("#test-upload").fileinput({
-            'theme': 'fas',
-            'showPreview': false,
-            'allowedFileExtensions': ['jpg', 'png', 'gif'],
-            'elErrorContainer': '#errorBlock'
-        });
+        formvalidator();
+
+
+
+        initialPreview=[
+            {foreach $data['pic'] as $val}
+    "/uploads/{$val.path}",
+            {/foreach}
+    ];
+        initialPreviewConfig=[
+            {foreach $data['pic'] as $val}
+            {key:{$val.id},showDelete: true},
+            {/foreach}
+        ];
+        $("#myfile").fileinput({
+            uploadUrl:"/admin/active/upload", //接受请求地址
+            uploadExtraData:{'report_id':$('#report_id').val()}, //自定义参数
+            uploadAsync : true, //默认异步上传
+            showUpload : false, //是否显示上传按钮,跟随文本框的那个
+            showRemove : false, //显示移除按钮,跟随文本框的那个
+            showCaption : false,//是否显示标题,就是那个文本框
+            showPreview : true, //是否显示预览,不写默认为true
+            showClose:false,
+            dropZoneEnabled : false,//是否显示拖拽区域，默认不写为true，但是会占用很大区域
+            //minImageWidth: 50, //图片的最小宽度
+            //minImageHeight: 50,//图片的最小高度
+            //maxImageWidth: 1000,//图片的最大宽度
+            //maxImageHeight: 1000,//图片的最大高度
+            //maxFileSize: 0,//单位为kb，如果为0表示不限制文件大小
+            //minFileCount: 0,
+            maxFileCount : 10, //表示允许同时上传的最大文件个数
+            enctype : 'multipart/form-data',
+            validateInitialCount : true,
+            previewFileIcon : "<i class='glyphicon glyphicon-king'></i>",
+            msgFilesTooMany : "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
+            allowedFileTypes : [ 'image' ],//配置允许文件上传的类型
+            allowedPreviewTypes : [ 'image' ],//配置所有的被预览文件类型
+            allowedPreviewMimeTypes : [ 'jpg', 'png', 'gif' ],//控制被预览的所有mime类型
+            language : 'zh',
+            overwriteInitial:false,//是否在选择新图片时，把之前的预设图片删除掉
+            removeFromPreviewOnError:true, //当选择的文件不符合规则时，例如不是指定后缀文件、大小超出配置等，选择的文件不会出现在预览框中，只会显示错误信息
+            initialPreview:initialPreview,//预览图片img
+            initialPreviewAsData: true,
+            initialPreviewConfig:initialPreviewConfig,
+            deleteUrl: "/admin/active/uploaddel",
+            layoutTemplates :{
+                // actionDelete:'', //去除上传预览的缩略图中的删除图标
+                actionMove:'',
+                actionUpload:'',//去除上传预览缩略图中的上传图片；
+                // actionZoom:''   //去除上传预览缩略图中的查看详情预览的缩略图标。
+            },
+        })
 
     });
+
+    function formvalidator() {
+        $('#addForm').bootstrapValidator({
+            message: 'This value is not valid',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                info: {
+                    message: '',
+                    validators: {
+                        notEmpty: {
+                        },
+                        stringLength: {
+                            min: 1,
+                            max: 500,
+                            message:''
+                        }
+                    }
+                }
+            }
+        }).on('success.form.bv', function(e) {
+            $("#myfile").fileinput("upload");
+            e.preventDefault();
+            var $form = $(e.target);
+            var bv = $form.data('bootstrapValidator');
+            $.post($form.attr('action'), $form.serialize(), function(result) {
+                if (result.code==200) {
+                    //TODO 提示框
+                    $('#add').modal('hide');
+                    $('#tipM').modal('show');
+                    setTimeout(function(){
+                        $('#tipM').modal('hide');
+                    }, 2000);
+                    $('#table_list').bootstrapTable('refresh');
+                }else{
+                    alert(result.msg);
+                    bv.resetForm();
+                    return;
+                }
+            }, 'json');
+        });
+    }
 </script>

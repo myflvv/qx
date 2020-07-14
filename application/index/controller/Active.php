@@ -6,6 +6,8 @@ use app\index\model\ActiveType;
 use app\index\model\Admin;
 use app\index\model\EnterModel;
 use app\index\model\Log;
+use app\index\model\ReportModel;
+use app\index\model\ReportPicModel;
 use think\Controller;
 use think\Db;
 
@@ -203,13 +205,14 @@ class Active extends Controller{
         }
     }
 
+    //获取活动报告
     public function getReport(){
         $active_id=input('get.active_id',0);
         if (empty($active_id)){
             return '参数错误';
         }
-        $res=Db::query("select *,act.title,report.info as report_info,report.create_time as report_create_time from qx_active act left join  qx_report report on act.id=report.active_id where act.id=".$active_id." limit 1");
-
+        $res=Db::query("select report.*,act.title,report.info as report_info,report.create_time as report_create_time from qx_active act left join  qx_report report on act.id=report.active_id where act.id=".$active_id." limit 1");
+        $reportRes=ReportPicModel::where(['report_id'=>$res[0]['id']])->select();
         if ($res){
             $data=[];
             if (empty($res[0]['create_time'])){ //如果没有报告
@@ -217,18 +220,20 @@ class Active extends Controller{
                     'title'=>$res[0]['title'].'-报告',
                     'create_time'=>'',
                     'admin_name'=>'',
-                    'pic'=>'',
                     'info'=>'',
-                    'is_add'=>0//是否有内容
+                    'is_add'=>0,//是否有内容
+                    'id'=>$res[0]['id'],
+                    'pic'=>$reportRes
                 ];
             }else{
                 $data=[
                     'title'=>$res[0]['title'].'-报告',
                     'create_time'=>date('Y-m-d H:i:s',$res[0]['report_create_time']),
                     'admin_name'=>Admin::getAdminNameById($res[0]['admin_id']),
-                    'pic'=>$res[0]['pic'],
                     'info'=>$res[0]['report_info'],
-                    'is_add'=>1//是否有内容
+                    'is_add'=>1,//是否有内容
+                    'id'=>$res[0]['id'],
+                    'pic'=>$reportRes
                 ];
             }
             $this->assign('data',$data);
@@ -237,5 +242,53 @@ class Active extends Controller{
             return '无此活动';
         }
 
+    }
+    //活动报告上传图片
+    public function postUpload(){
+        $report_id=input('post.report_id',0);
+        if (empty($report_id)){
+            return json(['code'=>420,'msg'=>'参数错误']);
+        }
+        $file = request()->file('myfile');
+        if (!empty($file)){ //如果上传图片存在则更新
+            // 移动到框架应用根目录/uploads/ 目录下
+            $info = $file->validate(['size'=>1567800,'ext'=>'jpg,png,gif'])->move( './uploads');
+            if($info){
+                // 成功上传后 获取上传信息
+                // 输出 jpg
+//            echo $info->getExtension();
+                // 输出 20160820/42a79759f284b767dfcb2a0197904287.jpg
+//            echo $info->getSaveName();
+                ReportPicModel::create(['report_id'=>$report_id,'path'=>$info->getSaveName()]);
+                return json(['code'=>200,'data'=>$info->getSaveName()]);
+                // 输出 42a79759f284b767dfcb2a0197904287.jpg
+//            echo $info->getFilename();
+            }else{
+                // 上传失败获取错误信息
+//            echo $file->getError();
+                return json(['code'=>420,'msg'=>$file->getError()]);
+            }
+        }else{//上传图片为空也返回200
+            return json(['code'=>200]);
+        }
+
+    }
+
+    public function postUploadDel(){
+        $id=input('post.key',0);
+        $this->delUploadPic($id);
+        return json(['code'=>200]);
+    }
+    private function delUploadPic($id){
+        if (!empty($id)){
+            $res=ReportPicModel::where(['id'=>$id])->field('path')->find();
+            if ($res){
+                $path=ROOT_PATH.'/uploads/'.$res['path'];
+                if (file_exists($path)) {
+                    unlink($path);
+                }
+                ReportPicModel::destroy($id);
+            }
+        }
     }
 }
