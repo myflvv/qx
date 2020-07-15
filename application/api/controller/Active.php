@@ -26,20 +26,19 @@ class Active extends Controller{
         if (!$filter_info['status']){
             return json(['code'=>420,'msg'=>"描述含有非法关键字[".$filter_info['key']."]"]);
         }
+
         //毫秒转日期 活动开始时间
-        $s=$this->getMsecToMescdate($params['start_time_unix']);
-        $start_time=strtotime($s);//日期转时间戳
+        $start_time=$this->getMsecToMescdate($params['start_time_unix']);
+
         //活动结束时间
-        $s=$this->getMsecToMescdate($params['end_time_unix']);
-        $end_time=strtotime($s);
+        $end_time=$this->getMsecToMescdate($params['end_time_unix']);
+
         //招募开始时间
-        $s=$this->getMsecToMescdate($params['recruit_start_time_unix']);
-        $recruit_start_time=strtotime($s);
+        $recruit_start_time=$this->getMsecToMescdate($params['recruit_start_time_unix']);
 
         //招募结束时间
-        if(!empty($params['recruit_end_time_unix'])){
-            $s=$this->getMsecToMescdate($params['recruit_end_time_unix']);
-            $recruit_end_time=strtotime($s);
+        if(!empty(trim($params['recruit_end_time_unix']))){
+            $recruit_end_time=$this->getMsecToMescdate($params['recruit_end_time_unix']);
         }else{
             $recruit_end_time=0;
         }
@@ -65,16 +64,24 @@ class Active extends Controller{
             'create_time'=>time(),
             'add_user_id'=>$add_user_id
         ];
-        $r=ActiveModel::create($data);
+        if (empty($params['active_id'])){ //如果活动ID为空或者为0,则添加
+            $r=ActiveModel::create($data);
+        }else{
+            //修改更新
+            $r=ActiveModel::where(['id'=>$params['active_id']])->update($data);
+        }
         if ($r){
             return json(['code'=>200,'msg'=>'success']);
         }else{
             return json(['code'=>420,'msg'=>$r]);
         }
     }
-    //毫秒转日期
+    //毫秒时间戳转年月日时分时间戳
     private function getMsecToMescdate($msectime)
     {
+        if (strlen($msectime)==10){ //修改保存如果没有选择,则是11位时间戳,原样返回
+            return $msectime;
+        }
         $msectime = $msectime * 0.001;
         if (strstr($msectime, '.')) {
             sprintf("%01.3f", $msectime);
@@ -85,7 +92,8 @@ class Active extends Controller{
             $sec = "000";
         }
         $date = date("Y-m-d H:i", $usec);
-        return $mescdate = str_replace('x', $sec, $date);
+        $mescdate = str_replace('x', $sec, $date);
+        return strtotime($mescdate);
     }
 
     //我的成员 列表、单位信息、总人数
@@ -204,6 +212,41 @@ class Active extends Controller{
             $name="--";
         }
         return $name;
+    }
+    //修改活动
+    public function getEditDetail(){
+        $id=input('get.id',0);
+        if (empty($id)){
+            return json(['code'=>420,'msg'=>'参数错误']);
+        }
+        $res=Db::query("select act.*,type.id as type_id,type.name as type_name from qx_active act left join qx_active_type type on act.service_type_id=type.id where act.id=".$id);
+        if (!$res){
+            return json(['code'=>420,'msg'=>'活动不存在']);
+        }
+        $res=$res[0];
+        $nowTime=time();
+        if ($nowTime<$res)
+        //根据表单字段格式化
+        $res['title_value']=$res['title'];
+        $res['service_type']=$res['type_name'];
+        $res['service_type_unix']=$res['type_id'];
+        $res['service_time']=$res['service_time'].'小时';
+        $res['service_time_unix']=$res['service_time'];
+        $res['start_time']=date('Y-m-d H:i',$res['active_start_time']);
+        $res['start_time_unix']=$res['active_start_time'];
+        $res['end_time']=date('Y-m-d H:i',$res['active_end_time']);
+        $res['end_time_unix']=$res['active_end_time'];
+        $recruit_start_time_unix=$res['recruit_start_time'];
+        $res['recruit_start_time']=date('Y-m-d H:i',$res['recruit_start_time']);
+        $res['recruit_start_time_unix']=$recruit_start_time_unix;
+        $res['recruit_end_time']=empty($res['recruit_end_time'])?"    ":date('Y-m-d H:i',$res['recruit_end_time']);//如果是空，保留空格，用于箭头对齐
+        $res['recruit_end_time_unix']=$res['recruit_end_time'];
+        $res['user_value']=$res['user'];
+        $res['tel_value']=$res['tel'];
+        $res['address_value']=$res['address'];
+        $res['info_value']=$res['info'];
+        $res['place']=$res['place_address'];
+        return json(['code'=>200,'content'=>$res]);
     }
     //获取单位名称
 //    private function getTeamName($id){

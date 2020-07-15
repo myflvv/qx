@@ -18,6 +18,11 @@ function admin_level($level=0){
     return $arr[$level];
 }
 
+//获取当前协议及域名
+function domain(){
+    return request()->Domain().'/';
+}
+
 //查看打卡签到签退时间是否在范围内
 function chk_dk_time($dk_time){
     $time=time();

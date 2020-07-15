@@ -55,14 +55,22 @@ class Admin extends Controller{
         $page=input('get.pageNum',1);
         $offset=20;
         $limit=($page-1)*$offset;
-        $where=" add_user_id=".$admin_id;
+        $where=" act.add_user_id=".$admin_id;
         if (!empty($key)){
-            $where .= " and title like '%".$key."%'";
+            $where .= " and act.title like '%".$key."%'";
         }
-        $res=ActiveModel::where($where)->limit($limit,$offset)->select();
+//        $res=ActiveModel::where($where)->limit($limit,$offset)->select();
+        $sql="select act.*,report.id as report_id,report.update_num from qx_active act left join qx_report report on act.id=report.active_id where $where order by act.create_time desc limit $limit,$offset";
+        $res=Db::query($sql);
         if ($res){
             $no=$limit;
             foreach ($res as $key=>$val){
+                //活动报告
+                if (empty($val['report_id'])){ //没有填写过活动报告
+                    $res[$key]['report_button_txt']='填写报告(3次)';
+                }else{
+                    $res[$key]['report_button_txt']='修改报告('.$val['update_num'].'次)';
+                }
                 $recruit_end_time=$val['recruit_end_time'];
                 if (empty($recruit_end_time)){ //如果招募结束时间为空，则结束时间为活动的开始时间
                     $recruit_end_time=$val['active_start_time'];

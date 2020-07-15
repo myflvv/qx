@@ -252,7 +252,7 @@ class Active extends Controller{
         $file = request()->file('myfile');
         if (!empty($file)){ //如果上传图片存在则更新
             // 移动到框架应用根目录/uploads/ 目录下
-            $info = $file->validate(['size'=>1567800,'ext'=>'jpg,png,gif'])->move( './uploads');
+            $info = $file->validate(['ext'=>'jpg,png,gif'])->move( './uploads');
             if($info){
                 // 成功上传后 获取上传信息
                 // 输出 jpg
