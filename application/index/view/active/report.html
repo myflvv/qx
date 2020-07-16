@@ -15,6 +15,18 @@
     </div>
 </nav>
 <div class="container-index">
+    <div class="modal-dialog modal-sm fade" id="tipM" style="margin:auto;z-index: 999;position: absolute;left:0px;
+               right: 0px;
+               top:300px;
+               bottom: 0px;">
+        <div class="modal-content">
+            <div class="modal-body" style="padding: 0;">
+                <div class="alert alert-success" style="margin-bottom: 0;text-align: center;">
+                    <span class="glyphicon glyphicon-ok"></span> <span>操作成功</span>
+                </div>
+            </div>
+        </div>
+    </div>
     <div style="margin-top: 20px;">
         <form id="addForm" action="/admin/active/reportsave" method="post" class="form-horizontal"  enctype="multipart/form-data">
             {if condition="$data['is_add']==0"}
@@ -34,6 +46,7 @@
                     </div>
 
                     <input type="hidden" name="report_id" id="report_id" value="{$data['id']}">
+                    <input type="hidden" name="active_id" id="active_id" value="{$data['active_id']}">
                 </div>
             {if condition="$data['is_add']==1"}
                 <div class="form-group" >
@@ -70,7 +83,9 @@
             </div>
         </form>
     </div>
+
 </div>
+
 <script>
     $(document).ready(function () {
         formvalidator();
@@ -89,7 +104,7 @@
         ];
         $("#myfile").fileinput({
             uploadUrl:"/admin/active/upload", //接受请求地址
-            uploadExtraData:{'report_id':$('#report_id').val()}, //自定义参数
+            uploadExtraData:{'active_id':$('#active_id').val()}, //自定义参数
             uploadAsync : true, //默认异步上传
             showUpload : false, //是否显示上传按钮,跟随文本框的那个
             showRemove : false, //显示移除按钮,跟随文本框的那个
@@ -110,7 +125,7 @@
             msgFilesTooMany : "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
             allowedFileTypes : [ 'image' ],//配置允许文件上传的类型
             allowedPreviewTypes : [ 'image' ],//配置所有的被预览文件类型
-            allowedPreviewMimeTypes : [ 'jpg', 'png', 'gif' ],//控制被预览的所有mime类型
+            allowedPreviewMimeTypes : [ 'jpg','png','gif' ],//控制被预览的所有mime类型
             language : 'zh',
             overwriteInitial:false,//是否在选择新图片时，把之前的预设图片删除掉
             removeFromPreviewOnError:true, //当选择的文件不符合规则时，例如不是指定后缀文件、大小超出配置等，选择的文件不会出现在预览框中，只会显示错误信息
@@ -156,14 +171,15 @@
             var $form = $(e.target);
             var bv = $form.data('bootstrapValidator');
             $.post($form.attr('action'), $form.serialize(), function(result) {
-                if (result.code==200) {
-                    //TODO 提示框
-                    $('#add').modal('hide');
+                if (result.code==200) {;
                     $('#tipM').modal('show');
                     setTimeout(function(){
                         $('#tipM').modal('hide');
                     }, 2000);
-                    $('#table_list').bootstrapTable('refresh');
+                    setTimeout(function(){
+                        history.go(-1);
+                    }, 1000);
+
                 }else{
                     alert(result.msg);
                     bv.resetForm();

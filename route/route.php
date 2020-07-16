@@ -19,5 +19,6 @@ Route::group('admin',function (){
     Route::controller('user','index/user');
     Route::controller('active','index/active');
     Route::controller('report','index/report');
+    Route::controller('news','index/news');
 })->middleware('AdminAuth');
 

@@ -212,7 +212,7 @@ class Active extends Controller{
             return '参数错误';
         }
         $res=Db::query("select report.*,act.title,report.info as report_info,report.create_time as report_create_time from qx_active act left join  qx_report report on act.id=report.active_id where act.id=".$active_id." limit 1");
-        $reportRes=ReportPicModel::where(['report_id'=>$res[0]['id']])->select();
+
         if ($res){
             $data=[];
             if (empty($res[0]['create_time'])){ //如果没有报告
@@ -222,10 +222,11 @@ class Active extends Controller{
                     'admin_name'=>'',
                     'info'=>'',
                     'is_add'=>0,//是否有内容
-                    'id'=>$res[0]['id'],
-                    'pic'=>$reportRes
+                    'id'=>0,
+                    'pic'=>[]
                 ];
             }else{
+                $reportRes=ReportPicModel::where(['active_id'=>$active_id])->select();
                 $data=[
                     'title'=>$res[0]['title'].'-报告',
                     'create_time'=>date('Y-m-d H:i:s',$res[0]['report_create_time']),
@@ -236,6 +237,7 @@ class Active extends Controller{
                     'pic'=>$reportRes
                 ];
             }
+            $data['active_id']=$active_id;
             $this->assign('data',$data);
             return $this->fetch('report');
         }else{
@@ -245,27 +247,18 @@ class Active extends Controller{
     }
     //活动报告上传图片
     public function postUpload(){
-        $report_id=input('post.report_id',0);
-        if (empty($report_id)){
+        $active_id=input('post.active_id',0);
+        if (empty($active_id)){
             return json(['code'=>420,'msg'=>'参数错误']);
         }
         $file = request()->file('myfile');
         if (!empty($file)){ //如果上传图片存在则更新
             // 移动到框架应用根目录/uploads/ 目录下
-            $info = $file->validate(['ext'=>'jpg,png,gif'])->move( './uploads');
+            $info = $file->move( './uploads');
             if($info){
-                // 成功上传后 获取上传信息
-                // 输出 jpg
-//            echo $info->getExtension();
-                // 输出 20160820/42a79759f284b767dfcb2a0197904287.jpg
-//            echo $info->getSaveName();
-                ReportPicModel::create(['report_id'=>$report_id,'path'=>$info->getSaveName()]);
+                ReportPicModel::create(['active_id'=>$active_id,'path'=>$info->getSaveName()]);
                 return json(['code'=>200,'data'=>$info->getSaveName()]);
-                // 输出 42a79759f284b767dfcb2a0197904287.jpg
-//            echo $info->getFilename();
             }else{
-                // 上传失败获取错误信息
-//            echo $file->getError();
                 return json(['code'=>420,'msg'=>$file->getError()]);
             }
         }else{//上传图片为空也返回200
@@ -273,7 +266,7 @@ class Active extends Controller{
         }
 
     }
-
+    //删除图片
     public function postUploadDel(){
         $id=input('post.key',0);
         $this->delUploadPic($id);
@@ -290,5 +283,34 @@ class Active extends Controller{
                 ReportPicModel::destroy($id);
             }
         }
+    }
+    //保存活动报告
+    public function postReportSave(){
+        $active_id=input('post.active_id');
+        $report_id=input('post.report_id');
+        $info=input('post.info');
+        if (empty($active_id)){
+            return json(['code'=>420,'msg'=>'参数错误']);
+        }
+        if ($report_id==0){ //添加
+            $data=[
+                'active_id'=>$active_id,
+                'info'=>$info,
+                'create_time'=>time(),
+                'update_num'=>3,
+                'admin_id'=> session("admin_id")
+            ];
+            Log::add('AdminID'.session('admin_id')." 添加活动报告 ID".$active_id);
+            ReportModel::create($data);
+        }else{//修改 管理员不修改update_num次数
+            $data=[
+                'info'=>$info,
+                'update_time'=>time(),
+                'admin_id'=> session("admin_id")
+            ];
+            Log::add(session('admin_id')."修改活动报告ID".$active_id);
+            ReportModel::where(['id'=>$report_id])->update($data);
+        }
+        return json(['code'=>200,'msg'=>'success']);
     }
 }

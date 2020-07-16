@@ -51,6 +51,7 @@
                 <div id="cm-menu-scroller">
                     <ul class="cm-menu-items">
                         <li <?php prePathSelect(['admin/main/index'])?>><a href="/admin/main/index" class="sf-house">首页</a></li>
+                        <li <?php prePathSelect(['admin/news/index','admin/news/add'])?>><a href="/admin/news/index" class="sf-post-it">新闻管理</a></li>
                         <li <?php prePathSelect(['admin/user/index'])?>><a href="/admin/user/index" class="sf-user-female">人员管理</a></li>
                         <li <?php prePathSelect(['admin/team/type'])?>><a href="/admin/team/type" class="sf-profile-group">团队管理</a></li>
                         <li class="cm-submenu <?php if(pathSelect('active')) echo 'pre-open' ?>" >
@@ -58,8 +59,7 @@
                             <ul>
                                 <li <?php prePathSelect(['admin/active/type'])?>><a href="/admin/active/type">活动类型</a></li>
                                 <li <?php prePathSelect(['admin/active/time'])?>><a href="/admin/active/time">活动时长</a></li>
-                                <li <?php prePathSelect(['admin/active/active','admin/active/user'])?>><a href="/admin/active/active">志愿活动</a></li>
-                                <li <?php prePathSelect(['admin/report/index'])?>><a href="/admin/report/index">活动报告</a></li>
+                                <li <?php prePathSelect(['admin/active/active','admin/active/user','admin/active/report'])?>><a href="/admin/active/active">志愿活动</a></li>
                             </ul>
                         </li>
                         <li class="cm-submenu <?php if(pathSelect('sys')) echo 'pre-open' ?>">

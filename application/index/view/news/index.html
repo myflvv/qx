@@ -1,0 +1,96 @@
+<link rel="stylesheet" href="/static/jquery.treegrid.min.css">
+<script src="/static/bootstrap-table-treegrid.js"></script>
+<script src="/static/jquery.treegrid.min.js"></script>
+
+<nav class="cm-navbar cm-navbar-default cm-navbar-slideup">
+    <div class="cm-flex">
+        <div class="cm-breadcrumb-container">
+            <ol class="breadcrumb">
+                <li class="active">新闻管理</li>
+            </ol>
+        </div>
+    </div>
+</nav>
+<div class="container-index">
+    <div class="page-tool pull-right">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-primary btn-sm" id="add-button">添加</button>
+                </div>
+    </div>
+
+    <table id="table_list" class="table table-bordered table-hover  table-center">
+
+    </table>
+</div>
+<div class="modal-dialog modal-sm fade" id="tipM" style="margin-top: 0px;z-index: 999;">
+    <div class="modal-content">
+        <div class="modal-body" style="padding: 0;">
+            <div class="alert alert-success" style="margin-bottom: 0;text-align: center;">
+                <span class="glyphicon glyphicon-ok"></span> <span>操作成功</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        table_list();
+
+        // $('#add').on('hidden.bs.modal', function () {
+        //     $("#addForm").data('bootstrapValidator').destroy();
+        //     $('#addForm').data('bootstrapValidator', null);
+        //     $('#addForm')[0].reset();
+        //     formvalidator();
+        // });
+        $('#add-button').on('click',function () {
+            location.href='/admin/news/add';
+        });
+
+    });
+
+    function table_list() {
+        $('#table_list').bootstrapTable({
+            url:'/admin/news/list',
+            method:'get',
+            cache : false,
+            dataType : "json",
+            striped: true,
+            pagination: true,
+            pageNumber: 1,
+            pageSize: 10,
+            sidePagination: "server",
+            search:false,
+            columns:[{
+                field:'no',
+                title:'序号',
+                width:50,
+                align:'center',
+                valign:'center',
+            },{
+                field:'title',
+                title:'标题'
+            },{
+                field:'create_time_format',
+                title:'发布时间'
+            },{
+                field:'admin_name',
+                title:'发布人'
+            },{
+                field:'id',
+                title:'操作',
+                width:150,
+                align:'center',
+                valign:'center',
+                formatter:actionFormatter
+            }
+            ]
+        });
+    }
+    function actionFormatter(value, row, index) {
+        var id = value;
+        var result = "";
+        result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"editView('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>&nbsp;&nbsp;";
+        result += "<a href='javascript:;' class='btn btn-xs btn-danger' onclick=\"delView('" + id + "','"+row.title+"')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+        return result;
+    }
+</script>

@@ -17,9 +17,10 @@ class Login extends Controller{
             return json(['valid'=>false]);
         }
         $password=md5_en($password);
-        $res =Admin::where(['username'=>$username,'password'=>$password])->count();
+        $res =Admin::where(['username'=>$username,'password'=>$password])->find();
         if ($res){
             session('username',$username);
+            session('admin_id',$res['id']);
             Log::add('登录');
             return json(['valid'=>true]);
         }else{
@@ -30,6 +31,7 @@ class Login extends Controller{
     public function out(){
         Log::add('退出');
         session('username',null);
+        session('admin_id',null);
         return redirect('/');
     }
 }
