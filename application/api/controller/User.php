@@ -143,11 +143,11 @@ class User extends Controller{
         if (empty($openid)){
             return json(['code'=>420,'msg'=>'授权不存在']);
         }
-        $res=\app\api\model\User::where(['openid'=>$openid])->field('real_name')->find();
+        $res=\app\api\model\User::where(['openid'=>$openid])->field('real_name,duration')->find();
         if ($res){
-            //TODO 计算服务时间及排名
-            $res['service_time']=100;
-            $res['ranking']=40;
+            //计算人员服务时间及排名
+            $res['service_time']=$res['duration'];
+            $res['ranking']=\app\api\model\User::ranking($res['duration']);
             return json(['code'=>200,'content'=>$res]);
         }else{
             return json(['code'=>420,'msg'=>'初始化数据失败']);
@@ -323,9 +323,5 @@ class User extends Controller{
         }else{
             return json(['code'=>420,'msg'=>'活动不存在']);
         }
-    }
-
-    public function getTeam(){
-        echo 1;
     }
 }

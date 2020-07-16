@@ -5,6 +5,7 @@ namespace app\api\controller;
 use app\api\model\FilterModel;
 use app\api\model\ReportModel;
 use app\api\model\ReportPicModel;
+use app\index\model\Duration;
 use think\Controller;
 use think\Db;
 
@@ -29,6 +30,8 @@ class Report extends Controller{
                 'admin_id'=>$admin_id,
                 'update_num'=>3 //默认三次修改机会
             ]);
+            //更新人员服务时长
+            Duration::computeUserDuration($active_id);
         }else{//更新
             //验证修改次数
             $res=ReportModel::where(['id'=>$report_id])->field('update_num')->find();
@@ -68,6 +71,22 @@ class Report extends Controller{
 
         }
         return json(['code'=>200,'content'=>$res]);
+    }
+    //小程序删除图片
+    public function postDelPic(){
+        $path=input('post.path','');
+        if (!empty($path)){
+            $domain=domain().'uploads/';
+            $picPath=str_replace($domain,'',$path); //去掉图片网址
+            ReportPicModel::where(['path'=>$picPath])->delete();
+            $serPath=ROOT_PATH.'/uploads/'.$picPath;
+            if (file_exists($serPath)) {
+                unlink($serPath);
+                return json(['code'=>200]);
+            }
+            return json(['code'=>420,'msg'=>'服务图片不存在']);
+        }
+        return json(['code'=>420,'msg'=>'参数path为空']);
     }
     //上传图片
     public function postUpload(){
