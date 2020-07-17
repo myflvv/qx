@@ -33,6 +33,33 @@ class News extends Controller{
         return $this->fetch('add');
     }
 
+    public function postSave(){
+        $params=input('post.');
+        $data=[
+            'title'=>$params['title'],
+            'content'=>$params['content_textarea'],
+            'create_time'=>time(),
+            'admin_id'=>session('admin_id')
+        ];
+        NewsModel::create($data);
+        return json(['code'=>200]);
+    }
+    //上传编辑器内图片
+    public function postTextUpload(){
+        $file = request()->file('file');
+        if (!empty($file)){
+            $info = $file->move( './uploads');
+            if($info){
+                $path='/uploads/'.$info->getSaveName();
+                return json(['code'=>200,'data'=>$path]);
+            }else{
+                return json(['code'=>420,'msg'=>$file->getError()]);
+            }
+        }else{//上传图片为空也返回200
+            return json(['code'=>200]);
+        }
+    }
+
     //上传缩略图片
     public function postUpload(){
         $id=input('post.id',0);
