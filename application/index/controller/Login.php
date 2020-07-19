@@ -19,6 +19,9 @@ class Login extends Controller{
         $password=md5_en($password);
         $res =Admin::where(['username'=>$username,'password'=>$password])->find();
         if ($res){
+            if ($res['level']==3){ //不允许三级管理员登录
+                return json(['valid'=>false]);
+            }
             session('username',$username);
             session('admin_id',$res['id']);
             Log::add('登录');

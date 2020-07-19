@@ -248,6 +248,25 @@ class Active extends Controller{
         $res['place']=$res['place_address'];
         return json(['code'=>200,'content'=>$res]);
     }
+
+    //首页总数接口
+    public function getHomeCount(){
+        //志愿者总数
+        $userCount=\app\api\model\User::count();
+        //服务总时长
+        $userDurationCount=\app\api\model\User::sum('duration');
+        //活动总数
+        $activeCount=ActiveModel::count();
+        //团队总数
+        $teamCount=Team::where('pid<>0 and is_team<>2')->count();
+        $data=[
+            'useCount'=>$userCount,
+            'userDurationCount'=>$userDurationCount,
+            'activeCount'=>$activeCount,
+            'teamCount'=>$teamCount
+        ];
+        return json(['code'=>200,'content'=>$data]);
+    }
     //获取单位名称
 //    private function getTeamName($id){
 //        if (empty($id)){

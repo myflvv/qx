@@ -10,6 +10,7 @@ Route::group('api',function (){
     Route::controller('active','api/active');
     Route::controller('report','api/report');
     Route::controller('team','api/team');
+    Route::controller('news','api/news');
 });
 
 Route::group('admin',function (){

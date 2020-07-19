@@ -9,7 +9,13 @@
         <div class="cm-breadcrumb-container">
             <ol class="breadcrumb">
                 <li><a href="/admin/news/index">新闻管理</a></li>
-                <li class="active">添加</li>
+                <li class="active">
+                    {if ($id==0)}
+                    添加
+                    {else /}
+                    修改
+                    {/if}
+                </li>
             </ol>
         </div>
     </div>
@@ -20,23 +26,34 @@
             <div class="form-group" >
                 <label class="col-sm-2">标题:</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" name="title" id="title">
-                    <input type="hidden" name="id" id="id" value="0">
+                    <input type="text" class="form-control" name="title" id="title" value="{$title}">
+                    <input type="hidden" name="id" id="id" value="{$id}">
                 </div>
             </div>
 
-            <div class="form-group" >
-                <label class="col-sm-2 ">缩略图:</label>
+<!--            <div class="form-group" >-->
+<!--                <label class="col-sm-2 ">缩略图:</label>-->
+<!--                <div class="col-sm-10">-->
+<!--                    <input id="myfile" type="file" name="myfile">-->
+<!--                </div>-->
+<!--            </div>-->
+            <div class="form-group">
+                <label  class="col-sm-2 control-label"></label>
                 <div class="col-sm-10">
-                    <input id="myfile" type="file" name="myfile">
+                    <div class="alert alert-warning" role="alert" style="margin-bottom: 0;padding: 5px;">
+                        <span class="glyphicon glyphicon-info-sign"></span> 缩略图使用内容第一张图片
+                    </div>
+
                 </div>
             </div>
             <div class="form-group" >
                 <label class="col-sm-2 ">内容:</label>
                 <div class="col-sm-10">
-                    <div id="summernote" name="content" data-bv-excluded="false" data-bv-notempty></div>
+                    <div id="summernote" name="content" data-bv-excluded="false" data-bv-notempty>
+                        <?php echo htmlspecialchars_decode($content);?>
+                    </div>
 <!--                    <texarea style="display: none" id="content_textarea" name="content_textarea"></texarea>-->
-                    <input type="hidden" id="content_textarea" name="content_textarea">
+                    <input type="hidden" id="content_textarea" name="content_textarea" value="{$content}">
                 </div>
 
             </div>
@@ -97,10 +114,8 @@
                 processData : false,
                 dataType : "json",
                 success: function(data) {
-                    console.log(data.data);
                     editor.insertImage($editable, data.data);
-                    // $('#summernote').summernote('insertImage', data.data);
-                    // $('#summernote').summernote('editor.insertImage', data.data);
+
                 },
                 error:function(){
                     alert("上传失败");
@@ -182,7 +197,7 @@
                     $('#tipM').modal('show');
                     setTimeout(function(){
                         $('#tipM').modal('hide');
-                        location.reload();
+                        location.href='/admin/news/index';
                     }, 2000);
 
 

@@ -2,6 +2,7 @@
 namespace app\index\controller;
 
 use app\index\model\Admin;
+use app\index\model\Log;
 use app\index\model\NewsModel;
 use think\Controller;
 
@@ -30,18 +31,61 @@ class News extends Controller{
     }
 
     public function getAdd(){
+        $id=input('get.id',0);
+        if ($id==0){
+            $title='';
+            $content='';
+            $id=0;
+        }else{
+            $res=NewsModel::where(['id'=>$id])->find();
+            if ($res){
+                $title=$res['title'];
+                $content=$res['content'];
+            }else{
+                $title='';
+                $content='';
+                $id=0;
+            }
+        }
+        $this->assign('id',$id);
+        $this->assign('title',$title);
+        $this->assign('content',$content);
         return $this->fetch('add');
+    }
+
+
+    public function postDel(){
+        $id=input('post.id',0);
+        $title=input('post.name','');
+        if (empty($id)){
+            return json(['code'=>420,'msg'=>'参数错误']);
+        }
+        Log::add(session('username').'删除新闻['.$title.']');
+        NewsModel::destroy($id);
+        return json(['code'=>200]);
     }
 
     public function postSave(){
         $params=input('post.');
-        $data=[
-            'title'=>$params['title'],
-            'content'=>$params['content_textarea'],
-            'create_time'=>time(),
-            'admin_id'=>session('admin_id')
-        ];
-        NewsModel::create($data);
+        if (empty($params['id'])){ //添加
+            $data=[
+                'title'=>$params['title'],
+                'content'=>$params['content_textarea'],
+                'create_time'=>time(),
+                'admin_id'=>session('admin_id')
+            ];
+            Log::add(session('username').'添加新闻['.$params['title'].']');
+            NewsModel::create($data);
+        }else{//修改
+            $data=[
+                'title'=>$params['title'],
+                'content'=>$params['content_textarea'],
+                'admin_id'=>session('admin_id')
+            ];
+            Log::add(session('username').'修改新闻['.$params['title'].']');
+            NewsModel::where(['id'=>$params['id']])->update($data);
+        }
+
         return json(['code'=>200]);
     }
     //上传编辑器内图片

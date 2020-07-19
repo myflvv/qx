@@ -169,11 +169,13 @@
         function actionFormatter(value, row, index) {
             var id = value;
             var result = "";
-            if (row.level==1 || row.level==2){
+            if (row.level==1 || row.is_team==2){
                 result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"addView('" + id + "','"+row.name+"',"+row.level+","+index+")\"   title='添加'><span class='glyphicon glyphicon-plus'></span></a>&nbsp;&nbsp;";
             }
             result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"editView('" + id + "','"+row.name+"',"+row.level+","+row.sort+","+index+")\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>&nbsp;&nbsp;";
-            result += "<a href='javascript:;' class='btn btn-xs btn-danger' onclick=\"delView('" + id + "','"+row.name+"')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+            if (row.pid!=0){
+                result += "<a href='javascript:;' class='btn btn-xs btn-danger' onclick=\"delView('" + id + "','"+row.name+"')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+            }
             return result;
         }
         function addView(id,name,level,index){

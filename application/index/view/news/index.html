@@ -93,4 +93,31 @@
         result += "<a href='javascript:;' class='btn btn-xs btn-danger' onclick=\"delView('" + id + "','"+row.title+"')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
         return result;
     }
+
+    function editView(id) {
+        location.href="/admin/news/add?id="+id;
+    }
+    function delView(id,name) {
+        if(confirm('删除不可恢复,确认删除？')){
+            $.ajax({
+                type : "post",
+                url : "/admin/news/del",
+                data:{id:id,name:name},
+                dataType : 'json',
+                async:false,
+                success : function(result) {
+                    if (result.code==200){
+                        $('#table_list').bootstrapTable('refresh');
+                    }else{
+                        alert(result.msg);
+                        return false;
+                    }
+                },
+                error : function(e){
+                    console.log(e.status);
+                    console.log(e.responseText);
+                }
+            });
+        }
+    }
 </script>
