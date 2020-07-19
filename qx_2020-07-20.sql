@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.7.4-m14-log)
 # Database: qx
-# Generation Time: 2020-07-16 17:10:41 +0000
+# Generation Time: 2020-07-19 16:28:30 +0000
 # ************************************************************
 
 
@@ -140,16 +140,15 @@ CREATE TABLE `qx_enter` (
   `end_dk_time` int(11) DEFAULT '0',
   `end_dk_place` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 LOCK TABLES `qx_enter` WRITE;
 /*!40000 ALTER TABLE `qx_enter` DISABLE KEYS */;
 
 INSERT INTO `qx_enter` (`id`, `user_id`, `active_id`, `create_time`, `start_dk_time`, `start_dk_place`, `end_dk_time`, `end_dk_place`)
 VALUES
-	(1,7,6,0,1594738680,'{\"latitude\":39.74788,\"longitude\":116.14294,\"address\":\"\\u826f\\u4e61\\u5317\\u4eac\\u5e02\\u623f\\u5c71\\u533a\\u4eba\\u6c11\\u653f\\u5e9c(\\u653f\\u901a\\u8def\\u5317)\"}',1594738683,'{\"latitude\":39.74788,\"longitude\":116.14294,\"address\":\"\\u826f\\u4e61\\u5317\\u4eac\\u5e02\\u623f\\u5c71\\u533a\\u4eba\\u6c11\\u653f\\u5e9c(\\u653f\\u901a\\u8def\\u5317)\"}'),
-	(2,7,7,0,0,NULL,0,NULL),
-	(3,7,11,1594568598,0,NULL,0,NULL);
+	(1,3,8,0,1594738680,'{\"latitude\":39.74788,\"longitude\":116.14294,\"address\":\"\\u826f\\u4e61\\u5317\\u4eac\\u5e02\\u623f\\u5c71\\u533a\\u4eba\\u6c11\\u653f\\u5e9c(\\u653f\\u901a\\u8def\\u5317)\"}',1594738683,'{\"latitude\":39.74788,\"longitude\":116.14294,\"address\":\"\\u826f\\u4e61\\u5317\\u4eac\\u5e02\\u623f\\u5c71\\u533a\\u4eba\\u6c11\\u653f\\u5e9c(\\u653f\\u901a\\u8def\\u5317)\"}'),
+	(4,7,8,0,0,NULL,0,NULL);
 
 /*!40000 ALTER TABLE `qx_enter` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -189,7 +188,7 @@ CREATE TABLE `qx_log` (
   `create_time` int(11) DEFAULT NULL,
   `content` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=38 DEFAULT CHARSET=utf8;
 
 
 
@@ -206,14 +205,15 @@ CREATE TABLE `qx_news` (
   `admin_id` int(11) DEFAULT NULL,
   `pic` varchar(255) DEFAULT NULL COMMENT '缩略图',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
 LOCK TABLES `qx_news` WRITE;
 /*!40000 ALTER TABLE `qx_news` DISABLE KEYS */;
 
 INSERT INTO `qx_news` (`id`, `title`, `content`, `create_time`, `admin_id`, `pic`)
 VALUES
-	(1,'sd','cvbcxbcb',NULL,1,NULL);
+	(6,'乌鲁木齐完成现有隔离人员核检','<p><span style=\"color: rgb(64, 64, 64); font-family: &quot;Microsoft Yahei&quot;; font-size: 16px; text-align: justify; text-indent: 32px;\">&nbsp; &nbsp; 【#乌鲁木齐完成现有隔离人员核酸检测#】7月19日下午，乌鲁木齐市疾控中心主任芮宝玲介绍，截至7月19日8时，乌鲁木齐市对现有的集中隔离医学观察和居家隔离医学观察人员已全部完成新冠肺炎核酸检测工作。目前增加的确诊病例和无症状感染者全部来自接受隔离医学观察人员，#乌鲁木齐疾控提醒市民不必过度恐慌#。针对传染源的溯源工作正在进行中，将进一步加大流行病学调查力度，确保不漏一人，尽快查清病源，坚决控制疫情的蔓延。</span></p><p><span style=\"color: rgb(64, 64, 64); font-family: &quot;Microsoft Yahei&quot;; font-size: 16px; text-align: justify; text-indent: 32px;\"></span><img src=\"/uploads/20200720/32b08581d7f78233c10b8f7e90eb9d71.jpg\" style=\"width: 671px;\"><span style=\"color: rgb(64, 64, 64); font-family: &quot;Microsoft Yahei&quot;; font-size: 16px; text-align: justify; text-indent: 32px;\"><br></span>\r\n                                            </p>',1595175306,1,NULL),
+	(7,'水位急降7米！湖北恩施一片狼藉 ','<p><br><img src=\"/uploads/20200720/41de3692b2b535a595f08bb8b60dd709.jpg\" style=\"width: 671px;\"></p><p class=\"p1\" style=\"margin-bottom: 0px; text-align: justify; text-indent: 32px; font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; font-size: 16px; line-height: normal; font-family: &quot;Songti SC&quot;; color: rgb(49, 49, 49); -webkit-text-stroke-color: rgb(49, 49, 49);\"><span class=\"s1\" style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; line-height: normal; font-family: Times; font-kerning: none;\">7</span><span class=\"s2\" style=\"font-kerning: none;\">月</span><span class=\"s1\" style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; line-height: normal; font-family: Times; font-kerning: none;\">18</span><span class=\"s2\" style=\"font-kerning: none;\">日，恩施市体育馆路，工作人员正将一辆水淹的汽车送修。</span><span class=\"s1\" style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; line-height: normal; font-family: Times; font-kerning: none;\"> </span><span class=\"s2\" style=\"font-kerning: none;\">（湖北日报全媒记者</span><span class=\"s1\" style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; line-height: normal; font-family: Times; font-kerning: none;\"> </span><span class=\"s2\" style=\"font-kerning: none;\">蔡俊</span><span class=\"s1\" style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; line-height: normal; font-family: Times; font-kerning: none;\"> </span><span class=\"s2\" style=\"font-kerning: none;\">摄）</span></p><p class=\"p2\" style=\"margin-bottom: 0px; text-align: justify; text-indent: 32px; font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; font-size: 16px; line-height: normal; font-family: Times; color: rgb(49, 49, 49); -webkit-text-stroke-color: rgb(49, 49, 49); min-height: 19px;\"><span class=\"s2\" style=\"font-kerning: none;\"></span><br></p><p class=\"p1\" style=\"margin-bottom: 0px; text-align: justify; text-indent: 32px; font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; font-size: 16px; line-height: normal; font-family: &quot;Songti SC&quot;; color: rgb(49, 49, 49); -webkit-text-stroke-color: rgb(49, 49, 49);\"><span class=\"s2\" style=\"font-kerning: none;\">湖北日报全媒记者</span><span class=\"s1\" style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; line-height: normal; font-family: Times; font-kerning: none;\"> </span><span class=\"s2\" style=\"font-kerning: none;\">翟兴波</span><span class=\"s1\" style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; line-height: normal; font-family: Times; font-kerning: none;\"> </span><span class=\"s2\" style=\"font-kerning: none;\">刘畅</span><span class=\"s1\" style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; line-height: normal; font-family: Times; font-kerning: none;\"> </span><span class=\"s2\" style=\"font-kerning: none;\">林晶</span><span class=\"s1\" style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; line-height: normal; font-family: Times; font-kerning: none;\"> </span><span class=\"s2\" style=\"font-kerning: none;\">通讯员</span><span class=\"s1\" style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; line-height: normal; font-family: Times; font-kerning: none;\"> </span><span class=\"s2\" style=\"font-kerning: none;\">杜瑞芳</span></p><p class=\"p1\" style=\"margin-bottom: 0px; text-align: justify; text-indent: 32px; font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; font-size: 16px; line-height: normal; font-family: &quot;Songti SC&quot;; color: rgb(49, 49, 49); -webkit-text-stroke-color: rgb(49, 49, 49);\"><span class=\"s1\" style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; line-height: normal; font-family: Times; font-kerning: none;\">7</span><span class=\"s2\" style=\"font-kerning: none;\">月</span><span class=\"s1\" style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; line-height: normal; font-family: Times; font-kerning: none;\">18</span><span class=\"s2\" style=\"font-kerning: none;\">日凌晨，洪水渐退。</span></p><p class=\"p1\" style=\"margin-bottom: 0px; text-align: justify; text-indent: 32px; font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; font-size: 16px; line-height: normal; font-family: &quot;Songti SC&quot;; color: rgb(49, 49, 49); -webkit-text-stroke-color: rgb(49, 49, 49);\"><span class=\"s2\" style=\"font-kerning: none;\">街巷黄泥淤积狼藉遍地，地下车库积水滞留污痕上墙，树枝丫上挂着垃圾袋和漂浮物，恩施州城被洪水严重肆虐。</span></p><p class=\"p1\" style=\"margin-bottom: 0px; text-align: justify; text-indent: 32px; font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; font-size: 16px; line-height: normal; font-family: &quot;Songti SC&quot;; color: rgb(49, 49, 49); -webkit-text-stroke-color: rgb(49, 49, 49);\"><span class=\"s2\" style=\"font-kerning: none;\">家园，需要一起守护！</span></p><p class=\"p1\" style=\"margin-bottom: 0px; text-align: justify; text-indent: 32px; font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; font-size: 16px; line-height: normal; font-family: &quot;Songti SC&quot;; color: rgb(49, 49, 49); -webkit-text-stroke-color: rgb(49, 49, 49);\"><span class=\"s2\" style=\"font-kerning: none;\">恩施市</span><span class=\"s1\" style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; line-height: normal; font-family: Times; font-kerning: none;\">9000</span><span class=\"s2\" style=\"font-kerning: none;\">余名党员下沉社区，迅速带领志愿者、义工和普通群众进行灾后重启，尽快让山城家园恢复美丽容颜。</span></p><p class=\"p1\" style=\"margin-bottom: 0px; text-align: justify; text-indent: 32px; font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; font-size: 16px; line-height: normal; font-family: &quot;Songti SC&quot;; color: rgb(49, 49, 49); -webkit-text-stroke-color: rgb(49, 49, 49);\"><span class=\"s2\" style=\"font-kerning: none;\">水位急降</span><span class=\"s1\" style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; line-height: normal; font-family: Times; font-kerning: none;\"> </span><span class=\"s2\" style=\"font-kerning: none;\">积水全退</span></p><p class=\"p1\" style=\"margin-bottom: 0px; text-align: justify; text-indent: 32px; font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; font-size: 16px; line-height: normal; font-family: &quot;Songti SC&quot;; color: rgb(49, 49, 49); -webkit-text-stroke-color: rgb(49, 49, 49);\"><span class=\"s1\" style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; line-height: normal; font-family: Times; font-kerning: none;\">“</span><span class=\"s2\" style=\"font-kerning: none;\">水位已经下降</span><span class=\"s1\" style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; line-height: normal; font-family: Times; font-kerning: none;\">7</span><span class=\"s2\" style=\"font-kerning: none;\">米左右。</span><span class=\"s1\" style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; line-height: normal; font-family: Times; font-kerning: none;\">”7</span><span class=\"s2\" style=\"font-kerning: none;\">月</span><span class=\"s1\" style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; line-height: normal; font-family: Times; font-kerning: none;\">18</span><span class=\"s2\" style=\"font-kerning: none;\">日傍晚，在清江河边值守的恩施州城舞阳办事处官坡党委副书记刘俊锋，指着清江边的一处观测点说。水流虽仍湍急，但已明显回落。湖北日报全媒记者看到，水位标识已从高峰期的</span><span class=\"s1\" style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; line-height: normal; font-family: Times; font-kerning: none;\">418.9</span><span class=\"s2\" style=\"font-kerning: none;\">米降到</span><span class=\"s1\" style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; line-height: normal; font-family: Times; font-kerning: none;\">412</span><span class=\"s2\" style=\"font-kerning: none;\">米左右。</span></p><p class=\"p1\" style=\"margin-bottom: 0px; text-align: justify; text-indent: 32px; font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; font-size: 16px; line-height: normal; font-family: &quot;Songti SC&quot;; color: rgb(49, 49, 49); -webkit-text-stroke-color: rgb(49, 49, 49);\"><span class=\"s2\" style=\"font-kerning: none;\">清江东路桔园街是恩施中心城区最热闹的地段，</span><span class=\"s1\" style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; line-height: normal; font-family: Times; font-kerning: none;\">17</span><span class=\"s2\" style=\"font-kerning: none;\">日距离清江</span><span class=\"s1\" style=\"font-variant-numeric: normal; font-variant-east-asian: normal; font-stretch: normal; line-height: normal; font-family: Times; font-kerning: none;\">50</span><span class=\"s2\" style=\"font-kerning: none;\">多米以内的堤外街道满是积水，现已全部退去。警戒线的区域车辆畅通无阻。</span></p>',1595175643,1,NULL);
 
 /*!40000 ALTER TABLE `qx_news` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -234,18 +234,14 @@ CREATE TABLE `qx_report` (
   `update_time` int(11) DEFAULT NULL,
   `update_num` int(1) DEFAULT '0' COMMENT '修改次数',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 LOCK TABLES `qx_report` WRITE;
 /*!40000 ALTER TABLE `qx_report` DISABLE KEYS */;
 
 INSERT INTO `qx_report` (`id`, `active_id`, `pic`, `info`, `create_time`, `admin_id`, `update_time`, `update_num`)
 VALUES
-	(1,7,NULL,'sdf',1594668600,2,NULL,3),
-	(2,10,NULL,'test33341',1594829300,2,1594830101,0),
-	(5,8,NULL,'test123',1594912741,2,1594913169,0),
-	(6,11,NULL,'ccc1',1594913262,2,1594915209,1),
-	(7,6,NULL,'tee',1594917795,2,NULL,3);
+	(8,8,NULL,'清江东路桔园街是恩施中心城区最热闹的地段，17日距离清江50多米以内的堤外街道满是积水，现已全部退去。警戒线的区域车辆畅通无阻。\r\n\r\n位于这一街区的九立方商城是恩施最大的商业体。公司负责人郭施红带着记者进入商城内部，渍水印记在墙面仍清晰可见，高达腰部。“昨日，洪水从5个侧门渗入，淹没了地下三层和地上一层。”他说，目前正组织100余员工用高压水龙清洗地面。',1595175802,1,NULL,3);
 
 /*!40000 ALTER TABLE `qx_report` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -262,21 +258,14 @@ CREATE TABLE `qx_report_pic` (
   `path` varchar(255) DEFAULT NULL,
   `active_id` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
 
 LOCK TABLES `qx_report_pic` WRITE;
 /*!40000 ALTER TABLE `qx_report_pic` DISABLE KEYS */;
 
 INSERT INTO `qx_report_pic` (`id`, `report_id`, `path`, `active_id`)
 VALUES
-	(12,1,'20200714/0e2344c7bcdd13db4dbf1d642f96df02.png',7),
-	(13,NULL,'20200716/6f7b4081903c4711a7b9141759c86762.jpg',10),
-	(14,NULL,'20200716/8dc8c304c7d2ff78f9d9805386fa6525.jpg',10),
-	(15,NULL,'20200716/120206c1e29f2abe7523af9b97c10580.jpg',10),
-	(16,NULL,'20200716/2d09c2db74ea77f7250b78abf46d5067.jpg',10),
-	(17,NULL,'20200716/ce8d2b43beb19cfc95d03b2c645ac913.jpg',8),
-	(18,NULL,'20200716/f1c61baae6e0166dc6767b79edcb8ad8.jpg',8),
-	(21,NULL,'20200717/9a12ff501c80b114e410ba2f579d8694.png',6);
+	(22,NULL,'20200720/578c0dde11546eb8b099ad8908b76d99.jpg',8);
 
 /*!40000 ALTER TABLE `qx_report_pic` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -295,7 +284,7 @@ CREATE TABLE `qx_team` (
   `level` int(11) NOT NULL DEFAULT '0',
   `is_team` int(1) DEFAULT '0' COMMENT '1团体2社区',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=163 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=165 DEFAULT CHARSET=utf8;
 
 LOCK TABLES `qx_team` WRITE;
 /*!40000 ALTER TABLE `qx_team` DISABLE KEYS */;
@@ -481,16 +470,33 @@ CREATE TABLE `qx_user` (
   `comm_id` int(11) DEFAULT '0',
   `duration` float DEFAULT '0' COMMENT '服务时长',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
 
 LOCK TABLES `qx_user` WRITE;
 /*!40000 ALTER TABLE `qx_user` DISABLE KEYS */;
 
 INSERT INTO `qx_user` (`id`, `real_name`, `id_number`, `sex`, `tel`, `team_id`, `pol_cou`, `hight_edu`, `area`, `address`, `create_time`, `openid`, `comm_id`, `duration`)
 VALUES
-	(3,'李某某','110111198408052012',0,'13810761824',9,'中国共产党党员','博士研究生','桥东区','sfdsdf',1593450637,'1',40,0),
-	(7,'张大禹','110111854210021212',0,'13810761824',9,'中国共产党党员','博士研究生','桥西区','北京市某某区',1594396995,'oz7m25Lbbgt6zqlOg08249Q6OWpQ',40,0),
-	(5,'www','110111198405201203',0,'13810761824',9,'中国国民党革命委员会会员','技工学校','经济技术开发区','sdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsd',1593703339,'o1EqstzMtNwbKZUfl0hbcs-q17Ps',9,1.5);
+	(3,'李某某','1101111984080520xx',0,'13810761824',9,'中国共产党党员(保留团籍)','博士研究生','桥东区','sfdsdf',1593450637,'1',40,0),
+	(7,'张小小','110111854210021212',1,'13810761824',9,'中国共产党党员','博士研究生','桥西区','北京市某某区',1594396995,'oz7m25Lbbgt6zqlOg08249Q6OWpQ',40,2),
+	(5,'www','110111198405201203',0,'13810761824',9,'中国国民党革命委员会会员','技工学校','经济技术开发区','sdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsd',1593703339,'o1EqstzMtNwbKZUfl0hbcs-q17Ps',9,1.5),
+	(8,'6666',NULL,0,NULL,4,NULL,NULL,NULL,NULL,NULL,NULL,0,12),
+	(9,'777',NULL,0,NULL,4,NULL,NULL,NULL,NULL,NULL,NULL,0,11),
+	(10,'8888',NULL,0,NULL,5,NULL,NULL,NULL,NULL,NULL,NULL,0,2),
+	(11,'99',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0),
+	(12,'12',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0),
+	(13,'13',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0),
+	(14,'3434',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0),
+	(15,'2323',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0),
+	(16,'5433',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0),
+	(17,'sdf',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0),
+	(18,'werw',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0),
+	(19,'rwe',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0),
+	(20,'cc',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0),
+	(21,'43',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0),
+	(22,'535',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0),
+	(23,'fbv',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0),
+	(24,'erte',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0);
 
 /*!40000 ALTER TABLE `qx_user` ENABLE KEYS */;
 UNLOCK TABLES;
