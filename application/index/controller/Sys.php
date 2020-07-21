@@ -168,15 +168,22 @@ class Sys extends Controller{
         }
     }
 
+    //过滤关键字
     public function getKeyWords(){
         $res=Db::query("select keywords from qx_filter where id=1");
         $this->assign('keywords',$res[0]['keywords']);
         return $this->fetch('keywords');
     }
 
+    //保存过滤关键字
     public function postKeyWordsSave(){
         $keywords=input('post.keywords');
         Db::query("update qx_filter set keywords='".$keywords."', update_time='".time()."' where id=1");
         return json(['code'=>200,'msg'=>"success"]);
+    }
+
+    //统计
+    public function getStatistic(){
+        return $this->fetch('statistic');
     }
 }
