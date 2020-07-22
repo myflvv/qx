@@ -8,8 +8,18 @@
         <div class="form-group">
             <label>起止日期:</label>
             <div class='input-group date' >
-                <input type='text' class="form-control" id="selectDate" readonly/>
+                <input type='text' class="form-control" id="selectDate" readonly style="width:180px;"/>
             </div>
+        </div>
+
+        <div class="form-group">
+            <label for="type_select" class="control-label">类型:</label>
+            <select class="form-control" name="type_select" id="type_select">
+                <option value="active">志愿活动</option>
+                <option value="report">活动报告</option>
+                <option value="user">人员</option>
+                <option value="team">单位</option>
+            </select>
         </div>
         <div class="form-group" style="text-align: center">
             <button type="submit" class="btn btn-primary">  保  存 </button>

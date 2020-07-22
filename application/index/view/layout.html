@@ -22,6 +22,9 @@
     <script src="/static/bootstrap-table.min.js"></script>
     <script src="/static/bootstrap-table-zh-CN.min.js"></script>
 
+    <script src="/vendor/fileinput/js/fileinput.min.js"></script>
+    <link rel="stylesheet" href="/vendor/fileinput/css/fileinput.min.css">
+    <script src="/vendor/fileinput/js/locales/zh.js"></script>
     <title>后台管理</title>
     <script>
         // $(document).ready(function() {
@@ -107,5 +110,92 @@
         <footer class="cm-footer"><span class="pull-left"></span><span class="pull-right">© </span></footer>
     </div>
 
+    <div class="modal fade" id="recommend" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-large" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="recommendLabel">推荐到首页幻灯</h4>
+                </div>
+                <form id="addHomePic" method="post" action="/admin/active/typesave" enctype="multipart/form-data">
+                    <div class="modal-body" style="min-height: 450px;">
+                        <div class="form-group" >
+                            <label class="col-sm-2">标题:</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="recommend_title" id="recommend_title" >
+                                <input type="hidden" name="recommend_old_title" id="recommend_old_title">
+                                <input type="hidden" name="recommend_id" id="recommend_id">
+                                <input type="hidden" name="recommend_type" id="recommend_type">
+                            </div>
+                        </div>
+                                    <div class="form-group" >
+                                        <label class="control-label col-sm-2 ">缩略图:</label>
+                                        <div class="col-sm-10">
+                                            <input id="homepicfile" type="file" name="homepicfile" class="form-control">
+                                        </div>
+                                    </div>
+                        <div class="form-group">
+                            <label for="sort" class="control-label col-sm-2 ">排序:</label>
+                            <div class="col-sm-10">
+                            <input type="text" class="form-control" name="sort" id="sort" value="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function recommendView(id,title,type) {
+            $('#recommend_old_title').val(title);
+            $('#recommend_title').val(title);
+            $('#recommend_id').val(id);
+            $('#recommend_type').val(type);
+            $('#recommend').modal('show');
+        }
+
+        $("#homepicfile").fileinput({
+            uploadUrl:"/admin/news/upload", //接受请求地址
+            uploadExtraData:{'id':$('#id').val()}, //自定义参数
+            uploadAsync : true, //默认异步上传
+            showUpload : false, //是否显示上传按钮,跟随文本框的那个
+            showRemove : false, //显示移除按钮,跟随文本框的那个
+            showCaption : false,//是否显示标题,就是那个文本框
+            showPreview : true, //是否显示预览,不写默认为true
+            showClose:false,
+            dropZoneEnabled : false,//是否显示拖拽区域，默认不写为true，但是会占用很大区域
+            //minImageWidth: 50, //图片的最小宽度
+            //minImageHeight: 50,//图片的最小高度
+            //maxImageWidth: 1000,//图片的最大宽度
+            //maxImageHeight: 1000,//图片的最大高度
+            //maxFileSize: 0,//单位为kb，如果为0表示不限制文件大小
+            //minFileCount: 0,
+            maxFileCount : 1, //表示允许同时上传的最大文件个数
+            enctype : 'multipart/form-data',
+            validateInitialCount : true,
+            previewFileIcon : "<i class='glyphicon glyphicon-king'></i>",
+            msgFilesTooMany : "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
+            allowedFileTypes : [ 'image' ],//配置允许文件上传的类型
+            allowedPreviewTypes : [ 'image' ],//配置所有的被预览文件类型
+            allowedPreviewMimeTypes : [ 'jpg','png','gif' ],//控制被预览的所有mime类型
+            language : 'zh',
+            overwriteInitial:false,//是否在选择新图片时，把之前的预设图片删除掉
+            removeFromPreviewOnError:true, //当选择的文件不符合规则时，例如不是指定后缀文件、大小超出配置等，选择的文件不会出现在预览框中，只会显示错误信息
+            initialPreview:'',//预览图片img
+            initialPreviewAsData: true,
+            initialPreviewConfig:'',
+            layoutTemplates :{
+                // actionDelete:'', //去除上传预览的缩略图中的删除图标
+                actionMove:'',
+                actionUpload:'',//去除上传预览缩略图中的上传图片；
+                // actionZoom:''   //去除上传预览缩略图中的查看详情预览的缩略图标。
+            },
+        })
+    </script>
 </body>
 </html>

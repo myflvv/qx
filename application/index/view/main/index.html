@@ -1,4 +1,75 @@
-<!--<div class="panel-heading">www</div>-->
-<!--<div class="panel-body">-->
-<!--    ssssw-->
-<!--</div>-->
+<link rel="stylesheet" href="/static/jquery.treegrid.min.css">
+<script src="/static/bootstrap-table-treegrid.js"></script>
+<script src="/static/jquery.treegrid.min.js"></script>
+<nav class="cm-navbar cm-navbar-default cm-navbar-slideup">
+    <div class="cm-flex">
+        <div class="cm-breadcrumb-container">
+            <ol class="breadcrumb">
+                <li class="active">志愿活动</li>
+            </ol>
+        </div>
+    </div>
+</nav>
+<div class="container-index">
+    <div class="page-tool pull-right">
+
+    </div>
+
+    <table id="table_list" class="table table-bordered table-hover  table-center">
+
+    </table>
+</div>
+<script>
+    $(function () {
+        table_list();
+    });
+
+    function table_list() {
+        $('#table_list').bootstrapTable({
+            url:'/admin/main/piclist',
+            method:'get',
+            cache : false,
+            dataType : "json",
+            striped: true,
+            pagination: true,
+            pageNumber: 1,
+            pageSize: 10,
+            sidePagination: "server",
+            search:false,
+            columns:[{
+                field:'no',
+                title:'序号',
+                width:50,
+                align:'center',
+                valign:'center',
+            },{
+                field:'title',
+                title:'标题'
+            },{
+                field:'type_format',
+                title:'类型'
+            },{
+                field:'modify_time',
+                title:'修改时间'
+            },{
+                field:'id',
+                title:'操作',
+                width:150,
+                align:'center',
+                valign:'center',
+                formatter:actionFormatter
+            }
+            ]
+        });
+    }
+    function actionFormatter(value, row, index) {
+        var id = value;
+        var result = "";
+        result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"location.href='/admin/active/report?active_id=" + id + "'\" title='查看活动报告'><span class='glyphicon glyphicon-file'></span></a>&nbsp;&nbsp;";
+        result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"location.href='/admin/active/user?active_id=" + id + "'\" title='查看报名人员'><span class='glyphicon glyphicon-user'></span></a>&nbsp;&nbsp;";
+        result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"seeView('" + id + "')\" title='查看'><span class='glyphicon glyphicon-eye-open'></span></a>&nbsp;&nbsp;";
+        // result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"editView('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>&nbsp;&nbsp;";
+        result += "<a href='javascript:;' class='btn btn-xs btn-danger' onclick=\"delView('" + id + "','"+row.title+"')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+        return result;
+    }
+</script>
