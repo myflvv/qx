@@ -124,13 +124,25 @@ class Active extends Controller{
         }else{
             $where='';
         }
-        $sql="select act.*,team.name from qx_active act left join qx_team team on act.add_user_id=team.id ".$where."  order by act.create_time desc limit $limit,$offset";
+//        $sql="select act.*,team.name from qx_active act left join qx_team team on act.add_user_id=team.id ".$where."  order by act.create_time desc limit $limit,$offset";
+        $sql="select act.*,admin.team_id from qx_active act left join qx_admin admin on act.add_user_id=admin.id ".$where."  order by act.create_time desc limit $limit,$offset";
         $res=Db::query($sql);
         if ($res){
             foreach ($res as $key=>$val){
                 $recruit_end_time=$val['recruit_end_time'];
                 if (empty($recruit_end_time)){ //如果招募结束时间为空，则结束时间为活动的开始时间
                     $recruit_end_time=$val['active_start_time'];
+                }
+                //获取发布人员所在单位
+                if (empty($val['team_id'])){
+                    $res[$key]['name']="发布人员单位不存在";
+                }else{
+                    $teamM=\app\index\model\Team::where(['id'=>$val['team_id']])->field('name')->find();
+                    if ($teamM){
+                        $res[$key]['name']=$teamM['name'];
+                    }else{
+                        $res[$key]['name']="单位不存在";
+                    }
                 }
                 //获取招募及活动状态
                 $res[$key]['recruit_status']=recruit_status($val['recruit_start_time'],$recruit_end_time,$val['active_start_time'],$val['active_end_time']);
