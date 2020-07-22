@@ -64,6 +64,7 @@ class User extends Controller{
             'hight_edu'=>$param['hight_edu'],
             'area'=>$param['area'],
             'address'=>$param['address'],
+            'duration'=>$param['duration'],
         ];
         $team_id=0;
         if ($param['team_modify']==1){
