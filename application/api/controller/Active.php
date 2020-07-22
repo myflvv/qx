@@ -164,11 +164,23 @@ class Active extends Controller{
         if ($id==0){
             return json(['code'=>420,'msg'=>'ID不存在']);
         }
-        $res=Db::query("select act.*,team.name from qx_active act left join qx_team team on act.add_user_id=team.id where act.id=".$id);
+//        $res=Db::query("select act.*,team.name from qx_active act left join qx_team team on act.add_user_id=team.id where act.id=".$id);
+        $res=Db::query("select act.*,admin.team_id from qx_active act left join qx_admin admin on act.add_user_id=admin.id where act.id=".$id);
         if ($res){
             $res=$res[0];
 //            $res['team_name']=$this->getTeamName($res['team_id']);
-            $res['team_name']=$res['name'];
+            //获取发布人员所在单位
+            if (empty($res['team_id'])){
+                $res['team_name']="发布人员单位不存在";
+            }else{
+                $teamM=\app\index\model\Team::where(['id'=>$res['team_id']])->field('name')->find();
+                if ($teamM){
+                    $res['team_name']=$teamM['name'];
+                }else{
+                    $res['team_name']="单位不存在";
+                }
+            }
+
             if (empty($res['info'])){
                 $res['info']='无';
             }
