@@ -45,19 +45,46 @@ class Team extends Controller
 
         $id=$this->teamTitle($index);
         if ($id==0){ //如果是社区，取level=3
+            #TODO 社区应该读取用户表comm_id而不是team_id
             $where=' where team.level=3 ';
         }else{
             //is_team<>2 去掉二级街道
-            $where=" where team.pid=$id and team.is_team<>2 ";
+//            $where=" where team.pid=$id and team.is_team<>2 ";
+            $where=" where team.pid=$id ";
         }
 //        $sql="select user.duration,user.team_id as user_team_id,team.id as team_id,team.name as team_name from qx_team team left join qx_user user on team.id=user.team_id $where ";
-        $sql="select team.name, avg(user.duration) as avg_duration from qx_team team left join qx_user user on team.id=user.team_id $where  group by team.id order by avg_duration desc";
+        $sql="select team.id,team.is_team,team.name, avg(user.duration) as avg_duration from qx_team team left join qx_user user on team.id=user.team_id $where  group by team.id order by avg_duration desc";
         $res=Db::query($sql);
         foreach ($res as $key=>$val){
             if (!empty($val['avg_duration'])){
                 $res[$key]['avg_duration']=floor($val['avg_duration']*10)/10; //取一位小数
             }else{
                 $res[$key]['avg_duration']=0;
+            }
+
+            //如果是街道,计算街道下属于社区的用户时长 街道时长=用户总时长/社区数量
+            if ($val['is_team']==2){
+                //获取街道所有子ID社区
+                $countJD=\app\api\model\Team::where(['pid'=>$val['id']])->field('id')->select();
+                $countJD_arr=[];
+                foreach ($countJD as $v){
+                    $countJD_arr[]=$v['id'];
+                }
+                $countJD_id=implode(',',$countJD_arr);
+                //查询所有包含子ID社区的用户时长
+                $tsql="select duration from qx_user where team_id in ($countJD_id)";
+                $jdRes=Db::query($tsql);
+                $jv_int=0;
+                if ($jdRes){
+                    //将子ID时长累加
+                    foreach ($jdRes as $jv){
+                        $jv_int=$jv_int+$jv['duration'];
+                    }
+                    //所有用户的累加时长，除以当前街道的总社区数
+                    $avg_duration=floor($jv_int/count($countJD));
+                   $res[$key]['avg_duration']=$avg_duration;
+                }
+                #TODO 按照时长排序
             }
         }
 //        $data=[];
