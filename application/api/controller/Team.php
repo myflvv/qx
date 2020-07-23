@@ -45,15 +45,15 @@ class Team extends Controller
 
         $id=$this->teamTitle($index);
         if ($id==0){ //如果是社区，取level=3
-            #TODO 社区应该读取用户表comm_id而不是team_id
-            $where=' where team.level=3 ';
+            $where=' team.id=user.team_id where team.level=3 ';
+        }elseif($id==39){ //团体应该读取用户表comm_id而不是team_id
+            $where=" team.id=user.comm_id where team.pid=$id ";
         }else{
             //is_team<>2 去掉二级街道
 //            $where=" where team.pid=$id and team.is_team<>2 ";
-            $where=" where team.pid=$id ";
+            $where=" team.id=user.team_id where team.pid=$id ";
         }
-//        $sql="select user.duration,user.team_id as user_team_id,team.id as team_id,team.name as team_name from qx_team team left join qx_user user on team.id=user.team_id $where ";
-        $sql="select team.id,team.is_team,team.name, avg(user.duration) as avg_duration from qx_team team left join qx_user user on team.id=user.team_id $where  group by team.id order by avg_duration desc";
+        $sql="select team.id,team.is_team,team.name, avg(user.duration) as avg_duration from qx_team team left join qx_user user on  $where  group by team.id order by avg_duration desc";
         $res=Db::query($sql);
         foreach ($res as $key=>$val){
             if (!empty($val['avg_duration'])){
@@ -81,20 +81,17 @@ class Team extends Controller
                         $jv_int=$jv_int+$jv['duration'];
                     }
                     //所有用户的累加时长，除以当前街道的总社区数
-                    $avg_duration=floor($jv_int/count($countJD));
+                    $avg_duration=floor($jv_int/count($countJD)*10)/10;
                    $res[$key]['avg_duration']=$avg_duration;
                 }
-                #TODO 按照时长排序
+
+
             }
         }
-//        $data=[];
-//        foreach ($res as $key=>$val){
-//            if (!array_key_exists($val['team_name'],$data)){
-//                $data[$val['team_name']]=empty($val['duration'])?0:$val['duration'];
-//            }elseif ($val['user_team_id']==$val['team_id']){
-//                $data[$val['team_name']]= $data[$val['team_name']]+$val['duration'];
-//            }
-//        }
+        //如果是镇街，按照时长排序
+        if ($id==85){
+            $res=arraySort($res,'avg_duration',SORT_DESC);
+        }
         return json(['code'=>200,'content'=>$res]);
     }
 
