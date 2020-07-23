@@ -7,10 +7,24 @@
 <nav class="cm-navbar cm-navbar-default cm-navbar-slideup">
     <div class="cm-flex">
         <div class="cm-breadcrumb-container">
-            <ol class="breadcrumb">
+            <ol class="breadcrumb pull-left">
                 <li><a href="/admin/active/active">志愿活动</a></li>
                 <li class="active">查看活动报告</li>
             </ol>
+            <div class="page-tool pull-right">
+                        <div class="btn-group" role="group">
+                            {if condition="$data['is_recommend']==0"}
+                            <button type="button" class="btn btn-warning btn-sm" title='推荐到首页幻灯' onclick="recommendView({$data['active_id']},'{$data['title']}','report')">
+                                <span class='glyphicon glyphicon-thumbs-up'></span>推荐
+                            </button>
+                            {else/}
+                            <button type="button" class="btn btn-gray btn-sm" title='取消推荐到首页幻灯' onclick="recommendCancelView({$data['active_id']},'report')">
+                                <span class='glyphicon glyphicon-thumbs-up'></span>取消
+                            </button>
+                            {/if}
+
+                        </div>
+            </div>
         </div>
     </div>
 </nav>

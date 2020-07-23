@@ -166,7 +166,7 @@
             },{
                 field:'id',
                 title:'操作',
-                width:150,
+                width:250,
                 align:'center',
                 valign:'center',
                 formatter:actionFormatter
@@ -177,6 +177,11 @@
     function actionFormatter(value, row, index) {
         var id = value;
         var result = "";
+        if (row.is_recommend==1){
+            result += "<a href='javascript:;' class='btn btn-xs btn-gray' onclick=\"recommendCancelView('" + id + "','"+row.title+"','active')\" title='取消推荐到首页幻灯'><span class='glyphicon glyphicon-thumbs-up'></span>取消</a>&nbsp;&nbsp;";
+        }else{
+            result += "<a href='javascript:;' class='btn btn-xs btn-warning' onclick=\"recommendView('" + id + "','"+row.title+"','active')\" title='推荐到首页幻灯'><span class='glyphicon glyphicon-thumbs-up'></span>推荐</a>&nbsp;&nbsp;";
+        }
         result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"location.href='/admin/active/report?active_id=" + id + "'\" title='查看活动报告'><span class='glyphicon glyphicon-file'></span></a>&nbsp;&nbsp;";
         result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"location.href='/admin/active/user?active_id=" + id + "'\" title='查看报名人员'><span class='glyphicon glyphicon-user'></span></a>&nbsp;&nbsp;";
         result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"seeView('" + id + "')\" title='查看'><span class='glyphicon glyphicon-eye-open'></span></a>&nbsp;&nbsp;";

@@ -54,7 +54,7 @@
             <div id="cm-menu-items-wrapper">
                 <div id="cm-menu-scroller">
                     <ul class="cm-menu-items">
-                        <li <?php prePathSelect(['admin/main/index'])?>><a href="/admin/main/index" class="sf-house">首页</a></li>
+                        <li <?php prePathSelect(['admin/main/index'])?>><a href="/admin/main/index" class="sf-house">首页幻灯</a></li>
                         <li <?php prePathSelect(['admin/news/index','admin/news/add'])?>><a href="/admin/news/index" class="sf-post-it">新闻管理</a></li>
                         <li <?php prePathSelect(['admin/user/index'])?>><a href="/admin/user/index" class="sf-user-female">人员管理</a></li>
                         <li <?php prePathSelect(['admin/team/type'])?>><a href="/admin/team/type" class="sf-profile-group">团队管理</a></li>
@@ -117,29 +117,31 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="recommendLabel">推荐到首页幻灯</h4>
                 </div>
-                <form id="addHomePic" method="post" action="/admin/active/typesave" enctype="multipart/form-data">
+                <form id="addHomePic" method="post" action="/admin/main/recommendsave" enctype="multipart/form-data">
                     <div class="modal-body" style="min-height: 450px;">
+
                         <div class="form-group" >
-                            <label class="col-sm-2">标题:</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" name="recommend_title" id="recommend_title" >
+                            <label>标题:</label>
+                            <div >
+                                <input type="text" class="form-control" name="recommend_title" id="recommend_title" maxlength="200">
                                 <input type="hidden" name="recommend_old_title" id="recommend_old_title">
                                 <input type="hidden" name="recommend_id" id="recommend_id">
                                 <input type="hidden" name="recommend_type" id="recommend_type">
                             </div>
                         </div>
                                     <div class="form-group" >
-                                        <label class="control-label col-sm-2 ">缩略图:</label>
-                                        <div class="col-sm-10">
+                                        <label class="control-label">缩略图:</label>
+                                        <div>
                                             <input id="homepicfile" type="file" name="homepicfile" class="form-control">
                                         </div>
                                     </div>
                         <div class="form-group">
-                            <label for="sort" class="control-label col-sm-2 ">排序:</label>
-                            <div class="col-sm-10">
-                            <input type="text" class="form-control" name="sort" id="sort" value="0">
+                            <label for="sort" class="control-label">排序:</label>
+                            <div >
+                            <input type="text" class="form-control" name="sort" id="sort" value="0" maxlength="3">
                             </div>
                         </div>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
@@ -149,8 +151,21 @@
             </div>
         </div>
     </div>
-
+    <div class="modal fade text-center" id="recommendTip" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm " >
+            <div class="modal-content">
+                <div class="modal-body" style="padding: 0;">
+                    <div class="alert alert-success" style="margin-bottom: 0;text-align: center;">
+                        <span class="glyphicon glyphicon-ok"></span> <span>操作成功</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
+        $(function () {
+            homeformvalidator();
+        })
         function recommendView(id,title,type) {
             $('#recommend_old_title').val(title);
             $('#recommend_title').val(title);
@@ -159,8 +174,37 @@
             $('#recommend').modal('show');
         }
 
+        function recommendCancelView(id,type){
+            if(confirm('取消不可恢复,确认取消推荐？')){
+                $.ajax({
+                    type : "post",
+                    url : "/admin/main/recommendcancel",
+                    data:{id:id,type:type},
+                    dataType : 'json',
+                    async:false,
+                    success : function(result) {
+                        if (result.code==200){
+                            if (type=='report'){
+                                location.reload();
+                            }else{
+                                $('#table_list').bootstrapTable('refresh');
+                            }
+
+                        }else{
+                            alert(result.msg);
+                            return false;
+                        }
+                    },
+                    error : function(e){
+                        console.log(e.status);
+                        console.log(e.responseText);
+                    }
+                });
+            }
+        }
+
         $("#homepicfile").fileinput({
-            uploadUrl:"/admin/news/upload", //接受请求地址
+            uploadUrl:"/admin/main/upload", //接受请求地址
             uploadExtraData:{'id':$('#id').val()}, //自定义参数
             uploadAsync : true, //默认异步上传
             showUpload : false, //是否显示上传按钮,跟随文本框的那个
@@ -196,6 +240,67 @@
                 // actionZoom:''   //去除上传预览缩略图中的查看详情预览的缩略图标。
             },
         })
+
+        function homeformvalidator() {
+            $('#addHomePic').bootstrapValidator({
+                message: 'This value is not valid',
+                feedbackIcons: {
+                    valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                },
+                fields: {
+                    recommend_title: {
+                        message: '',
+                        validators: {
+                            notEmpty: {
+                            },
+                            stringLength: {
+                                min: 1,
+                                max: 200,
+                                message:''
+                            }
+                        }
+                    },
+                    sort: {
+                        message: '',
+                        validators: {
+                            notEmpty: {
+                            },
+                            digits:{
+
+                            },
+                            stringLength: {
+                                min: 1,
+                                max: 3,
+                                message:''
+                            }
+                        }
+                    }
+                }
+            }).on('success.form.bv', function(e) {
+                $("#homepicfile").fileinput("upload");
+                e.preventDefault();
+                var $form = $(e.target);
+                var bv = $form.data('bootstrapValidator');
+                $.post($form.attr('action'), $form.serialize(), function(result) {
+                    console.log(result);
+                    if (result.code==200) {
+                        $('#recommendTip').modal('show');
+                        setTimeout(function(){
+                            $('#recommendTip').modal('hide');
+                            location.reload();
+                        }, 2000);
+
+
+                    }else{
+                        alert('保存错误');
+                        bv.resetForm();
+                        return;
+                    }
+                }, 'json');
+            });
+        }
     </script>
 </body>
 </html>

@@ -6,6 +6,7 @@ use app\index\model\ActiveType;
 use app\index\model\Admin;
 use app\index\model\EnterModel;
 use app\index\model\Log;
+use app\index\model\PicModel;
 use app\index\model\ReportModel;
 use app\index\model\ReportPicModel;
 use think\Controller;
@@ -88,6 +89,7 @@ class Active extends Controller{
         foreach ($res as $val){
             $val['create_time']=date('Y-m-d H:i:s',$val['create_time']);
             $val['service_time']=$val['service_time']."小时";
+            $val['is_recommend']=PicModel::getIsRecommend('active',$val['id']);
             $val['no']=$no;
             $data[]=$val;
             $no++;
@@ -238,6 +240,7 @@ class Active extends Controller{
                 ];
             }
             $data['active_id']=$active_id;
+            $data['is_recommend']=PicModel::getIsRecommend('report',$active_id);
             $this->assign('data',$data);
             return $this->fetch('report');
         }else{

@@ -78,7 +78,7 @@
             },{
                 field:'id',
                 title:'操作',
-                width:150,
+                width:200,
                 align:'center',
                 valign:'center',
                 formatter:actionFormatter
@@ -89,7 +89,11 @@
     function actionFormatter(value, row, index) {
         var id = value;
         var result = "";
-        result += "<a href='javascript:;' class='btn btn-xs btn-warning' onclick=\"recommendView('" + id + "','"+row.title+"','news')\" title='推荐到首页幻灯'><span class='glyphicon glyphicon-thumbs-up'></span></a>&nbsp;&nbsp;";
+        if (row.is_recommend==1){
+            result += "<a href='javascript:;' class='btn btn-xs btn-gray' onclick=\"recommendCancelView('" + id + "','"+row.title+"','news')\" title='取消推荐到首页幻灯'><span class='glyphicon glyphicon-thumbs-up'></span>取消</a>&nbsp;&nbsp;";
+        }else{
+            result += "<a href='javascript:;' class='btn btn-xs btn-warning' onclick=\"recommendView('" + id + "','"+row.title+"','news')\" title='推荐到首页幻灯'><span class='glyphicon glyphicon-thumbs-up'></span>推荐</a>&nbsp;&nbsp;";
+        }
         result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"editView('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>&nbsp;&nbsp;";
         result += "<a href='javascript:;' class='btn btn-xs btn-danger' onclick=\"delView('" + id + "','"+row.title+"')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
         return result;
