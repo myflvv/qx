@@ -1,6 +1,7 @@
 <?php
 namespace app\index\controller;
 
+use app\api\model\ActiveModel;
 use app\index\model\Admin;
 use app\index\model\Log;
 use think\Controller;
@@ -185,5 +186,27 @@ class Sys extends Controller{
     //统计
     public function getStatistic(){
         return $this->fetch('statistic');
+    }
+
+    public function getStatisticSearch(){
+        $params=input('get.');
+        $date=explode(' - ',$params['selectDate']);
+        $startUnix=strtotime($date[0]);
+        $endUnix=strtotime($date[1]);
+//        $activeRes=ActiveModel::where("create_time > ".$startUnix." and create_time < ".$endUnix)->select();
+        if ($params['type_select']=='team'){
+            $teamRes=\app\api\model\Team::where('pid<>0')->select();
+//            dump($teamRes);
+            foreach ($teamRes as $key=>$val){
+                $countSql="select count(*) as count from qx_admin admin left join qx_active act on admin.id=act.add_user_id where admin.team_id=".$val['id'].' and act.create_time > '.$startUnix.' and act.create_time < '.$endUnix;
+                $countRes=Db::query($countSql);
+                $teamRes[$key]['count']=$countRes[0]['count'];
+            }
+            $field=[
+                ['field'=>'name','title'=>'名称'],
+                ['field'=>'count','title'=>'总数']
+            ];
+            return  json(['total'=>count($teamRes),'rows'=>$teamRes]);
+        }
     }
 }

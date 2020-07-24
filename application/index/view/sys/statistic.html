@@ -4,11 +4,11 @@
 <script src="/static/select_date/daterangepicker.min.js"></script>
 
 <div class="container-index" style="margin-top: 20px">
-    <form id="addForm" method="post" action="/admin/sys/keywordssave" class="form-inline">
+    <form id="addForm" method="post"  class="form-inline">
         <div class="form-group">
             <label>起止日期:</label>
             <div class='input-group date' >
-                <input type='text' class="form-control" id="selectDate" readonly style="width:180px;"/>
+                <input type='text' class="form-control" name="selectDate" id="selectDate" readonly style="width:180px;"/>
             </div>
         </div>
 
@@ -22,10 +22,17 @@
             </select>
         </div>
         <div class="form-group" style="text-align: center">
-            <button type="submit" class="btn btn-primary">  保  存 </button>
+            <button type="button" class="btn btn-primary" onclick="submitForm();">  查询 </button>
+        </div>
+        <div class="form-group pull-right" style="text-align: center">
+            <button type="button" class="btn btn-primary">  导出结果 </button>
         </div>
     </form>
 
+
+    <table id="table_list" class="table table-bordered table-hover  table-center">
+
+    </table>
 </div>
 
 <script>
@@ -60,7 +67,71 @@
             "endDate": new Date(),
             "opens": "right",
         }, function (start, end, label) {
-            console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+            // console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
         });
     })
+
+    function submitForm() {
+
+        table_list();
+    }
+
+    function table_list() {
+        var s=$('#selectDate').val();
+        $('#table_list').bootstrapTable({
+            url:'/admin/sys/statisticsearch?selectDate='+s+'&type_select='+$('#type_select').val(),
+            method:'get',
+            data:{selectDate:s,type_select:$('#type_select').val()},
+            cache : false,
+            dataType : "json",
+            striped: true,
+            pagination: true,
+            pageNumber: 1,
+            pageSize: 10,
+            sidePagination: "server",
+            success:function (json) {
+                // var columnsArray = [];
+                // for (var i = 0; i < (Object.keys(json[0])).length; i++) {
+                //     var property = (Object.keys(json[0]))[i];
+                //     columnsArray.push({
+                //         "title": property,
+                //         "field": property,
+                //         switchable: true,
+                //         sortable: true
+                // });
+                // }
+                console.log(json)
+            }
+            // columns:[{
+            //     field:'no',
+            //     title:'序号',
+            //     width:50,
+            //     align:'center',
+            //     valign:'center',
+            // },{
+            //     field:'username',
+            //     title:'用户名'
+            // },{
+            //     field:'level_name',
+            //     title:'级别'
+            // },{
+            //     field:'team',
+            //     title:'所属单位'
+            // },{
+            //     field:'create_time',
+            //     title:'创建时间',
+            //     width:200,
+            //     align:'center',
+            //     valign:'center',
+            // },{
+            //     field:'id',
+            //     title:'操作',
+            //     width:120,
+            //     align:'center',
+            //     valign:'center',
+            //     formatter:actionFormatter
+            // }
+            // ]
+        });
+    }
 </script>
