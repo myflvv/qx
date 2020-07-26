@@ -191,7 +191,8 @@ class Active extends Controller{
                 $recruit_end_time=$res['active_start_time'];
             }
             //获取招募及活动状态
-            $res['recruit_status']=recruit_status($res['recruit_start_time'],$recruit_end_time,$res['active_start_time'],$res['active_end_time']);
+            $recruit_status=recruit_status($res['recruit_start_time'],$recruit_end_time,$res['active_start_time'],$res['active_end_time']);
+            $res['recruit_status']=$recruit_status;
             $res['recruit_time_format']=active_format_date($res['recruit_start_time'])." ~ ".active_format_date($recruit_end_time);
 
             //判断报名按钮显示
@@ -199,7 +200,13 @@ class Active extends Controller{
                 $res['bm_button_status']=0;
             }else{
                 $bmM=Db::query("select count(*) as total   from qx_enter enter left  join qx_user user on user.id=enter.user_id where user.openid='".$openid."' and enter.active_id=".$id);
-                $res['bm_button_status']=$bmM[0]['total'];
+                if ($bmM[0]['total']!=0){ //先判断是否报名，如果已经报名
+                    $res['bm_button_status']=$bmM[0]['total'];
+                }else if($recruit_status['type']!=2){ //如果没有报名判断活动是否结束
+                    $res['bm_button_status']=3;
+                }else{
+                    $res['bm_button_status']=0;
+                }
 
             }
             return json(['code'=>200,'content'=>$res]);
