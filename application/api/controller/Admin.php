@@ -69,6 +69,7 @@ class Admin extends Controller{
                 if (empty($val['report_id'])){ //没有填写过活动报告
                     $res[$key]['report_button_txt']='填写报告(3次)';
                     $res[$key]['update_num']=3;
+                    $res[$key]['report_id']=0;//用于查看活动报告按钮
                 }else{
                     $res[$key]['report_button_txt']='修改报告('.$val['update_num'].'次)';
                 }

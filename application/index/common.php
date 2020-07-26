@@ -53,6 +53,7 @@ function sysMenu(){
     return [
         'admin/sys/keywords',
         'admin/sys/logs',
-        'admin/sys/index'
+        'admin/sys/index',
+        'admin/sys/statistic'
     ];
 }

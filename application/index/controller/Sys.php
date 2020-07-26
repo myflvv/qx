@@ -2,6 +2,7 @@
 namespace app\index\controller;
 
 use app\api\model\ActiveModel;
+use app\api\model\EnterModel;
 use app\index\model\Admin;
 use app\index\model\Log;
 use think\Controller;
@@ -190,23 +191,61 @@ class Sys extends Controller{
 
     public function getStatisticSearch(){
         $params=input('get.');
+        $offset=input('get.offset',0);
+        $limit=input('get.limit',10);
+        $searchKey=input('get.searchKey','');
+        $no=1+intval($offset);
+
         $date=explode(' - ',$params['selectDate']);
         $startUnix=strtotime($date[0]);
         $endUnix=strtotime($date[1]);
-//        $activeRes=ActiveModel::where("create_time > ".$startUnix." and create_time < ".$endUnix)->select();
+
         if ($params['type_select']=='team'){
-            $teamRes=\app\api\model\Team::where('pid<>0')->select();
+            if (empty($searchKey)){
+                $keyWhere='';
+            }else{
+                $keyWhere=" and  name like '%".$searchKey."%'";
+            }
+            $teamRes=\app\api\model\Team::where('pid<>0 and is_team<>2'.$keyWhere)->limit($offset,$limit)->select();
+            $count=\app\api\model\Team::where('pid<>0 and is_team<>2'.$keyWhere)->count();
 //            dump($teamRes);
             foreach ($teamRes as $key=>$val){
                 $countSql="select count(*) as count from qx_admin admin left join qx_active act on admin.id=act.add_user_id where admin.team_id=".$val['id'].' and act.create_time > '.$startUnix.' and act.create_time < '.$endUnix;
                 $countRes=Db::query($countSql);
                 $teamRes[$key]['count']=$countRes[0]['count'];
+                //人员总数
+                if ($val['pid']==39){
+                    $userWhere='comm_id='.$val['id'];
+                }else{
+                    $userWhere='team_id='.$val['id'];
+                }
+                $userWhere.=' and create_time > '.$startUnix.' and create_time < '.$endUnix;
+                $userCount=\app\index\model\User::where($userWhere)->count();
+                $teamRes[$key]['userCount']=$userCount;
+                $teamRes[$key]['no']=$no;
+                $no++;
             }
-            $field=[
-                ['field'=>'name','title'=>'名称'],
-                ['field'=>'count','title'=>'总数']
-            ];
-            return  json(['total'=>count($teamRes),'rows'=>$teamRes]);
+
+            return  json(['total'=>$count,'rows'=>$teamRes]);
+        }
+
+        if ($params['type_select']=='user'){
+            if (empty($searchKey)){
+                $keyWhere='';
+            }else{
+                $keyWhere=" and real_name like '%".$searchKey."%'";
+            }
+            $res=\app\index\model\User::where('1=1 '.$keyWhere)->limit($offset,$limit)->field('real_name,id')->select();
+            $count=count($res);
+            $data=[];
+            foreach ($res as $key=>$val){
+                $res[$key]['count']=EnterModel::where('user_id='.$val['id'].' and create_time > '.$startUnix.' and create_time < '.$endUnix)->count();
+                $res[$key]['no']=$no;
+                $no++;
+            }
+            return  json(['total'=>$count,'rows'=>$res]);
         }
     }
+
+
 }

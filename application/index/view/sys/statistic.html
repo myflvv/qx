@@ -4,33 +4,39 @@
 <script src="/static/select_date/daterangepicker.min.js"></script>
 
 <div class="container-index" style="margin-top: 20px">
-    <form id="addForm" method="post"  class="form-inline">
-        <div class="form-group">
-            <label>起止日期:</label>
-            <div class='input-group date' >
-                <input type='text' class="form-control" name="selectDate" id="selectDate" readonly style="width:180px;"/>
+    <div style="margin-bottom: 20px;">
+        <form id="addForm" method="post"  class="form-inline">
+            <div class="form-group">
+                <label>起止日期:</label>
+                <div class='input-group date' >
+                    <input type='text' class="form-control" name="selectDate" id="selectDate" readonly style="width:180px;"/>
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            <label for="type_select" class="control-label">类型:</label>
-            <select class="form-control" name="type_select" id="type_select">
-                <option value="active">志愿活动</option>
-                <option value="report">活动报告</option>
-                <option value="user">人员</option>
-                <option value="team">单位</option>
-            </select>
-        </div>
-        <div class="form-group" style="text-align: center">
-            <button type="button" class="btn btn-primary" onclick="submitForm();">  查询 </button>
-        </div>
-        <div class="form-group pull-right" style="text-align: center">
-            <button type="button" class="btn btn-primary">  导出结果 </button>
-        </div>
-    </form>
+            <div class="form-group">
+                <label for="type_select" class="control-label">类型:</label>
+                <select class="form-control" name="type_select" id="type_select" >
+                    <option value="team">单位</option>
+                    <option value="user">人员</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>关键字:</label>
+                <div class='input-group date' >
+                    <input type='text' class="form-control" name="searchKey" id="searchKey" placeholder="输入单位名称"/>
+                </div>
+            </div>
+            <div class="form-group" style="text-align: center">
+                <button type="button" class="btn btn-primary" onclick="submitForm();">  查询 </button>
+            </div>
+            <div class="form-group pull-right" style="text-align: center">
+<!--                <button type="button" class="btn btn-primary">  导出结果 </button>-->
+            </div>
+        </form>
+    </div>
 
 
-    <table id="table_list" class="table table-bordered table-hover  table-center">
+    <table id="table_list" class="table table-bordered table-hover  table-center" >
 
     </table>
 </div>
@@ -72,16 +78,30 @@
     })
 
     function submitForm() {
-
-        table_list();
+        var columnsArray=[];
+        var s=$('#type_select').val();
+        if (s=='team'){
+            columnsArray=[
+                {title:'序号',field:'no',width:50,align:'center',valign:'center',},
+                {title:'名称',field:'name'},
+                {title:'发起活动总数',field:'count'},
+                {title:'人员总数',field:'userCount'},
+            ];
+        }
+        if (s=='user'){
+            columnsArray=[
+                {title:'序号',field:'no',width:50,align:'center',valign:'center',},
+                {title:'姓名',field:'real_name'},
+                {title:'参与活动总数',field:'count'},
+            ];
+        }
+        table_list(columnsArray);
     }
 
-    function table_list() {
-        var s=$('#selectDate').val();
-        $('#table_list').bootstrapTable({
-            url:'/admin/sys/statisticsearch?selectDate='+s+'&type_select='+$('#type_select').val(),
+    function table_list(columnsArray) {
+        $('#table_list').bootstrapTable('destroy').bootstrapTable({
+            url:'/admin/sys/statisticsearch?selectDate='+$('#selectDate').val()+'&type_select='+$('#type_select').val()+'&searchKey='+$('#searchKey').val(),
             method:'get',
-            data:{selectDate:s,type_select:$('#type_select').val()},
             cache : false,
             dataType : "json",
             striped: true,
@@ -89,49 +109,16 @@
             pageNumber: 1,
             pageSize: 10,
             sidePagination: "server",
-            success:function (json) {
-                // var columnsArray = [];
-                // for (var i = 0; i < (Object.keys(json[0])).length; i++) {
-                //     var property = (Object.keys(json[0]))[i];
-                //     columnsArray.push({
-                //         "title": property,
-                //         "field": property,
-                //         switchable: true,
-                //         sortable: true
-                // });
-                // }
-                console.log(json)
-            }
-            // columns:[{
-            //     field:'no',
-            //     title:'序号',
-            //     width:50,
-            //     align:'center',
-            //     valign:'center',
-            // },{
-            //     field:'username',
-            //     title:'用户名'
-            // },{
-            //     field:'level_name',
-            //     title:'级别'
-            // },{
-            //     field:'team',
-            //     title:'所属单位'
-            // },{
-            //     field:'create_time',
-            //     title:'创建时间',
-            //     width:200,
-            //     align:'center',
-            //     valign:'center',
-            // },{
-            //     field:'id',
-            //     title:'操作',
-            //     width:120,
-            //     align:'center',
-            //     valign:'center',
-            //     formatter:actionFormatter
-            // }
-            // ]
+            columns:columnsArray
         });
     }
+
+    $('#type_select').on('change',function () {
+        if ($(this).val()=="user"){
+            $('#searchKey').attr('placeholder','请输入人员姓名');
+        }
+        if ($(this).val()=="team"){
+            $('#searchKey').attr('placeholder','请输入单位名称');
+        }
+    })
 </script>

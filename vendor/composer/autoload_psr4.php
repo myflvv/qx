@@ -6,11 +6,20 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'think\\worker\\' => array($vendorDir . '/topthink/think-worker/src'),
+    'think\\helper\\' => array($vendorDir . '/topthink/think-helper/src'),
     'think\\composer\\' => array($vendorDir . '/topthink/think-installer/src'),
+    'think\\captcha\\' => array($vendorDir . '/topthink/think-captcha/src'),
+    'think\\' => array($vendorDir . '/topthink/think-image/src'),
     'app\\' => array($baseDir . '/application'),
+    'Workerman\\' => array($vendorDir . '/workerman/workerman'),
     'Symfony\\Component\\Finder\\' => array($vendorDir . '/symfony/finder'),
     'Swagger\\' => array($vendorDir . '/zircote/swagger-php/src'),
-    'Predis\\' => array($vendorDir . '/predis/predis/src'),
+    'Psr\\SimpleCache\\' => array($vendorDir . '/psr/simple-cache/src'),
+    'PhpOffice\\PhpSpreadsheet\\' => array($vendorDir . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet'),
+    'Matrix\\' => array($vendorDir . '/markbaker/matrix/classes/src'),
+    'GatewayWorker\\' => array($vendorDir . '/workerman/gateway-worker/src'),
     'Firebase\\JWT\\' => array($vendorDir . '/firebase/php-jwt/src'),
     'Doctrine\\Common\\Annotations\\' => array($vendorDir . '/doctrine/annotations/lib/Doctrine/Common/Annotations'),
+    'Complex\\' => array($vendorDir . '/markbaker/complex/classes/src'),
 );

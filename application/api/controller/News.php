@@ -1,11 +1,57 @@
 <?php
 namespace app\api\controller;
 
+use app\api\model\ActiveModel;
 use app\api\model\NewsModel;
+use app\api\model\ReportModel;
+use app\index\model\PicModel;
 use think\Controller;
+use think\Db;
 
 
 class News extends Controller{
+    //首页幻灯片推荐
+    public function getHomePic(){
+        $res=PicModel::order('sort desc')->select();
+        if ($res){
+            foreach ($res as $key=>$val){
+                $res[$key]['src']=domain().$val['path'];
+                if ($val['type']=='news'){
+                    $res[$key]['url']='/pages/index/news_detail?id='.$val['val_id'];
+                    if (empty($val['title'])){
+                        $m=NewsModel::where('id='.$val['val_id'])->field('title')->find();
+                        $res[$key]['text']=$m['title'];
+                    }else{
+                        $res[$key]['text']=$val['title'];
+                    }
+                }
+                if ($val['type']=='report'){
+                    //活动ID缓存报告表ID
+                    $m=ReportModel::where('active_id='.$val['val_id'])->field('id')->find();
+                    $res[$key]['url']='/pages/index/info?id='.$m['id'];
+                    if (empty($val['title'])){
+                        $m=ActiveModel::where('id='.$val['val_id'])->field('title')->find();
+                        $res[$key]['text']=$m['title'].'-报告';
+                    }else{
+                        $res[$key]['text']=$val['title'];
+                    }
+                }
+                if ($val['type']=='active'){
+                    $res[$key]['url']='/pages/active/detail?id='.$val['val_id'];
+                    if (empty($val['title'])){
+                        $m=ActiveModel::where('id='.$val['val_id'])->field('title')->find();
+                        $res[$key]['text']=$m['title'];
+                    }else{
+                        $res[$key]['text']=$val['title'];
+                    }
+                }
+
+            }
+            return json(['code'=>200,'content'=>$res]);
+        }else{
+            return json(['code'=>200,'content'=>'']);
+        }
+    }
 
     public function getList(){
         $page=input('get.pageNum',1);
