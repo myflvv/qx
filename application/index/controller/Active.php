@@ -97,6 +97,51 @@ class Active extends Controller{
         return json(['total'=>$total,'rows'=>$data]);
     }
 
+    //活动详情修改获取内容
+    public function getActiveEditInfo(){
+        $id=input('get.id',0);
+        if ($id==0){
+            return json(['code'=>420,'msg'=>'参数错误']);
+        }
+        $sql="select act.*,adm.username,adm.team_id from qx_active act left join qx_admin adm on act.add_user_id=adm.id where act.id=".$id;
+        $res=Db::query($sql);
+        if ($res) {
+            $val = $res[0];
+            $selectServiceTime=[];
+            $selectServiceType=[];
+            //获取活动类别、时长
+            $r=ActiveType::select();
+            foreach ($r as $k=>$v){
+                if ($v['type']==1){
+                    $selectServiceType[][]=$v;
+                }
+                if ($v['type']==2){
+                    $selectServiceTime[][]=$v;
+                }
+            }
+            $val['select_service_type']=$selectServiceType;
+            $val['select_service_time']=$selectServiceTime;
+            //活动时间
+            $val['active_time_format']=date('Y-m-d H:i',$val['active_start_time']).' - '.date('Y-m-d H:i',$val['active_end_time']);
+            $val['active_start_time_format']=date('Y-m-d H:i',$val['active_start_time']);
+            $val['active_end_time_format']=date('Y-m-d H:i',$val['active_end_time']);
+            //招募时间
+
+            $val['recruit_start_time_format']=date('Y-m-d H:i',$val['recruit_start_time']);
+            //如果活动招募结束时间为空，则结束时间为活动开始时间
+            if (empty($val['recruit_end_time'])){
+                $recruit_end_time=$val['active_start_time'];
+            }else{
+                $recruit_end_time=$val['recruit_end_time'];
+            }
+            $val['recruit_end_time_format']=date('Y-m-d H:i',$recruit_end_time);
+            $val['recruit_time_format']=$val['recruit_start_time_format'].' - '.$val['recruit_end_time_format'];
+            return json(['code'=>200,'data'=>$val]);
+        }else{
+            return json(['code'=>420,'msg'=>'数据不存在']);
+        }
+    }
+
     //活动详情
     public function getActiveInfo(){
         $id=input('get.id',0);
