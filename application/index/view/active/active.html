@@ -1,9 +1,7 @@
 <link rel="stylesheet" href="/static/jquery.treegrid.min.css">
 <script src="/static/bootstrap-table-treegrid.js"></script>
 <script src="/static/jquery.treegrid.min.js"></script>
-<link href="/static/select_date/daterangepicker.css" rel="stylesheet">
-<script src="/static/select_date/moment.min.js"></script>
-<script src="/static/select_date/daterangepicker.min.js"></script>
+
 <nav class="cm-navbar cm-navbar-default cm-navbar-slideup">
     <div class="cm-flex">
         <div class="cm-breadcrumb-container">
@@ -91,80 +89,6 @@
 </div>
 
 
-<div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-
-    <div class="modal-dialog modal-large" role="document">
-        <div class="modal-content">
-            <form id="editForm" method="post" action="/admin/active/activeeditsave">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" >修改</h4>
-            </div>
-            <div class="modal-body">
-                <table class="table table-striped">
-                    <tr>
-                        <td class="et_title">活动名称:</td>
-                        <td ><input type="text" name="title" id="ev_title" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td class="et_title">服务类别:</td>
-                        <td >
-                            <select name="service_type" id="ev_service_type" class="form-control"></select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="et_title">服务时长:</td>
-                        <td>
-                            <select name="service_time" id="ev_service_time" class="form-control"></select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="et_title">活动时间:</td>
-                        <td >
-                            <input type="text" name="active_time" id="ev_active_time" class="form-control" readonly>
-                            <input type="hidden" name="start_active_time">
-                            <input type="hidden" name="end_active_time">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="et_title">招募时间:</td>
-                        <td>
-                            <input type="text" name="recruit_time" id="ev_recruit_time" class="form-control" readonly>
-                            <input type="hidden" name="start_recruit_time">
-                            <input type="hidden" name="end_recruit_time">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="et_title">联系人:</td>
-                        <td ><input type="text" name="user" id="ev_user" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td class="et_title">联系电话:</td>
-                        <td><input type="text" name="tel" id="ev_tel" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td class="et_title">活动地点:</td>
-                        <td><input type="text" name="address" id="ev_address" class="form-control"></td>
-                    </tr>
-                    <tr>
-                        <td class="et_title">活动描述:</td>
-                        <td >
-                            <textarea name="info"  cols="10" rows="6" id="ev_info" class="form-control"></textarea>
-                        </td>
-                    </tr>
-
-                </table>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="submit" class="btn btn-primary">保存</button>
-            </div>
-            </form>
-        </div>
-    </div>
-
-</div>
-
 <div class="modal fade" id="add" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
@@ -210,43 +134,10 @@
 </style>
 <script>
     $(function () {
+
         table_list();
-        // formvalidator();
-        var locale = {
-            "format": 'YYYY-MM-DD HH:mm',
-            "separator": " - ",
-            "applyLabel": "确定",
-            "cancelLabel": "取消",
-            "fromLabel": "起始时间",
-            "toLabel": "结束时间'",
-            "customRangeLabel": "自定义",
-            "weekLabel": "W",
-            "daysOfWeek": ["日", "一", "二", "三", "四", "五", "六"],
-            "monthNames": ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
-            "firstDay": 1
-        };
 
-        $('input[name="active_time"]').daterangepicker({
-            'locale': locale,
-            timePicker:true,
-            timePicker24Hour: true,
-            autoUpdateInput:false,
-        }, function(start, end, label) {
-            $('input[name="active_time"]').val(start.format('YYYY-MM-DD HH:mm')+' - '+end.format('YYYY-MM-DD HH:mm'));
-            $('input[name="start_active_time"]').val(start.format('YYYY-MM-DD HH:mm'));
-            $('input[name="end_active_time"]').val(end.format('YYYY-MM-DD HH:mm'));
-        });
 
-        $('input[name="recruit_time"]').daterangepicker({
-            'locale': locale,
-            timePicker:true,
-            timePicker24Hour: true,
-            autoUpdateInput:false,
-        }, function(start, end, label) {
-            $('input[name="recruit_time"]').val(start.format('YYYY-MM-DD HH:mm')+' - '+end.format('YYYY-MM-DD HH:mm'));
-            $('input[name="start_recruit_time"]').val(start.format('YYYY-MM-DD HH:mm'));
-            $('input[name="end_recruit_time"]').val(end.format('YYYY-MM-DD HH:mm'));
-        });
 
     });
     // $('input[name="active_time"]').on('apply.daterangepicker', function(ev, picker) {
@@ -309,7 +200,7 @@
         result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"location.href='/admin/active/report?active_id=" + id + "'\" title='查看活动报告'><span class='glyphicon glyphicon-file'></span></a>&nbsp;&nbsp;";
         result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"location.href='/admin/active/user?active_id=" + id + "'\" title='查看报名人员'><span class='glyphicon glyphicon-user'></span></a>&nbsp;&nbsp;";
         result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"seeView('" + id + "')\" title='查看'><span class='glyphicon glyphicon-eye-open'></span></a>&nbsp;&nbsp;";
-        result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"editView('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>&nbsp;&nbsp;";
+        result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"location.href='/admin/active/edit?id=" + id + "'\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>&nbsp;&nbsp;";
         result += "<a href='javascript:;' class='btn btn-xs btn-danger' onclick=\"delView('" + id + "','"+row.title+"')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
         return result;
     }
@@ -342,130 +233,7 @@
         });
 
     }
-    function editView(id) {
-        $.ajax({
-            type : "get",
-            url : "/admin/active/activeeditinfo?id="+id,
-            dataType : 'json',
-            async:false,
-            success : function(r) {
-                if (r.code==200){
-                    var d=r.data
-                    var type_options = '';
-                    for(i=0; i<d.select_service_type.length; i++)
-                    {
-                        if (d.service_type_id==d.select_service_type[i][0]['id']) {
-                            type_options += "<option values='"+d.select_service_type[i][0]['id']+"' selected>"+d.select_service_type[i][0]['name']+"</option>";
 
-                        }else{
-                            type_options += "<option values='"+d.select_service_type[i][0]['id']+"'>"+d.select_service_type[i][0]['name']+"</option>";
-                        }
-                    }
-                    var time_options = '';
-                    for(i=0; i<d.select_service_time.length; i++)
-                    {
-                        // console.log(d.select_service_time[i]);
-                        if (d.service_time==d.select_service_time[i][0]['name']) {
-                            time_options += "<option values='"+d.select_service_time[i][0]['name']+"' selected>"+d.select_service_time[i][0]['name']+"小时</option>";
-
-                        }else{
-                            time_options += "<option values='"+d.select_service_time[i][0]['name']+"'>"+d.select_service_time[i][0]['name']+"小时</option>";
-                        }
-                    }
-                    $('#ev_service_type').html(type_options);
-                    $('#ev_service_time').html(time_options);
-                    $('#ev_active_time').val(d.active_time_format);
-                    $('input[name="start_active_time"]').val(d.active_start_time_format);
-                    $('input[name="end_active_time"]').val(d.active_end_time_format);
-
-                    $('#ev_recruit_time').val(d.recruit_time_format);
-                    $('input[name="start_recruit_time"]').val(d.recruit_start_time_format);
-                    $('input[name="end_recruit_time"]').val(d.recruit_end_time_format);
-                    $('#ev_title').val(d.title);
-                    $('#ev_user').val(d.user);
-                    $('#ev_tel').val(d.tel);
-                    $('#ev_address').val(d.address);
-                    $('#ev_info').val(d.info);
-                    $('#edit').modal('show');
-                }else{
-                    alert(r.msg);
-                }
-            },
-            error : function(e){
-                console.log(e.status);
-                console.log(e.responseText);
-            }
-        });
-    }
-    function formvalidator() {
-        $('#editForm').bootstrapValidator({
-            message: 'This value is not valid',
-            feedbackIcons: {
-                valid: 'glyphicon glyphicon-ok',
-                invalid: 'glyphicon glyphicon-remove',
-                validating: 'glyphicon glyphicon-refresh'
-            },
-            fields: {
-                title: {
-                    message: '',
-                    validators: {
-                        stringLength: {
-                            min: 1,
-                            max: 100,
-                            message:''
-                        }
-                    }
-                },
-                user: {
-                    message: '',
-                    validators: {
-                        stringLength: {
-                            min: 1,
-                            max: 10,
-                            message:''
-                        }
-                    }
-                },
-                tel: {
-                    message: '',
-                    validators: {
-                        stringLength: {
-                            min: 1,
-                            max: 20,
-                            message:''
-                        }
-                    }
-                },
-                address: {
-                    message: '',
-                    validators: {
-                        stringLength: {
-                            min: 1,
-                            max: 500,
-                            message:''
-                        }
-                    }
-                },
-            }
-        }).on('success.form.bv', function(e) {
-            e.preventDefault();
-            var $form = $(e.target);
-            var bv = $form.data('bootstrapValidator');
-            $.post($form.attr('action'), $form.serialize(), function(result) {
-                if (result.code==200) {
-                    $('#edit').modal('hide');
-                    $('#tipM').modal('show');
-                    setTimeout(function(){
-                        $('#tipM').modal('hide');
-                    }, 2000);
-                }else{
-                    alert(result.msg);
-                    bv.resetForm();
-                    return;
-                }
-            }, 'json');
-        });
-    }
     function delView(id,name) {
         if(confirm('删除不可恢复,确认删除？')){
             $.ajax({

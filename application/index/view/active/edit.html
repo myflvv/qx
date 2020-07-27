@@ -1,0 +1,246 @@
+<link href="/static/select_date/daterangepicker.css" rel="stylesheet">
+<script src="/static/select_date/moment.min.js"></script>
+<script src="/static/select_date/daterangepicker.min.js"></script>
+<nav class="cm-navbar cm-navbar-default cm-navbar-slideup">
+    <div class="cm-flex">
+        <div class="cm-breadcrumb-container">
+            <ol class="breadcrumb">
+                <li><a href="/admin/active/active">志愿活动</a></li>
+                <li class="active">
+                    修改
+                </li>
+            </ol>
+        </div>
+    </div>
+</nav>
+<div class="container-index">
+    <div style="margin-top: 20px;">
+        <form id="addForm" action="/admin/active/activeeditsave" method="post" class="form-horizontal"  enctype="multipart/form-data">
+            <div class="form-group" >
+                <label class="col-sm-2">活动名称:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" name="title" id="title" value="{$data.title}">
+                    <input type="hidden" name="id" value="{$data.id}">
+                </div>
+            </div>
+            <div class="form-group" >
+                <label class="col-sm-2">服务类别:</label>
+                <div class="col-sm-10">
+                    <select name="service_type" id="ev_service_type" class="form-control">
+                        {foreach $data['select_service_type'] as $vo}
+                        <option value="{$vo.id}" {if $data['service_type_id']==$vo['id']}selected{/if}>{$vo.name}</option>
+                        {/foreach}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group" >
+                <label class="col-sm-2">服务时长:</label>
+                <div class="col-sm-10">
+                    <select name="service_time" id="ev_service_time" class="form-control">
+                        {foreach $data['select_service_time'] as $vo}
+                        <option value="{$vo.name}" {if $data['service_time']==$vo['name']}selected{/if}>{$vo.name}小时</option>
+                        {/foreach}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group" >
+                <label class="col-sm-2">活动时间:</label>
+                <div class="col-sm-10">
+                    <input type="text" name="active_time" id="ev_active_time" class="form-control" readonly value="{$data.active_time_format}">
+                    <input type="hidden" name="start_active_time" value="{$data.active_start_time_format}">
+                    <input type="hidden" name="end_active_time" value="{$data.active_end_time_format}">
+                </div>
+            </div>
+            <div class="form-group" >
+                <label class="col-sm-2">招募时间:</label>
+                <div class="col-sm-10">
+                    <input type="text" name="recruit_time" id="ev_recruit_time" class="form-control" readonly value="{$data.recruit_time_format}">
+                    <input type="hidden" name="start_recruit_time" value="{$data.recruit_start_time_format}">
+                    <input type="hidden" name="end_recruit_time" value="{$data.recruit_end_time_format}">
+                </div>
+            </div>
+            <div class="form-group" >
+                <label class="col-sm-2">联系人:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" name="user"  value="{$data.user}">
+                </div>
+            </div>
+
+            <div class="form-group" >
+                <label class="col-sm-2">联系电话:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" name="tel"  value="{$data.tel}">
+                </div>
+            </div>
+
+            <div class="form-group" >
+                <label class="col-sm-2">活动地点:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" name="address"  value="{$data.address}">
+                </div>
+            </div>
+
+            <div class="form-group" >
+                <label class="col-sm-2">活动描述:</label>
+                <div class="col-sm-10">
+                    <textarea name="info"  cols="10" rows="6"  class="form-control">{$data.info}</textarea>
+                </div>
+            </div>
+
+            <div class="form-group" >
+                <label class="col-sm-2 "></label>
+                <div class="col-sm-10">
+                    <button type="submit" class="btn btn-primary"> 保 存 </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>
+<div class="modal fade text-center" id="tipM" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm " >
+        <div class="modal-content">
+            <div class="modal-body" style="padding: 0;">
+                <div class="alert alert-success" style="margin-bottom: 0;text-align: center;">
+                    <span class="glyphicon glyphicon-ok"></span> <span>操作成功</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .krajee-default.file-preview-frame .kv-file-content{
+        height: auto !important;
+    }
+</style>
+<script>
+    $(function () {
+        formvalidator();
+
+        var locale = {
+            "format": 'YYYY-MM-DD HH:mm',
+            "separator": " - ",
+            "applyLabel": "确定",
+            "cancelLabel": "取消",
+            "fromLabel": "起始时间",
+            "toLabel": "结束时间'",
+            "customRangeLabel": "自定义",
+            "weekLabel": "W",
+            "daysOfWeek": ["日", "一", "二", "三", "四", "五", "六"],
+            "monthNames": ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+            "firstDay": 1
+        };
+
+        $('input[name="active_time"]').daterangepicker({
+            'locale': locale,
+            timePicker:true,
+            timePicker24Hour: true,
+            autoUpdateInput:false,
+        }, function(start, end, label) {
+            $('input[name="active_time"]').val(start.format('YYYY-MM-DD HH:mm')+' - '+end.format('YYYY-MM-DD HH:mm'));
+            $('input[name="start_active_time"]').val(start.format('YYYY-MM-DD HH:mm'));
+            $('input[name="end_active_time"]').val(end.format('YYYY-MM-DD HH:mm'));
+        });
+
+        $('input[name="recruit_time"]').daterangepicker({
+            'locale': locale,
+            timePicker:true,
+            timePicker24Hour: true,
+            autoUpdateInput:false,
+        }, function(start, end, label) {
+            $('input[name="recruit_time"]').val(start.format('YYYY-MM-DD HH:mm')+' - '+end.format('YYYY-MM-DD HH:mm'));
+            $('input[name="start_recruit_time"]').val(start.format('YYYY-MM-DD HH:mm'));
+            $('input[name="end_recruit_time"]').val(end.format('YYYY-MM-DD HH:mm'));
+        });
+
+    })
+    function formvalidator() {
+        $('#addForm').bootstrapValidator({
+            message: 'This value is not valid',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                title: {
+                    message: '',
+                    validators: {
+                        notEmpty: {
+                        },
+                        stringLength: {
+                            min: 1,
+                            max: 30,
+                            message:''
+                        }
+                    }
+                },
+                user: {
+                    message: '',
+                    validators: {
+                        notEmpty: {
+                        },
+                        stringLength: {
+                            min: 1,
+                            max: 30,
+                            message:''
+                        }
+                    }
+                },tel: {
+                    message: '',
+                    validators: {
+                        notEmpty: {
+                        },
+                        stringLength: {
+                            min: 1,
+                            max: 30,
+                            message:''
+                        }
+                    }
+                },info: {
+                    message: '',
+                    validators: {
+                        notEmpty: {
+                        },
+                        stringLength: {
+                            min: 1,
+                            max: 300,
+                            message:''
+                        }
+                    }
+                },address: {
+                message: '',
+                validators: {
+                    notEmpty: {
+                    },
+                    stringLength: {
+                        min: 1,
+                        max: 200,
+                        message:''
+                    }
+                }
+            },
+            }
+        }).on('success.form.bv', function(e) {
+            e.preventDefault();
+            var $form = $(e.target);
+            var bv = $form.data('bootstrapValidator');
+            $.post($form.attr('action'), $form.serialize(), function(result) {
+                console.log(result);
+                if (result.code==200) {
+                    $('#tipM').modal('show');
+                    setTimeout(function(){
+                        $('#tipM').modal('hide');
+                        location.href='/admin/active/active';
+                    }, 2000);
+
+
+                }else{
+                    alert('保存错误');
+                    bv.resetForm();
+                    return;
+                }
+            }, 'json');
+        });
+    }
+</script>

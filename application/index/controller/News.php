@@ -40,6 +40,7 @@ class News extends Controller{
             $content='';
             $id=0;
         }else{
+            $id=intval($id);
             $res=NewsModel::where(['id'=>$id])->find();
             if ($res){
                 $title=$res['title'];

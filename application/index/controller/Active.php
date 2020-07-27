@@ -97,12 +97,13 @@ class Active extends Controller{
         return json(['total'=>$total,'rows'=>$data]);
     }
 
-    //活动详情修改获取内容
-    public function getActiveEditInfo(){
+    //活动修改
+    public function getEdit(){
         $id=input('get.id',0);
         if ($id==0){
-            return json(['code'=>420,'msg'=>'参数错误']);
+            return '参数错误';
         }
+        $id=intval($id);
         $sql="select act.*,adm.username,adm.team_id from qx_active act left join qx_admin adm on act.add_user_id=adm.id where act.id=".$id;
         $res=Db::query($sql);
         if ($res) {
@@ -113,10 +114,10 @@ class Active extends Controller{
             $r=ActiveType::select();
             foreach ($r as $k=>$v){
                 if ($v['type']==1){
-                    $selectServiceType[][]=$v;
+                    $selectServiceType[]=$v;
                 }
                 if ($v['type']==2){
-                    $selectServiceTime[][]=$v;
+                    $selectServiceTime[]=$v;
                 }
             }
             $val['select_service_type']=$selectServiceType;
@@ -136,10 +137,34 @@ class Active extends Controller{
             }
             $val['recruit_end_time_format']=date('Y-m-d H:i',$recruit_end_time);
             $val['recruit_time_format']=$val['recruit_start_time_format'].' - '.$val['recruit_end_time_format'];
-            return json(['code'=>200,'data'=>$val]);
+
+            $this->assign('data',$val);
         }else{
-            return json(['code'=>420,'msg'=>'数据不存在']);
+            return '数据不存在';
         }
+
+        return $this->fetch('edit');
+    }
+
+    //活动修改保存
+    public function postActiveEditSave(){
+        $params=input('post.');
+        $data=[
+            'title'=>$params['title'],
+            'service_type_id'=>$params['service_type'],
+            'service_time'=>$params['service_time'],
+            'active_start_time'=>strtotime($params['start_active_time']),
+            'active_end_time'=>strtotime($params['end_active_time']),
+            'recruit_start_time'=>strtotime($params['start_recruit_time']),
+            'recruit_end_time'=>strtotime($params['end_recruit_time']),
+            'user'=>$params['user'],
+            'tel'=>$params['tel'],
+            'address'=>$params['address'],
+            'info'=>$params['info']
+        ];
+        Log::add("修改活动 ".$params['title']);
+        ActiveModel::where(['id'=>$params['id']])->update($data);
+        return json(['code'=>200,'data'=>'success']);
     }
 
     //活动详情
@@ -148,12 +173,18 @@ class Active extends Controller{
         if ($id==0){
             return json(['code'=>420,'msg'=>'参数错误']);
         }
+
         $sql="select act.*,adm.username,adm.team_id from qx_active act left join qx_admin adm on act.add_user_id=adm.id where act.id=".$id;
         $res=Db::query($sql);
         if ($res){
             $val=$res[0];
             $val['active_time']=date('Y-m-d H:i',$val['active_start_time'])." ~ ".date('Y-m-d H:i',$val['active_end_time']);
-            $val['recruit_time']=date('Y-m-d H:i',$val['recruit_start_time'])." ~ ".date('Y-m-d H:i',$val['recruit_end_time']);
+            if (empty($val['recruit_end_time'])){ //如果招募结束时间为空，则等于活动开始时间
+                $recruit_end_time=$val['active_start_time'];
+            }else{
+                $recruit_end_time=$val['recruit_end_time'];
+            }
+            $val['recruit_time']=date('Y-m-d H:i',$val['recruit_start_time'])." ~ ".date('Y-m-d H:i',$recruit_end_time);
             $val['create_time']=date('Y-m-d H:i:s',$val['create_time']);
             $val['service_time']=$val['service_time']."小时";
             $val['service_type']=$this->getActiveType($val['service_type_id']);
