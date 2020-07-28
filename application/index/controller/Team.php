@@ -22,12 +22,18 @@ class Team extends Controller{
         $pid=input('post.pid',0);
         $level=input('post.level',1);
         if ($action_id==0){
+            if ($pid==85){ //如果是镇街，则子栏目is_team=2
+                $is_team=2;
+            }else{
+                $is_team=0;
+            }
             $m=new mTeam();
             $m->data([
                 'name'=>$name,
                 'sort'=>$sort,
                 'pid'=>$pid,
-                'level'=>$level
+                'level'=>$level,
+                'is_team'=>$is_team
             ]);
             $m->save();
             Log::add('团队管理 添加-'.$name);

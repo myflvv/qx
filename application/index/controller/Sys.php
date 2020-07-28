@@ -5,6 +5,7 @@ use app\api\model\ActiveModel;
 use app\api\model\EnterModel;
 use app\index\model\Admin;
 use app\index\model\Log;
+use app\index\model\StatisticModel;
 use think\Controller;
 use think\Db;
 
@@ -184,9 +185,112 @@ class Sys extends Controller{
         return json(['code'=>200,'msg'=>"success"]);
     }
 
-    //统计
-    public function getStatistic(){
-        return $this->fetch('statistic');
+    //机关页面
+    public function getStatistic_Office(){
+        return $this->fetch('statistic_office');
+    }
+
+    //机关
+    public function getOffice(){
+        $offset=input('get.offset',0);
+        $limit=input('get.limit',10);
+        return $this->statisticData(1,$limit,$offset);
+    }
+
+    //团体页面
+    public function getStatistic_Team(){
+        return $this->fetch('statistic_team');
+    }
+
+    //团体
+    public function getTeam(){
+        $offset=input('get.offset',0);
+        $limit=input('get.limit',10);
+        return $this->statisticData(39,$limit,$offset);
+    }
+
+    //学校页面
+    public function getStatistic_School(){
+        return $this->fetch('statistic_school');
+    }
+
+    //学校
+    public function getSchool(){
+        $offset=input('get.offset',0);
+        $limit=input('get.limit',10);
+        return $this->statisticData(58,$limit,$offset);
+    }
+
+    //镇街页面
+    public function getStatistic_Town(){
+        return $this->fetch('statistic_town');
+    }
+
+    //镇街
+    public function getTown(){
+        $offset=input('get.offset',0);
+        $limit=input('get.limit',10);
+        $no=1+intval($offset);
+        $res=StatisticModel::townNameByPid($limit,$offset);
+        $teamRes=$res['res'];
+        foreach ($teamRes as $key=>$val){
+            #TODO
+        }
+    }
+    //人员
+    public function getStatistic_User(){
+        return $this->fetch('statistic_user');
+    }
+
+    public function getUser(){
+        $offset=input('get.offset',0);
+        $limit=input('get.limit',10);
+        $no=1+intval($offset);
+        $res=StatisticModel::userTeamData($limit,$offset);
+        $count=\app\api\model\User::count();
+        if ($res){
+            foreach ($res as $key=>$val){
+                //获取团体名称
+                $commRes=\app\api\model\Team::where(['id'=>$val['comm_id']])->field('name')->find();
+                if ($commRes){
+                    $team_name=$commRes['name'];
+                }else{
+                    $team_name='--';
+                }
+                $res[$key]['comm_name']=$team_name;
+                //获取参与活动总数,签到签退完成的总数
+                $enterRes=EnterModel::where("user_id=".$val['id']." and start_dk_time<>0 and end_dk_time<>0 ")->count();
+                $res[$key]['sum_active_count']=$enterRes;
+
+                $res[$key]['sum_service_time']=floor($val['duration']*10)/10;
+                $res[$key]['no']=$no;
+                $no++;
+            }
+            return json(['total'=>$count,'rows'=>$res]);
+        }else{
+            return json(['total'=>0,'rows'=>'']);
+        }
+    }
+
+    //获取机关、团体、学校统计数据
+    private function statisticData($team_id,$limit,$offset){
+        $no=1+intval($offset);
+        $res=StatisticModel::teamNameByPid($team_id,$limit,$offset);
+        $teamRes=$res['res'];
+        foreach ($teamRes as $key=>$val){
+            $teamRes[$key]['active_count']=StatisticModel::activeCount($val['id']);
+            $userArr=StatisticModel::userCount($val['id']);
+            if (empty($userArr['avg_duration'])){
+                $duration=0;
+            }else{
+                $duration=floor($userArr['avg_duration']*10)/10;
+            }
+            $teamRes[$key]['avg_service_time']=$duration; //平均服务时长
+            $teamRes[$key]['user_count']=$userArr['count']; //人员总数
+            $teamRes[$key]['no']=$no;
+            $no++;
+        }
+        return json(['total'=>$res['count'],'rows'=>$teamRes]);
     }
 
     public function getStatisticSearch(){

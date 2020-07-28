@@ -1,0 +1,59 @@
+<nav class="cm-navbar cm-navbar-default cm-navbar-slideup">
+    <div class="cm-flex">
+        <div class="nav-tabs-container">
+            <ul class="nav nav-tabs">
+                <li ><a href="/admin/sys/statistic_office">机关</a></li>
+                <li ><a href="/admin/sys/statistic_team">团体</a></li>
+                <li ><a href="/admin/sys/statistic_school">学校</a></li>
+                <li class="active"><a href="/admin/sys/statistic_town">镇街</a></li>
+                <li><a href="/admin/sys/statistic_user">个人</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container-index" style="margin-top: 30px;">
+
+    <table id="table_list" class="table table-bordered table-hover  table-center">
+
+    </table>
+</div>
+<script>
+    $(function () {
+        table_list();
+    });
+
+    function table_list() {
+        $('#table_list').bootstrapTable({
+            url:'/admin/sys/town',
+            method:'get',
+            cache : false,
+            dataType : "json",
+            striped: true,
+            pagination: true,
+            pageNumber: 1,
+            pageSize: 10,
+            sidePagination: "server",
+            search:false,
+            columns:[{
+                field:'no',
+                title:'序号',
+                width:50,
+                align:'center',
+                valign:'center',
+            },{
+                field:'name',
+                title:'名称'
+            },{
+                field:'active_count',
+                title:'发起活动总数'
+            },{
+                field:'user_count',
+                title:'人员总数'
+            },{
+                field:'avg_service_time',
+                title:'平均服务时长(小时)'
+            }
+            ]
+        });
+    }
+</script>

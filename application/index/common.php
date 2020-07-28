@@ -55,6 +55,10 @@ function sysMenu(){
         'admin/sys/keywords',
         'admin/sys/logs',
         'admin/sys/index',
-        'admin/sys/statistic'
+        'admin/sys/statistic_office',
+        'admin/sys/statistic_team',
+        'admin/sys/statistic_school',
+        'admin/sys/statistic_town',
+        'admin/sys/statistic_user',
     ];
 }

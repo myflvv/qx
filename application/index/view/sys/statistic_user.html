@@ -1,0 +1,64 @@
+<nav class="cm-navbar cm-navbar-default cm-navbar-slideup">
+    <div class="cm-flex">
+        <div class="nav-tabs-container">
+            <ul class="nav nav-tabs">
+                <li ><a href="/admin/sys/statistic_office">机关</a></li>
+                <li ><a href="/admin/sys/statistic_team">团体</a></li>
+                <li ><a href="/admin/sys/statistic_school">学校</a></li>
+                <li ><a href="/admin/sys/statistic_town">镇街</a></li>
+                <li class="active"><a href="/admin/sys/statistic_user">个人</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container-index">
+    <div id="toolbar"><button type="button" class="btn btn-warning"> 导出Excel </button></div>
+    <table id="table_list" class="table table-bordered table-hover  table-center">
+
+    </table>
+</div>
+<script>
+    $(function () {
+        table_list();
+    });
+
+    function table_list() {
+        $('#table_list').bootstrapTable({
+            url:'/admin/sys/user',
+            method:'get',
+            toolbar : "#toolbar" ,
+            toolbarAlign:'right',
+            cache : false,
+            dataType : "json",
+            striped: true,
+            pagination: true,
+            pageNumber: 1,
+            pageSize: 10,
+            sidePagination: "server",
+            search:false,
+            columns:[{
+                field:'no',
+                title:'序号',
+                width:50,
+                align:'center',
+                valign:'center',
+            },{
+                field:'real_name',
+                title:'姓名'
+            },{
+                field:'team_name',
+                title:'所属单位'
+            },{
+                field:'comm_name',
+                title:'所属团体'
+            },{
+                field:'sum_active_count',
+                title:'参与活动总数'
+            },{
+                field:'sum_service_time',
+                title:'总服务时长(小时)'
+            }
+            ]
+        });
+    }
+</script>

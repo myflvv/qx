@@ -13,6 +13,4 @@ class Team extends Model{
         }
         return $res;
     }
-
-
 }
