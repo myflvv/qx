@@ -27,7 +27,7 @@ class StatisticModel extends Model
 
     //获取镇街二级、三级子ID及单位总数
     public static function townNameByPid($limit,$offset){
-        $res=\app\api\model\Team::where(['is_town'=>1])->limit($offset,$limit)->order('sort desc')->select();
+        $res=\app\api\model\Team::where(['is_town'=>1])->limit($offset,$limit)->order('sort desc,id asc')->select();
         $resCount=\app\api\model\Team::where(['is_town'=>1])->count();
         return ['res'=>$res,'count'=>$resCount];
     }

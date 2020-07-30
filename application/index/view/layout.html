@@ -302,6 +302,33 @@
                 }, 'json');
             });
         }
+
+        $('.export_button').on('click',function () {
+            $(this).text('正在导出...');
+            $(this).attr('disabled','disabled');
+            $.ajax({
+                type : "get",
+                url : $(this).attr('data-url'),
+                dataType : 'json',
+                async:true,
+                success : function(r) {
+                    if (r.code==200){
+                        $('.export_button').text('导出Excel');
+                        $('.export_button').attr('disabled',false);
+                        $('.export_down').attr('href',r.msg);
+                        $('.export_down').removeClass('hide');
+                    }else{
+                        $('.export_button').text('导出Excel');
+                        $('.export_button').attr('disabled',false);
+                        alert(r.msg);
+                    }
+                },
+                error : function(e){
+                    console.log(e.status);
+                    console.log(e.responseText);
+                }
+            });
+        })
     </script>
 </body>
 </html>

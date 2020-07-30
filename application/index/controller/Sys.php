@@ -4,6 +4,7 @@ namespace app\index\controller;
 use app\api\model\ActiveModel;
 use app\api\model\EnterModel;
 use app\index\model\Admin;
+use app\index\model\ExportModel;
 use app\index\model\Log;
 use app\index\model\StatisticModel;
 use think\Controller;
@@ -230,11 +231,91 @@ class Sys extends Controller{
     public function getTown(){
         $offset=input('get.offset',0);
         $limit=input('get.limit',10);
+        return $this->statisticTownData($limit,$offset);
+    }
+
+    //导出镇街数据
+    public function getExportTown(){
+        $limit=10;
+        $resArr=$this->statisticTownData($limit,0,false);
+        $data=[];
+        if ($resArr['total']>0){
+            $data[]=$resArr['rows'];
+            $page=ceil($resArr['total']/$limit);
+            if ($page>1){
+                for ($i=1;$i<$page;$i++){
+                    $res=$this->statisticTownData($limit,$i*$limit,false);
+                    array_push($data,$res['rows']);
+                }
+            }
+            $headerArr=['序号','名称','发起活动总数','人员总数','平均服务时长(小时)'];
+            ExportModel::export('Town',$headerArr,$data);
+            return json(['code'=>200,'msg'=>'/excel/Town.xlsx']);
+        }else{
+            return json(['code'=>420,'msg'=>'数据不存在']);
+        }
+    }
+
+    //获取镇街数据
+    private function statisticTownData($limit,$offset,$json=true){
         $no=1+intval($offset);
         $res=StatisticModel::townNameByPid($limit,$offset);
         $teamRes=$res['res'];
+        $data=[];
         foreach ($teamRes as $key=>$val){
-            #TODO
+            $data[$key]['no']=$no;
+            $data[$key]['name']=$val['name'];
+            //二级
+            if ($val['level']==2){
+                //获取街道所有子ID社区
+                $countJD=\app\api\model\Team::where(['pid'=>$val['id']])->field('id')->select();
+                $countJD_arr=[];
+                foreach ($countJD as $v){
+                    $countJD_arr[]=$v['id'];
+                }
+                $countJD_id=implode(',',$countJD_arr);
+                //查询所有包含子ID社区的人员时长及人员ID
+                $tsql="select duration from qx_user where team_id in ($countJD_id)";
+                $jdRes=Db::query($tsql);
+
+                //获取二级单位发起的活动总数
+                $adminSql="select count(*) as active_count from qx_admin admin left join qx_active act on admin.id=act.add_user_id where admin.team_id in ($countJD_id)";
+                $adminRes=Db::query($adminSql);
+                $data[$key]['active_count']=$adminRes[0]['active_count'];
+                //二级人员总数
+                $data[$key]['user_count']=count($jdRes);
+                $jv_int=0;
+
+                if ($jdRes){
+                    //将子ID时长累加
+                    foreach ($jdRes as $jv){
+                        $jv_int=$jv_int+$jv['duration'];
+//                        $user_id_str.=$jv['id'].','; //所有二级人员ID
+                    }
+
+//                    $enterCount=
+                    //所有用户的累加时长，除以当前街道的总社区数
+                    $avg_duration=floor($jv_int/count($countJD)*10)/10;
+                    $data[$key]['avg_duration']=$avg_duration;
+                }else{
+                    $data[$key]['avg_duration']=0;
+                }
+            }
+            //三级
+            if ($val['level']==3){
+                //三级单位发起活动总数
+                $data[$key]['active_count']=StatisticModel::activeCount($val['id']);
+
+                $threeRes=StatisticModel::userCount($val['id']);
+                $data[$key]['user_count']=$threeRes['count'];
+                $data[$key]['avg_duration']=empty($threeRes['avg_duration'])?0:floor($threeRes['avg_duration']*10)/10;
+            }
+            $no++;
+        }
+        if ($json){
+            return json(['total'=>$res['count'],'rows'=>$data]);
+        }else{
+            return ['total'=>$res['count'],'rows'=>$data];
         }
     }
     //人员
@@ -242,14 +323,84 @@ class Sys extends Controller{
         return $this->fetch('statistic_user');
     }
 
+    //人员统计数据
     public function getUser(){
         $offset=input('get.offset',0);
         $limit=input('get.limit',10);
+        return $this->statisticUserData($limit,$offset);
+    }
+
+    //人员导出
+    public function getExportUser(){
+        $limit=10;
+        $resArr=$this->statisticUserData($limit,0,false);
+        $data=[];
+        if ($resArr['total']>0){
+            $data[]=$resArr['rows'];
+            $page=ceil($resArr['total']/$limit);
+            if ($page>1){
+                for ($i=1;$i<$page;$i++){
+                    $res=$this->statisticUserData($limit,$i*$limit,false);
+                    array_push($data,$res['rows']);
+                }
+            }
+            $headerArr=['序号','姓名','所属单位','所属团体','参与活动总数','总服务时长(小时)'];
+            ExportModel::export('User',$headerArr,$data);
+            return json(['code'=>200,'msg'=>'/excel/User.xlsx']);
+        }else{
+            return json(['code'=>420,'msg'=>'数据不存在']);
+        }
+
+    }
+
+    //导出机关、团体、学校数据
+    public function getExportAll(){
+        $type=input("get.type",'');
+        if (empty($type)){
+            return '参数错误';
+        }
+        if ($type=='office'){
+            $team_id=1;
+        }
+        if ($type=='team'){
+            $team_id=39;
+        }
+        if ($type=='school'){
+            $team_id=58;
+        }
+        $types=ucfirst($type); //首字母转大写
+        $limit=10;
+        $resArr=$this->statisticData($team_id,$limit,0,false);
+        if ($resArr['total']>0){
+            $data[]=$resArr['rows'];
+            $page=ceil($resArr['total']/$limit);
+            if ($page>1){
+                for ($i=1;$i<$page;$i++){
+                    $res=$this->statisticData($team_id,$limit,$i*$limit,false);
+                    array_push($data,$res['rows']);
+                }
+            }
+            $headerArr=['序号','名称','发起活动总数','人员总数','平均服务时长(小时)'];
+            ExportModel::export($types,$headerArr,$data);
+            return json(['code'=>200,'msg'=>'/excel/'.$types.'.xlsx']);
+        }else{
+            return json(['code'=>420,'msg'=>'数据不存在']);
+        }
+
+//        dump($data);
+    }
+
+    //获取人员数据
+    private function statisticUserData($limit,$offset,$json=true){
         $no=1+intval($offset);
         $res=StatisticModel::userTeamData($limit,$offset);
         $count=\app\api\model\User::count();
         if ($res){
+            $data=[];
             foreach ($res as $key=>$val){
+                $data[$key]['no']=$no;
+                $data[$key]['real_name']=$val['real_name'];
+                $data[$key]['team_name']=$val['team_name'];
                 //获取团体名称
                 $commRes=\app\api\model\Team::where(['id'=>$val['comm_id']])->field('name')->find();
                 if ($commRes){
@@ -257,40 +408,56 @@ class Sys extends Controller{
                 }else{
                     $team_name='--';
                 }
-                $res[$key]['comm_name']=$team_name;
+                $data[$key]['comm_name']=$team_name;
                 //获取参与活动总数,签到签退完成的总数
                 $enterRes=EnterModel::where("user_id=".$val['id']." and start_dk_time<>0 and end_dk_time<>0 ")->count();
-                $res[$key]['sum_active_count']=$enterRes;
+                $data[$key]['sum_active_count']=$enterRes;
 
-                $res[$key]['sum_service_time']=floor($val['duration']*10)/10;
-                $res[$key]['no']=$no;
+                $data[$key]['sum_service_time']=floor($val['duration']*10)/10;
+//                $res[$key]['no']=$no;
                 $no++;
             }
-            return json(['total'=>$count,'rows'=>$res]);
+            if ($json){
+                return json(['total'=>$count,'rows'=>$data]);
+            }else{
+                return ['total'=>$count,'rows'=>$data];
+            }
+
         }else{
-            return json(['total'=>0,'rows'=>'']);
+            if ($json){
+                return json(['total'=>0,'rows'=>'']);
+            }else{
+                return ['total'=>0,'rows'=>''];
+            }
         }
     }
 
     //获取机关、团体、学校统计数据
-    private function statisticData($team_id,$limit,$offset){
+    private function statisticData($team_id,$limit,$offset,$json=true){
         $no=1+intval($offset);
         $res=StatisticModel::teamNameByPid($team_id,$limit,$offset);
         $teamRes=$res['res'];
+        $data=[];
         foreach ($teamRes as $key=>$val){
-            $teamRes[$key]['active_count']=StatisticModel::activeCount($val['id']);
+            $data[$key]['no']=$no;
+            $data[$key]['name']=$val['name'];
+            $data[$key]['active_count']=StatisticModel::activeCount($val['id']);
             $userArr=StatisticModel::userCount($val['id']);
             if (empty($userArr['avg_duration'])){
                 $duration=0;
             }else{
                 $duration=floor($userArr['avg_duration']*10)/10;
             }
-            $teamRes[$key]['avg_service_time']=$duration; //平均服务时长
-            $teamRes[$key]['user_count']=$userArr['count']; //人员总数
-            $teamRes[$key]['no']=$no;
+            $data[$key]['user_count']=$userArr['count']; //人员总数
+            $data[$key]['avg_service_time']=$duration; //平均服务时长
+
             $no++;
         }
-        return json(['total'=>$res['count'],'rows'=>$teamRes]);
+        if ($json){
+            return json(['total'=>$res['count'],'rows'=>$data]);
+        }else{
+            return ['total'=>$res['count'],'rows'=>$data];
+        }
     }
 
     public function getStatisticSearch(){

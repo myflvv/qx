@@ -11,8 +11,11 @@
         </div>
     </div>
 </nav>
-<div class="container-index" style="margin-top: 30px;">
-
+<div class="container-index">
+    <div id="toolbar">
+        <button type="button" class="btn btn-primary export_button" data-url="/admin/sys/exportall?type=office">导出Excel</button>
+        <a href="#" class="btn btn-warning hide export_down" role="button" target="_blank">点击下载</a>
+    </div>
     <table id="table_list" class="table table-bordered table-hover  table-center">
 
     </table>
@@ -32,8 +35,11 @@
             pagination: true,
             pageNumber: 1,
             pageSize: 10,
+            pageList:[10],
             sidePagination: "server",
             search:false,
+            toolbar : "#toolbar" ,
+            toolbarAlign:'right',
             columns:[{
                 field:'no',
                 title:'序号',
