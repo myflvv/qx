@@ -63,7 +63,7 @@ class Main extends Controller{
             $info = $file->move( './uploads');
             if($info){
                 $path='/uploads/'.$info->getSaveName();
-                session('up_pic',$path);
+//                session('up_pic',$path);
                 return json(['code'=>200,'data'=>$path]);
             }else{
                 return json(['code'=>420,'msg'=>$file->getError()]);
@@ -75,12 +75,16 @@ class Main extends Controller{
 
     //推荐保存
     public function postRecommendSave(){
-        $path=session('up_pic');
         $recommend_title=input('post.recommend_title');
         $recommend_old_title=input('post.recommend_old_title');
         $recommend_id=input('post.recommend_id');
         $recommend_type=input('post.recommend_type');
         $sort=input('post.sort',0);
+        $recommend_pic_url=input('post.recommend_pic_url','');
+        if (empty($recommend_pic_url)){
+            return json(['code'=>420,'data'=>'图片不存在']);
+        }
+        $path=$recommend_pic_url;
         if ($recommend_title!=$recommend_old_title){ //如果修改过title则保存，否则title等于空
             $title=$recommend_title;
         }else{

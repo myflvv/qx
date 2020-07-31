@@ -21,11 +21,21 @@ class Team extends Controller{
         $sort=input('post.sort',0);
         $pid=input('post.pid',0);
         $level=input('post.level',1);
+        $is_town=input('post.is_town',0);
+        $is_level=input('post.is_level','');
+
         if ($action_id==0){
-            if ($pid==85){ //如果是镇街，则子栏目is_team=2
-                $is_team=2;
+            if ($pid==85){ //如果是镇街，
+                if ($is_level=='on'){ //如果勾选了添加二级栏目,则子栏目is_team=2,
+                    $level=2;
+                    $is_team=2;
+                }else{ //否则is_team=3 不显示添加按钮
+                    $level=3;
+                    $is_team=0;
+                }
             }else{
                 $is_team=0;
+
             }
             $m=new mTeam();
             $m->data([
@@ -33,7 +43,8 @@ class Team extends Controller{
                 'sort'=>$sort,
                 'pid'=>$pid,
                 'level'=>$level,
-                'is_team'=>$is_team
+                'is_team'=>$is_team,
+                'is_town'=>$is_town
             ]);
             $m->save();
             Log::add('团队管理 添加-'.$name);

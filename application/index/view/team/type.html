@@ -31,10 +31,18 @@
                         <input type="hidden" name="pid" id="pid" value="0">
                         <input type="hidden" name="level" id="level" value="1">
                         <input type="hidden" name="action_id" id="action_id" value="0">
+                        <input type="hidden" name="is_town" id="is_town" value="0">
                     </div>
                     <div class="form-group">
                         <label for="name" class="control-label">名称:</label>
                         <input type="text" class="form-control" name="name" id="name">
+                    </div>
+                    <div class="form-group is_level hide">
+                        <div class="alert alert-warning" role="alert" style="margin-bottom: 0;padding: 5px;">
+                            <span class="glyphicon glyphicon-info-sign"></span> 勾选二级栏目,则必须要添加三级栏目
+                        </div>
+                        <label for="is_level" class="control-label">二级栏目:</label>
+                        <input type="checkbox" name="is_level" id="is_level"> 是
                     </div>
                     <div class="form-group">
                         <label for="sort" class="control-label">排序:</label>
@@ -170,7 +178,7 @@
             var id = value;
             var result = "";
             if (row.level==1 || row.is_team==2){
-                result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"addView('" + id + "','"+row.name+"',"+row.level+","+index+")\"   title='添加'><span class='glyphicon glyphicon-plus'></span></a>&nbsp;&nbsp;";
+                result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"addView('" + id + "','"+row.name+"',"+row.level+","+row.is_town+","+index+")\"   title='添加'><span class='glyphicon glyphicon-plus'></span></a>&nbsp;&nbsp;";
             }
             result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"editView('" + id + "','"+row.name+"',"+row.level+","+row.sort+","+index+")\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>&nbsp;&nbsp;";
             if (row.pid!=0){
@@ -178,12 +186,22 @@
             }
             return result;
         }
-        function addView(id,name,level,index){
+        function addView(id,name,level,is_town,index){
             $('#parent_div').show();
             $('#parent_name').attr('value',name);
             $('#pid').attr('value',id);
             $('#level').attr('value',level+1);
             $('#action_id').attr('value',0);
+
+            if (id==85){
+                $('.is_level').removeClass('hide');
+                $('#is_level').attr('checked',true);
+                $('#is_town').attr('value',1);
+            } else{
+                $('.is_level').addClass('hide');
+                $('#is_level').attr('checked',false);
+                $('#is_town').attr('value',is_town);
+            }
             $('#add').modal('show');
         }
 
@@ -192,6 +210,8 @@
             $('#name').val(name);
             $('#sort').val(sort);
             $('#action_id').attr('value',id);
+            $('.is_level').addClass('hide');
+            $('#is_level').attr('checked',false);
             $('#add').modal('show');
         }
 

@@ -128,6 +128,7 @@
                                 <input type="hidden" name="recommend_old_title" id="recommend_old_title">
                                 <input type="hidden" name="recommend_id" id="recommend_id">
                                 <input type="hidden" name="recommend_type" id="recommend_type">
+                                <input type="hidden" name="recommend_pic_url" id="recommend_pic_url">
                             </div>
                         </div>
                                     <div class="form-group" >
@@ -240,7 +241,15 @@
                 actionUpload:'',//去除上传预览缩略图中的上传图片；
                 // actionZoom:''   //去除上传预览缩略图中的查看详情预览的缩略图标。
             },
-        })
+        }).on("filebatchselected", function(event, files) {
+            $(this).fileinput("upload");
+        }).on("fileuploaded", function(event, data) {
+            if(data.response)
+            {
+                console.log(data.response.data);
+               $('#recommend_pic_url').val(data.response.data);
+            }
+        });
 
         function homeformvalidator() {
             $('#addHomePic').bootstrapValidator({
@@ -280,13 +289,14 @@
                     }
                 }
             }).on('success.form.bv', function(e) {
-                $("#homepicfile").fileinput("upload");
+                // $("#homepicfile").fileinput("upload");
                 e.preventDefault();
                 var $form = $(e.target);
                 var bv = $form.data('bootstrapValidator');
                 $.post($form.attr('action'), $form.serialize(), function(result) {
                     console.log(result);
                     if (result.code==200) {
+                        $('#recommend').modal('hide');
                         $('#recommendTip').modal('show');
                         setTimeout(function(){
                             $('#recommendTip').modal('hide');

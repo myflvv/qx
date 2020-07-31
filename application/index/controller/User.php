@@ -46,8 +46,12 @@ class User extends Controller{
         }
         $res=\app\index\model\User::where(['id'=>$id])->find();
         if ($res){
-            $parent=$this->getparent($res['team_id']);
-            return json(['code'=>200,'data'=>$res,'parent'=>$parent]);
+//            $parent=$this->getparent($res['team_id']);
+            if (!empty($res['team_id'])) {
+                $sysM = new Sys();
+                $res['team'] = $sysM->getparent($res['team_id']);
+            }
+            return json(['code'=>200,'data'=>$res]);
         }else{
             return json(['code'=>420,'msg'=>'获取数据错误']);
         }
@@ -66,21 +70,26 @@ class User extends Controller{
             'address'=>$param['address'],
             'duration'=>$param['duration'],
         ];
-        $team_id=0;
-        if ($param['team_modify']==1){
-            if (array_key_exists('team_type_3',$param) && $param['team_type_3']!=0){
-                $team_id=$param['team_type_3'];
-            }elseif(array_key_exists('team_type_2',$param) && $param['team_type_2']!=0){
-                $res=\app\index\model\Team::where(['pid'=>$param['team_type_2']])->count();
-                if ($res>0){
-                    return json(['code'=>420,'msg'=>'请完善工作单位选择']);
-                }
-                $team_id=$param['team_type_2'];
-            }
-            if ($team_id==0){
-                return json(['code'=>420,'msg'=>'请完善工作单位选择']);
-            }
-            $data['team_id']=$team_id;
+//        $team_id=0;
+//        if ($param['team_modify']==1){
+//            if (array_key_exists('team_type_3',$param) && $param['team_type_3']!=0){
+//                $team_id=$param['team_type_3'];
+//            }elseif(array_key_exists('team_type_2',$param) && $param['team_type_2']!=0){
+//                $res=\app\index\model\Team::where(['pid'=>$param['team_type_2']])->count();
+//                if ($res>0){
+//                    return json(['code'=>420,'msg'=>'请完善工作单位选择']);
+//                }
+//                $team_id=$param['team_type_2'];
+//            }
+//            if ($team_id==0){
+//                return json(['code'=>420,'msg'=>'请完善工作单位选择']);
+//            }
+//            $data['team_id']=$team_id;
+//        }
+        if (array_key_exists('e_team_3',$param)){
+            $data['team_id']=$param['e_team_3'];
+        }else{
+            $data['team_id']=$param['e_team_2'];
         }
         Log::add('人员管理 修改-'.$param['real_name']);
         \app\index\model\User::where(['id'=>$param['action_id']])->update($data);
@@ -122,20 +131,20 @@ class User extends Controller{
     }
 
     //获取team_id父级 子级
-    private function getparent($id){
-        if ($id==0){
-            return '';
-        }
-        $res=\app\index\model\Team::where(['id'=>$id])->field('id,name,pid,level')->find();
-        $res_p=\app\index\model\Team::where(['id'=>$res['pid']])->field('id,name,pid,level')->find();
-        if ($res['level']==2){
-            return $res_p['name']." > ".$res['name'];
-        }
-        if ($res['level']==3){
-            $res_pp=\app\index\model\Team::where(['id'=>$res_p['pid']])->field('id,name,pid')->find();
-            return $res_pp['name']." > ".$res_p['name']." > ".$res['name'];
-        }
-    }
+//    private function getparent($id){
+//        if ($id==0){
+//            return '';
+//        }
+//        $res=\app\index\model\Team::where(['id'=>$id])->field('id,name,pid,level')->find();
+//        $res_p=\app\index\model\Team::where(['id'=>$res['pid']])->field('id,name,pid,level')->find();
+//        if ($res['level']==2){
+//            return $res_p['name']." > ".$res['name'];
+//        }
+//        if ($res['level']==3){
+//            $res_pp=\app\index\model\Team::where(['id'=>$res_p['pid']])->field('id,name,pid')->find();
+//            return $res_pp['name']." > ".$res_p['name']." > ".$res['name'];
+//        }
+//    }
 
     //社区团队
     public function getComm(){

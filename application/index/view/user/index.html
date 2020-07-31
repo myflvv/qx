@@ -56,26 +56,43 @@
 
                     </div>
                     <div class="form-group">
-                        <label for="team_type_1" class="col-sm-2 control-label">工作单位:</label>
-                        <div class="hide" id="team_select">
-                            <div class="col-sm-2">
-                                <select class="form-control" name="team_type_1" id="team_type_1">
+                        <label class="col-sm-2 control-label">工作单位:</label>
+                        <div class="col-sm-10 city_china_val"  style="padding-left: 0;">
+                            <div class="col-sm-3">
+                                <select name="e_team_1" data-value="" id="e_team_1" class="province other form-control" data-first-title="请选择"  data-required="true" data-json-value="id">
+
                                 </select>
                             </div>
-                            <div class="col-sm-3 hide" id="team_type_div_2">
-                                <select class="form-control" name="team_type_2" id="team_type_2">
+                            <div class="col-sm-5">
+                                <select name="e_team_2" id="e_team_2" class="city form-control" data-first-title="请选择"  data-required="true"  data-json-value="id">
+
                                 </select>
                             </div>
-                            <div class="col-sm-4 hide" id="team_type_div_3">
-                                <select class="form-control" name="team_type_3" id="team_type_3">
+                            <div class="col-sm-4">
+                                <select name="e_team_3" id="e_team_3" class="area form-control" data-first-title="请选择" data-required="true"  data-json-value="id">
+
                                 </select>
                             </div>
-                            <div class="col-sm-1 pull-right"><a class="btn btn-sm btn-info" onclick="r_team();">取消</a></div>
                         </div>
-                        <div id="team_select_txt">
-                            <div class="col-sm-9" style="line-height: 30px;"></div>
-                            <div class="col-sm-1 pull-right" ><a class="btn btn-sm btn-info" onclick="e_team();">修改</a></div>
-                        </div>
+<!--                        <div class="hide" id="team_select">-->
+<!--                            <div class="col-sm-2">-->
+<!--                                <select class="form-control" name="team_type_1" id="team_type_1">-->
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                            <div class="col-sm-3 hide" id="team_type_div_2">-->
+<!--                                <select class="form-control" name="team_type_2" id="team_type_2">-->
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                            <div class="col-sm-4 hide" id="team_type_div_3">-->
+<!--                                <select class="form-control" name="team_type_3" id="team_type_3">-->
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                            <div class="col-sm-1 pull-right"><a class="btn btn-sm btn-info" onclick="r_team();">取消</a></div>-->
+<!--                        </div>-->
+<!--                        <div id="team_select_txt">-->
+<!--                            <div class="col-sm-9" style="line-height: 30px;"></div>-->
+<!--                            <div class="col-sm-1 pull-right" ><a class="btn btn-sm btn-info" onclick="e_team();">修改</a></div>-->
+<!--                        </div>-->
 
                     </div>
                     <div class="form-group">
@@ -137,20 +154,31 @@
         </div>
     </div>
 </div>
-<div class="modal-dialog modal-sm fade" id="tipM" style="margin-top: -150px;z-index: 999;">
-    <div class="modal-content">
-        <div class="modal-body" style="padding: 0;">
-            <div class="alert alert-success" style="margin-bottom: 0;text-align: center;">
-                <span class="glyphicon glyphicon-ok"></span> <span>操作成功</span>
+<div class="modal fade text-center" id="tipM" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal-dialog modal-sm " >
+        <div class="modal-content">
+            <div class="modal-body" style="padding: 0;">
+                <div class="alert alert-success" style="margin-bottom: 0;text-align: center;">
+                    <span class="glyphicon glyphicon-ok"></span> <span>操作成功</span>
+                </div>
             </div>
         </div>
     </div>
 </div>
+<script src="/static/jquery.cxselect.js"></script>
 <script>
     $(function () {
         table_list();
         formvalidator();
-        team_select('team_type_1');
+        // team_select('team_type_1');
+
+        $('.city_china_val').cxSelect({
+            url: "/admin/user/teamselect",
+            selects: ['province', 'city', 'area'],
+            emptyStyle: 'none'
+        },function(api) {
+            cxSelectApi = api;
+        });
     });
     function e_team() {
         $('#team_select_txt').addClass('hide');
@@ -220,11 +248,11 @@
         return result;
     }
     $('#add').on('show.bs.modal', function () {
-        $('#team_select_txt').removeClass('hide');
-        $('#team_select').addClass('hide');
+        // $('#team_select_txt').removeClass('hide');
+        // $('#team_select').addClass('hide');
         $('#team_modify').val(0);
-        $("#team_type_2 option[index='0']").attr('selected',true);
-        $("#team_type_3 option[index='0']").attr('selected',true);
+        // $("#team_type_2 option[index='0']").attr('selected',true);
+        // $("#team_type_3 option[index='0']").attr('selected',true);
     });
     $('#add').on('hidden.bs.modal', function () {
         $("#addForm").data('bootstrapValidator').destroy();
@@ -256,8 +284,16 @@
                     $("input[name=tel]").val(r.data.tel);
                     $("input[name=address]").val(r.data.address);
                     $("input[name=duration]").val(r.data.duration);
-                    $("#team_select_txt .col-sm-9").html(r.parent);
+                    // $("#team_select_txt .col-sm-9").html(r.parent);
                     comm_select(r.data.comm_id);
+                    if (r.data.team_id!=0 && r.data.team_id!=''){
+                        $('#e_team_1').attr('data-value',r.data.team.team_1_id);
+                        $('#e_team_2').attr('data-value',r.data.team.team_2_id);
+                        if (r.data.team.team_3_id!=0){
+                            $('#e_team_3').attr('data-value',r.data.team.team_3_id);
+                        }
+                        cxSelectApi.attach();
+                    }
                     $('#add').modal('show');
                 }else{
                     alert(r.msg);

@@ -97,17 +97,18 @@ class Sys extends Controller{
             }
         }
 
-        if ($params['e_level']==3){
-            if (array_key_exists('e_team_3',$params)){
-                $data['team_id']=$params['e_team_3'];
+        if ($params['action_id']!=1){
+            if ($params['e_level']==3){
+                if (array_key_exists('e_team_3',$params)){
+                    $data['team_id']=$params['e_team_3'];
+                }else{
+                    $data['team_id']=$params['e_team_2'];
+                }
             }else{
-                $data['team_id']=$params['e_team_2'];
+                $data['team_id']=0;
             }
-        }else{
-            $data['team_id']=0;
+            $data['level']=$params['e_level'];
         }
-
-        $data['level']=$params['e_level'];
         $data['update_time']=time();
 
         Admin::where(['id'=>$params['action_id']])->update($data);
@@ -149,7 +150,7 @@ class Sys extends Controller{
     }
 
     //获取team_id父级 子级 id
-    private function getparent($id,$type="id"){
+    public function getparent($id,$type="id"){
         if ($id==0){
             return '';
         }
@@ -222,7 +223,7 @@ class Sys extends Controller{
         return $this->statisticData(58,$limit,$offset);
     }
 
-    //镇街页面
+    //镇街页面admininfo
     public function getStatistic_Town(){
         return $this->fetch('statistic_town');
     }
