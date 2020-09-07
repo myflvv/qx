@@ -18,7 +18,7 @@
                                 <span class='glyphicon glyphicon-thumbs-up'></span>推荐
                             </button>
                             {else/}
-                            <button type="button" class="btn btn-gray btn-sm" title='取消推荐到首页幻灯' onclick="recommendCancelView({$data['active_id']},'report')">
+                            <button type="button" class="btn btn-gray btn-sm" title='取消推荐到首页幻灯' onclick="recommendCancelView({$data['active_id']},'{$data['title']}','report')">
                                 <span class='glyphicon glyphicon-thumbs-up'></span>取消
                             </button>
                             {/if}

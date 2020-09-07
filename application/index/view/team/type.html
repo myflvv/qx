@@ -187,6 +187,7 @@
             return result;
         }
         function addView(id,name,level,is_town,index){
+            $('#myModalLabel').html('添加');
             $('#parent_div').show();
             $('#parent_name').attr('value',name);
             $('#pid').attr('value',id);
@@ -206,6 +207,7 @@
         }
 
         function editView(id,name,level,sort,index) {
+            $('#myModalLabel').html('编辑');
             $('#parent_div').hide();
             $('#name').val(name);
             $('#sort').val(sort);

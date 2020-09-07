@@ -176,12 +176,12 @@
             $('#recommend').modal('show');
         }
 
-        function recommendCancelView(id,type){
+        function recommendCancelView(id,title,type){
             if(confirm('取消不可恢复,确认取消推荐？')){
                 $.ajax({
                     type : "post",
                     url : "/admin/main/recommendcancel",
-                    data:{id:id,type:type},
+                    data:{id:id,type:type,title:title},
                     dataType : 'json',
                     async:false,
                     success : function(result) {
