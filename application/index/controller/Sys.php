@@ -38,10 +38,17 @@ class Sys extends Controller{
     }
 
     public function getAdminData(){
+        $level=session("level");
+        $where= " 1=1 ";
+        //同级别管理员只能看到同级及下级
+        if ($level!=0){
+            $t=intval($level)-1;
+            $where.=" and level > ".$t;
+        }
         $offset=input('get.offset',0);
         $limit=input('get.limit',10);
-        $total=Admin::count();
-        $res=Admin::limit($offset,$limit)->order('create_time desc')->select();
+        $total=Admin::where($where)->count();
+        $res=Admin::where($where)->limit($offset,$limit)->order('create_time desc')->select();
         $data=[];
         $no=1+intval($offset);
         foreach ($res as $val){

@@ -24,6 +24,7 @@ class Login extends Controller{
             }
             session('username',$username);
             session('admin_id',$res['id']);
+            session('level',$res['level']);
             Log::add('登录');
             return json(['valid'=>true]);
         }else{
@@ -35,6 +36,7 @@ class Login extends Controller{
         Log::add('退出');
         session('username',null);
         session('admin_id',null);
+        session('level',null);
         return redirect('/');
     }
 }

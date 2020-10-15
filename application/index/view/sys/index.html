@@ -5,10 +5,8 @@
     <div class="page-tool pull-right">
         <div class="btn-group" role="group">
             <button type="button" class="btn btn-primary btn-sm" id="add-button">添加</button>
-
         </div>
     </div>
-
     <table id="table_list" class="table table-bordered table-hover  table-center">
 
     </table>
@@ -264,7 +262,7 @@
     function actionFormatter(value, row, index) {
         var id = value;
         var result = "";
-        result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"editView('" + id + "')\" data-id='"+id+"' title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>&nbsp;&nbsp;";
+            result += "<a href='javascript:;' class='btn btn-xs btn-info' onclick=\"editView('" + id + "')\" data-id='" + id + "' title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>&nbsp;&nbsp;";
         if (id!=1){
             result += "<a href='javascript:;' class='btn btn-xs btn-danger' onclick=\"delView('" + id + "','"+row.username+"')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
         }
