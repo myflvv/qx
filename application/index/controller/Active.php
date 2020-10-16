@@ -92,8 +92,9 @@ class Active extends Controller{
         $countField="select count(*) as total ";
         $searchField="select qx.*,qt.`name` ";
         $sql=" from qx_active qx left JOIN qx_team qt on qx.service_type_id=qt.id ".$where;
+        $limitSql=" limit $offset,$limit ";
         $total=Db::query($countField.$sql);
-        $res=Db::query($searchField.$sql);
+        $res=Db::query($searchField.$sql.$limitSql);
         $data=[];
         $no=1+intval($offset);
         foreach ($res as $val){

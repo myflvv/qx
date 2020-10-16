@@ -3,6 +3,8 @@ namespace app\index\controller;
 
 use app\index\model\Log;
 use think\Controller;
+use think\Db;
+
 class User extends Controller{
 
     public function getIndex(){
@@ -14,20 +16,29 @@ class User extends Controller{
         $offset=input('get.offset',0);
         $limit=input('get.limit',10);
         $search=input('get.search');
-        if (empty($search)){
-            $total = \app\index\model\User::count();
-            $res = \app\index\model\User::limit($offset,$limit)->order('create_time desc')->select();
-        }else{ //TODO 条件搜索
-            $real_name_where=[
-                ['real_name','like','%'.$search.'%']
-            ];
-            $id_number_where=[
-                ['id_number','like','%'.$search.'%']
-            ];
-            $total = \app\index\model\User::whereOr([$real_name_where,$id_number_where])->count();
-            $res = \app\index\model\User::whereOr([$real_name_where,$id_number_where])->limit($offset,$limit)->order('create_time desc')->select();
+//        if (empty($search)){
+//            $total = \app\index\model\User::count();
+//            $res = \app\index\model\User::limit($offset,$limit)->order('create_time desc')->select();
+//        }else{ //TODO 条件搜索
+//            $real_name_where=[
+//                ['real_name','like','%'.$search.'%']
+//            ];
+//            $id_number_where=[
+//                ['id_number','like','%'.$search.'%']
+//            ];
+//            $total = \app\index\model\User::whereOr([$real_name_where,$id_number_where])->count();
+//            $res = \app\index\model\User::whereOr([$real_name_where,$id_number_where])->limit($offset,$limit)->order('create_time desc')->select();
+//        }
+        $where='';
+        if (!empty($search)){
+            $where=" where qu.real_name like '%$search%' or qt.name like '%$search%' ";
         }
-
+        $countField="select count(*) as total ";
+        $searchField="select qu.*,qt.`name` ";
+        $sql=" from qx_user qu LEFT JOIN qx_team qt on qu.team_id=qt.id ".$where;
+        $limitSql=" limit $offset,$limit";
+        $total=Db::query($countField.$sql);
+        $res=Db::query($searchField.$sql.$limitSql);
         $data=[];
         $no=1+intval($offset);
         foreach ($res as $val){
@@ -36,7 +47,7 @@ class User extends Controller{
             $data[]=$val;
             $no++;
         }
-        return json(['total'=>$total,'rows'=>$data]);
+        return json(['total'=>$total[0]['total'],'rows'=>$data]);
     }
     //获取编辑内容
     public function getEdit(){
