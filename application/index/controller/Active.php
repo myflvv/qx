@@ -82,19 +82,30 @@ class Active extends Controller{
     public function getActiveList(){
         $offset=input('get.offset',0);
         $limit=input('get.limit',10);
-        $total = ActiveModel::count();
-        $res = ActiveModel::field('id,title,service_time,user,tel,create_time')->limit($offset,$limit)->order('create_time desc')->select();
+        $key=input('get.search','');
+        $where = '';
+        if (!empty($key)){
+            $where .= " where qx.title like '%$key%' or qt.`name` like '%$key%' ";
+        }
+//        $total = ActiveModel::where($where)->count();
+//        $res = ActiveModel::field('id,title,service_time,user,tel,create_time')->limit($offset,$limit)->order('create_time desc')->where($where)->select();
+        $countField="select count(*) as total ";
+        $searchField="select qx.*,qt.`name` ";
+        $sql=" from qx_active qx left JOIN qx_team qt on qx.service_type_id=qt.id ".$where;
+        $total=Db::query($countField.$sql);
+        $res=Db::query($searchField.$sql);
         $data=[];
         $no=1+intval($offset);
         foreach ($res as $val){
             $val['create_time']=date('Y-m-d H:i:s',$val['create_time']);
             $val['service_time']=$val['service_time']."小时";
             $val['is_recommend']=PicModel::getIsRecommend('active',$val['id']);
+            $val['is_report']=ReportModel::where('active_id='.$val['id'])->count();
             $val['no']=$no;
             $data[]=$val;
             $no++;
         }
-        return json(['total'=>$total,'rows'=>$data]);
+        return json(['total'=>$total[0]['total'],'rows'=>$data]);
     }
 
     //活动修改
