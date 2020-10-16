@@ -12,7 +12,7 @@
     </div>
 </nav>
 <div class="container-index">
-    <div class="page-tool pull-right">
+    <div class="page-tool pull-left">
                 <div class="btn-group" role="group">
                     <button type="button" class="btn btn-primary btn-sm" id="add-button">添加</button>
                 </div>
@@ -35,7 +35,7 @@
 <script>
     $(function () {
         table_list();
-
+        $('.search-input').attr('placeholder','请输入标题');
         // $('#add').on('hidden.bs.modal', function () {
         //     $("#addForm").data('bootstrapValidator').destroy();
         //     $('#addForm').data('bootstrapValidator', null);
@@ -59,7 +59,8 @@
             pageNumber: 1,
             pageSize: 10,
             sidePagination: "server",
-            search:false,
+            search:true,
+            showSearchButton:true,
             columns:[{
                 field:'no',
                 title:'序号',

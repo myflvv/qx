@@ -17,8 +17,13 @@ class News extends Controller{
     public function getList(){
         $offset=input('get.offset',0);
         $limit=input('get.limit',10);
-        $total=NewsModel::count();
-        $res=NewsModel::limit($offset,$limit)->order('create_time desc')->select();
+        $key=input('get.search','');
+        $where='';
+        if (!empty($key)){
+            $where .= " title like '%$key%' ";
+        }
+        $total=NewsModel::where($where)->count();
+        $res=NewsModel::where($where)->limit($offset,$limit)->order('create_time desc')->select();
         if ($res){
             $no=1+intval($offset);
             foreach ($res as $key=>$val){
